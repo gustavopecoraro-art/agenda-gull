@@ -972,10 +972,10 @@ async function salvarEvento(){
   var now=Date.now();
 
   var payload={
-    titulo,data:dataInicio,dataBR,hora:horaInicio||'',
-    dataFim:dataFim||dataInicio,horaFim:horaFim||'',
-    local,categoria,categorias,obs:descricao,descricao,
-    grupoJid,grupoNome,
+    titulo:titulo, data:dataInicio, dataBR:dataBR, hora:horaInicio||'',
+    dataFim:dataFim||dataInicio, horaFim:horaFim||'',
+    local:local, categoria:categoria, categorias:categorias, obs:descricao, descricao:descricao,
+    grupoJid:grupoJid, grupoNome:grupoNome,
     ts:new Date(dataInicio+'T'+(horaInicio||'00:00')).getTime(),
     atualizadoEm:now
   };
@@ -1033,6 +1033,7 @@ async function salvarEvento(){
       }
       toast(gcalNewId?'✓ Evento criado e sincronizado!':'✓ Evento criado!','ok');
     }
+  }
   fecharModal('modalEvento');
 }
 
@@ -1853,45 +1854,38 @@ async function gerarRelatorioIA(){
   var concluidos = evsDia.filter(function(e){ return e.done; });
   var pendentes  = evsDia.filter(function(e){ return !e.done; });
 
-  var prompt = `Você é o assistente de relatórios da Gull Finance. Gere um relatório executivo do dia em português, objetivo e profissional.
+  var evLista = evsDia.map(function(ev){
+    var cs = Array.isArray(ev.categorias)?ev.categorias:(ev.categoria?[ev.categoria]:[]);
+    return '- [' + (ev.done?'CONCLUIDO':'PENDENTE') + '] ' + ev.titulo
+      + (ev.hora?' ('+ev.hora+(ev.horaFim?' -> '+ev.horaFim:'')+'h)':'')
+      + (ev.local?' | Local: '+ev.local:'')
+      + ' | Categoria: ' + (cs.join(', ')||'—')
+      + (ev.obs?' | Descricao: '+ev.obs:'');
+  }).join('\n');
 
-DATA: ${dataBR}
+  var horasLista = cats.map(function(c){ return '- '+c+': '+catHoras[c].toFixed(1)+'h'; }).join('\n');
 
-EVENTOS DO DIA (${evsDia.length} total):
-${evsDia.map(function(ev){
-  var cs = Array.isArray(ev.categorias)?ev.categorias:(ev.categoria?[ev.categoria]:[]);
-  return '- [' + (ev.done?'✓ CONCLUÍDO':'⏳ PENDENTE') + '] ' + ev.titulo
-    + (ev.hora?' ('+ev.hora+(ev.horaFim?' → '+ev.horaFim:'')+'h)':'')
-    + (ev.local?' | Local: '+ev.local:'')
-    + ' | Categoria: ' + (cs.join(', ')||'—')
-    + (ev.obs?' | Descrição: '+ev.obs:'');
-}).join('\n')}
+  var crmLista = crmUpdates.length ? crmUpdates.map(function(u){
+    var sl={avancou:'Avancou',proximo:'Proximos passos',concluido:'Concluido',pausado:'Pausado',cancelado:'Cancelado'};
+    return '- ['+(sl[u.status]||u.status)+'] '+u.eventoTitulo+': '+u.nota;
+  }).join('\n') : 'Nenhum update registrado';
 
-HORAS TRABALHADAS POR CATEGORIA:
-${cats.map(function(c){ return '- '+c+': '+catHoras[c].toFixed(1)+'h'; }).join('\n')}
-Total estimado: ${calcularHorasDia(evsDia).toFixed(1)}h
-
-UPDATES DE CRM (${crmUpdates.length} registros):
-${crmUpdates.length ? crmUpdates.map(function(u){
-  var sl={avancou:'Avançou',proximo:'Próximos passos',concluido:'Concluído',pausado:'Pausado',cancelado:'Cancelado'};
-  return '- ['+( sl[u.status]||u.status)+'] '+u.eventoTitulo+': '+u.nota;
-}).join('\n') : 'Nenhum update registrado'}
-
-Gere um relatório com as seguintes seções (use exatamente esses títulos):
-
-📊 RESUMO DO DIA
-(2-3 frases resumindo o dia, horas trabalhadas e foco principal)
-
-✅ PRINCIPAIS AVANÇOS
-(liste os principais progressos e conclusões, em bullets)
-
-⏳ PENDÊNCIAS E PRÓXIMOS PASSOS
-(liste o que ficou pendente e o que precisa acontecer amanhã)
-
-⚠️ ATENÇÕES E ATRASOS
-(liste riscos, atrasos ou pontos de atenção — se não houver, escreva "Nenhuma ocorrência relevante")
-
-Seja direto, profissional e baseado apenas nos dados fornecidos.`;
+  var prompt = 'Voce e o assistente de relatorios da Gull Finance. Gere um relatorio executivo do dia em portugues, objetivo e profissional.\n\n'
+    + 'DATA: ' + dataBR + '\n\n'
+    + 'EVENTOS DO DIA (' + evsDia.length + ' total):\n' + evLista + '\n\n'
+    + 'HORAS TRABALHADAS POR CATEGORIA:\n' + horasLista + '\n'
+    + 'Total estimado: ' + calcularHorasDia(evsDia).toFixed(1) + 'h\n\n'
+    + 'UPDATES DE CRM (' + crmUpdates.length + ' registros):\n' + crmLista + '\n\n'
+    + 'Gere um relatorio com as seguintes secoes (use exatamente esses titulos):\n\n'
+    + 'RESUMO DO DIA\n'
+    + '(2-3 frases resumindo o dia, horas trabalhadas e foco principal)\n\n'
+    + 'PRINCIPAIS AVANCOS\n'
+    + '(liste os principais progressos e conclusoes, em bullets)\n\n'
+    + 'PENDENCIAS E PROXIMOS PASSOS\n'
+    + '(liste o que ficou pendente e o que precisa acontecer amanha)\n\n'
+    + 'ATENCOES E ATRASOS\n'
+    + '(liste riscos, atrasos ou pontos de atencao - se nao houver, escreva Nenhuma ocorrencia relevante)\n\n'
+    + 'Seja direto, profissional e baseado apenas nos dados fornecidos.';
 
   try {
     var res = await fetch('https://api.anthropic.com/v1/messages', {
