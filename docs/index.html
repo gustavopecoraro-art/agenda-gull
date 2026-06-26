@@ -7,183 +7,186 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-
 <style>
 :root {
-  --bg:       #0D1117;
-  --surface:  #161B22;
-  --surface2: #1C2128;
-  --border:   #30363D;
-  --border2:  #21262D;
-  --text:     #E6EDF3;
-  --text2:    #8B949E;
-  --text3:    #484F58;
-  --accent:   #2563EB;
-  --accent-h: #3B82F6;
-  --accent-s: rgba(37,99,235,0.12);
-  --green:    #3FB950;
-  --green-s:  rgba(63,185,80,0.12);
-  --green-b:  rgba(63,185,80,0.25);
-  --red:      #F85149;
-  --red-s:    rgba(248,81,73,0.12);
-  --orange:   #F0883E;
-  --orange-s: rgba(240,136,62,0.12);
-  --purple:   #BC8CFF;
-  --purple-s: rgba(188,140,255,0.12);
-  --gcal:     #4285F4;
-  --gcal-s:   rgba(66,133,244,0.12);
-  --radius:   8px;
-  --radius-lg:12px;
+  --bg:#0D1117;--surface:#161B22;--surface2:#1C2128;--border:#30363D;--border2:#21262D;
+  --text:#E6EDF3;--text2:#8B949E;--text3:#484F58;
+  --accent:#2563EB;--accent-h:#3B82F6;--accent-s:rgba(37,99,235,0.12);
+  --green:#3FB950;--green-s:rgba(63,185,80,0.12);--green-b:rgba(63,185,80,0.25);
+  --red:#F85149;--red-s:rgba(248,81,73,0.12);
+  --orange:#F0883E;--orange-s:rgba(240,136,62,0.12);
+  --purple:#BC8CFF;--purple-s:rgba(188,140,255,0.12);
+  --gcal:#4285F4;--gcal-s:rgba(66,133,244,0.12);--gcal-b:rgba(66,133,244,0.25);
+  --yellow:#F0E68C;--yellow-s:rgba(240,230,140,0.12);
+  --cat-sec:#3FB950;--cat-con:#F0883E;--cat-red:#BC8CFF;--cat-pes:#4285F4;
+  --r:8px;--rl:12px;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; line-height: 1.5; }
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.5;}
+::-webkit-scrollbar{width:4px;height:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
 
 /* HEADER */
-.header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 1rem; height: 52px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
-.header-left { display: flex; align-items: center; gap: 12px; }
-.logo-mark { width: 28px; height: 28px; background: var(--accent); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; letter-spacing: -0.5px; }
-.logo-name { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: -0.2px; }
-.logo-name span { color: var(--text2); font-weight: 400; }
-.header-right { display: flex; align-items: center; gap: 8px; }
-.sync-pill { display: flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 999px; border: 1px solid; }
-.sync-online  { color: var(--green);  border-color: var(--green-b); background: var(--green-s); }
-.sync-offline { color: var(--text2);  border-color: var(--border);  background: var(--surface2); }
-.sync-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
-
-/* GCAL CONNECT BANNER */
-#gcalBanner {
-  background: var(--gcal-s);
-  border-bottom: 1px solid rgba(66,133,244,0.25);
-  padding: 10px 1rem;
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  flex-wrap: wrap;
-}
-#gcalBanner.hidden { display: none; }
-.gcal-banner-text { font-size: 12px; color: var(--text2); display: flex; align-items: center; gap: 8px; }
-.gcal-banner-text i { color: var(--gcal); font-size: 16px; }
-#gcalUserInfo { display: none; font-size: 12px; color: var(--text2); display: flex; align-items: center; gap: 8px; }
-#gcalUserInfo.show { display: flex; }
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1rem;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.logo-mark{width:28px;height:28px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;}
+.logo-name{font-size:14px;font-weight:600;color:var(--text);margin-left:10px;}
+.logo-name span{color:var(--text2);font-weight:400;}
+.header-right{display:flex;align-items:center;gap:8px;}
+.sync-pill{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:500;padding:3px 9px;border-radius:999px;border:1px solid;}
+.sync-online{color:var(--green);border-color:var(--green-b);background:var(--green-s);}
+.sync-offline{color:var(--text2);border-color:var(--border);background:var(--surface2);}
+.sync-dot{width:5px;height:5px;border-radius:50%;background:currentColor;}
+.gcal-user{display:none;align-items:center;gap:6px;font-size:12px;color:var(--text2);}
+.gcal-user.show{display:flex;}
+.gcal-avatar{width:22px;height:22px;border-radius:50%;border:1px solid var(--gcal);}
 
 /* NAV */
-.nav { background: var(--surface); border-bottom: 1px solid var(--border2); display: flex; overflow-x: auto; padding: 0 1rem; }
-.nav::-webkit-scrollbar { height: 0; }
-.nav-btn { display: flex; align-items: center; gap: 6px; padding: 11px 14px; font-size: 12px; font-weight: 500; color: var(--text2); background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap; transition: color .15s, border-color .15s; }
-.nav-btn:hover { color: var(--text); }
-.nav-btn.active { color: var(--accent-h); border-bottom-color: var(--accent-h); }
-.nav-btn i { font-size: 15px; }
+.nav{background:var(--surface);border-bottom:1px solid var(--border2);display:flex;overflow-x:auto;padding:0 1rem;}
+.nav::-webkit-scrollbar{height:0;}
+.nav-btn{display:flex;align-items:center;gap:6px;padding:11px 14px;font-size:12px;font-weight:500;color:var(--text2);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;transition:all .15s;}
+.nav-btn:hover{color:var(--text);}
+.nav-btn.active{color:var(--accent-h);border-bottom-color:var(--accent-h);}
+.nav-btn i{font-size:15px;}
 
 /* LAYOUT */
-.main { padding: 1.25rem 1rem; max-width: 900px; margin: 0 auto; }
-.page { display: none; }
-.page.active { display: block; }
+.main{padding:1.25rem 1rem;max-width:1100px;margin:0 auto;}
+.page{display:none;}.page.active{display:block;}
 
 /* CARDS */
-.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1rem; }
-.card-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
-.card-title i { color: var(--accent-h); font-size: 16px; }
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:1.25rem;margin-bottom:1rem;}
+.card-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:1rem;display:flex;align-items:center;gap:8px;}
+.card-title i{color:var(--accent-h);font-size:16px;}
 
 /* FORMS */
-.field { margin-bottom: 12px; }
-label { display: block; font-size: 11px; font-weight: 500; color: var(--text2); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 5px; }
-input, select, textarea { width: 100%; padding: 8px 10px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-size: 13px; font-family: 'Inter', sans-serif; outline: none; transition: border-color .15s; }
-input:focus, select:focus, textarea:focus { border-color: var(--accent); }
-input::placeholder { color: var(--text3); }
-select option { background: var(--surface2); }
-.row { display: flex; gap: 10px; }
-.row > * { flex: 1; min-width: 0; }
+.field{margin-bottom:12px;}
+label{display:block;font-size:11px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px;}
+input,select,textarea{width:100%;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:border-color .15s;}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);}
+input::placeholder{color:var(--text3);}
+select option{background:var(--surface2);}
+.row{display:flex;gap:10px;}.row>*{flex:1;min-width:0;}
 
 /* BUTTONS */
-.btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: var(--radius); border: 1px solid var(--border); font-size: 13px; font-weight: 500; cursor: pointer; transition: all .15s; background: var(--surface2); color: var(--text); }
-.btn:hover { border-color: var(--accent); color: var(--accent-h); }
-.btn:active { transform: scale(.98); }
-.btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-.btn-primary:hover { background: var(--accent-h); border-color: var(--accent-h); color: #fff; }
-.btn-green { background: var(--green-s); border-color: var(--green-b); color: var(--green); }
-.btn-green:hover { background: rgba(63,185,80,0.2); color: var(--green); }
-.btn-red { background: var(--red-s); border-color: rgba(248,81,73,.3); color: var(--red); }
-.btn-red:hover { background: rgba(248,81,73,.2); color: var(--red); }
-.btn-gcal { background: var(--gcal-s); border-color: rgba(66,133,244,0.3); color: var(--gcal); }
-.btn-gcal:hover { background: rgba(66,133,244,0.2); color: var(--gcal); }
-.btn-sm { padding: 5px 10px; font-size: 12px; }
-.btn-full { width: 100%; justify-content: center; }
-.btn-icon { padding: 6px 8px; }
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--r);border:1px solid var(--border);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;background:var(--surface2);color:var(--text);}
+.btn:hover{border-color:var(--accent);color:var(--accent-h);}.btn:active{transform:scale(.98);}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff;}.btn-primary:hover{background:var(--accent-h);border-color:var(--accent-h);color:#fff;}
+.btn-green{background:var(--green-s);border-color:var(--green-b);color:var(--green);}
+.btn-red{background:var(--red-s);border-color:rgba(248,81,73,.3);color:var(--red);}
+.btn-gcal{background:var(--gcal-s);border-color:var(--gcal-b);color:var(--gcal);}
+.btn-sm{padding:5px 10px;font-size:12px;}.btn-full{width:100%;justify-content:center;}.btn-icon{padding:6px 8px;}
 
 /* BADGES */
-.badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 500; }
-.badge-blue   { background: var(--accent-s); color: var(--accent-h); }
-.badge-green  { background: var(--green-s);  color: var(--green); }
-.badge-gcal   { background: var(--gcal-s);   color: var(--gcal); }
-.badge-purple { background: var(--purple-s); color: var(--purple); }
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:999px;font-size:11px;font-weight:500;}
+.badge-blue{background:var(--accent-s);color:var(--accent-h);}
+.badge-green{background:var(--green-s);color:var(--green);}
+.badge-gcal{background:var(--gcal-s);color:var(--gcal);}
+.badge-orange{background:var(--orange-s);color:var(--orange);}
+.badge-purple{background:var(--purple-s);color:var(--purple);}
+
+/* CATEGORIA CORES */
+.cat-sec{background:rgba(63,185,80,.15);color:var(--cat-sec);border:1px solid rgba(63,185,80,.3);}
+.cat-con{background:rgba(240,136,62,.15);color:var(--cat-con);border:1px solid rgba(240,136,62,.3);}
+.cat-red{background:rgba(188,140,255,.15);color:var(--cat-red);border:1px solid rgba(188,140,255,.3);}
+.cat-pes{background:rgba(66,133,244,.15);color:var(--cat-pes);border:1px solid rgba(66,133,244,.3);}
 
 /* STATS */
-.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 1rem; }
-.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem; }
-.stat-label { font-size: 11px; color: var(--text2); font-weight: 500; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
-.stat-value { font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; font-family: 'JetBrains Mono', monospace; }
-.stat-sub   { font-size: 11px; color: var(--text2); margin-top: 3px; }
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:1rem;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:1rem;}
+.stat-label{font-size:11px;color:var(--text2);font-weight:500;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+.stat-value{font-size:22px;font-weight:700;color:var(--text);letter-spacing:-.5px;font-family:'JetBrains Mono',monospace;}
+.stat-sub{font-size:11px;color:var(--text2);margin-top:3px;}
 
-/* EVENTS */
-.event-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem; margin-bottom: 8px; display: flex; align-items: flex-start; gap: 12px; transition: border-color .15s; }
-.event-card:hover { border-color: var(--accent); }
-.event-card.from-gcal { border-left: 3px solid var(--gcal); }
-.event-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
-.event-body { flex: 1; min-width: 0; }
-.event-title { font-size: 14px; font-weight: 500; color: var(--text); }
-.event-meta  { font-size: 12px; color: var(--text2); margin-top: 3px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.event-meta i { font-size: 12px; }
-.event-actions { display: flex; gap: 6px; flex-shrink: 0; }
-.event-card.done { opacity: .55; }
-.event-card.done .event-title { text-decoration: line-through; }
+/* ── CALENDÁRIO ── */
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+.cal-title{font-size:16px;font-weight:600;color:var(--text);}
+.cal-nav{display:flex;gap:6px;align-items:center;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+.cal-dow{text-align:center;font-size:11px;font-weight:600;color:var(--text3);padding:6px 0;text-transform:uppercase;letter-spacing:.5px;}
+.cal-day{min-height:72px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r);padding:6px;cursor:pointer;transition:all .15s;position:relative;}
+.cal-day:hover{border-color:var(--accent);background:var(--accent-s);}
+.cal-day.today{border-color:var(--accent);background:var(--accent-s);}
+.cal-day.today .cal-day-num{color:var(--accent-h);font-weight:700;}
+.cal-day.other-month{opacity:.35;}
+.cal-day.selected{border-color:var(--accent-h);background:rgba(37,99,235,.18);}
+.cal-day-num{font-size:12px;font-weight:500;color:var(--text2);margin-bottom:4px;}
+.cal-dots{display:flex;flex-wrap:wrap;gap:2px;}
+.cal-dot{width:6px;height:6px;border-radius:50%;}
+.cal-event-pill{font-size:10px;padding:1px 5px;border-radius:4px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
 
-/* LOG */
-.log-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border2); font-size: 12px; }
-.log-item:last-child { border-bottom: none; }
-.log-dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
-.log-time { color: var(--text3); font-size: 11px; margin-top: 2px; font-family: 'JetBrains Mono', monospace; }
-.log-status-ok  { color: var(--green); }
-.log-status-err { color: var(--red); }
+/* VIEW MODES */
+.view-toggle{display:flex;gap:4px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:3px;}
+.view-btn{padding:4px 10px;font-size:12px;border-radius:5px;border:none;background:none;color:var(--text2);cursor:pointer;transition:all .15s;}
+.view-btn.active{background:var(--surface);color:var(--text);border:1px solid var(--border);}
 
-/* SECTION HEADER */
-.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
-.section-title { font-size: 14px; font-weight: 600; color: var(--text); }
-.section-sub   { font-size: 12px; color: var(--text2); margin-top: 2px; }
+/* LIST VIEW */
+.list-event{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:1rem;margin-bottom:8px;display:flex;align-items:flex-start;gap:12px;cursor:pointer;transition:border-color .15s;}
+.list-event:hover{border-color:var(--accent);}
+.list-event.from-gcal{border-left:3px solid var(--gcal);}
+.list-event.done{opacity:.5;}
+.list-event.done .ev-title{text-decoration:line-through;}
+.ev-dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0;}
+.ev-body{flex:1;min-width:0;}
+.ev-title{font-size:14px;font-weight:500;color:var(--text);}
+.ev-meta{font-size:12px;color:var(--text2);margin-top:3px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.ev-meta i{font-size:11px;}
+.ev-actions{display:flex;gap:6px;flex-shrink:0;}
 
-/* EMPTY */
-.empty { text-align: center; padding: 3rem 1rem; color: var(--text2); }
-.empty i { font-size: 36px; color: var(--text3); display: block; margin-bottom: .75rem; }
-.empty p { font-size: 13px; }
-.empty small { font-size: 11px; color: var(--text3); display: block; margin-top: 4px; }
+/* DAY EXPANDED */
+.day-expanded{background:var(--surface);border:1px solid var(--accent);border-radius:var(--rl);padding:1rem;margin-bottom:1rem;}
+.day-expanded-title{font-size:13px;font-weight:600;color:var(--accent-h);margin-bottom:.75rem;display:flex;align-items:center;justify-content:space-between;}
+
+/* ── MODAL ── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:flex-end;justify-content:center;}
+.overlay.open{display:flex;}
+@media(min-width:600px){.overlay{align-items:center;}}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl) var(--rl) 0 0;padding:1.5rem;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;}
+@media(min-width:600px){.modal{border-radius:var(--rl);}}
+.modal-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:1.25rem;display:flex;align-items:center;justify-content:space-between;}
+.modal-close{background:none;border:none;color:var(--text2);cursor:pointer;font-size:18px;padding:2px;}
+.modal-close:hover{color:var(--text);}
+
+/* CRM MODAL */
+.crm-timeline{margin-top:1rem;}
+.crm-entry{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2);}
+.crm-entry:last-child{border-bottom:none;}
+.crm-line{display:flex;flex-direction:column;align-items:center;gap:2px;}
+.crm-entry-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.crm-connector{width:1px;flex:1;background:var(--border2);margin:2px auto;}
+.crm-content{flex:1;}
+.crm-status-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;margin-bottom:4px;}
+.crm-nota{font-size:12px;color:var(--text2);line-height:1.5;}
+.crm-time{font-size:10px;color:var(--text3);margin-top:3px;font-family:'JetBrains Mono',monospace;}
+
+/* STATUS CORES */
+.s-avancou{background:rgba(63,185,80,.15);color:var(--green);border:1px solid rgba(63,185,80,.3);}
+.s-proximo{background:rgba(66,133,244,.15);color:var(--gcal);border:1px solid rgba(66,133,244,.3);}
+.s-concluido{background:rgba(63,185,80,.2);color:var(--green);border:1px solid var(--green-b);}
+.s-pausado{background:rgba(240,136,62,.15);color:var(--orange);border:1px solid rgba(240,136,62,.3);}
+.s-cancelado{background:rgba(248,81,73,.12);color:var(--red);border:1px solid rgba(248,81,73,.3);}
 
 /* DIVIDER */
-.divider { height: 1px; background: var(--border2); margin: 1rem 0; }
+.divider{height:1px;background:var(--border2);margin:1rem 0;}
+.test-result{padding:8px 12px;border-radius:var(--r);font-size:12px;display:none;margin-top:8px;}
+.test-result.ok{background:var(--green-s);color:var(--green);border:1px solid var(--green-b);display:block;}
+.test-result.err{background:var(--red-s);color:var(--red);border:1px solid rgba(248,81,73,.3);display:block;}
+.template-preview{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;font-size:12px;color:var(--text2);font-family:'JetBrains Mono',monospace;line-height:1.6;min-height:50px;white-space:pre-wrap;word-break:break-word;}
+
+/* EMPTY */
+.empty{text-align:center;padding:3rem 1rem;color:var(--text2);}
+.empty i{font-size:36px;color:var(--text3);display:block;margin-bottom:.75rem;}
+.empty p{font-size:13px;}.empty small{font-size:11px;color:var(--text3);display:block;margin-top:4px;}
 
 /* TOAST */
-#toast { position: fixed; bottom: 1.5rem; right: 1rem; left: 1rem; max-width: 380px; margin: 0 auto; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 12px 16px; font-size: 13px; color: var(--text); display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.4); opacity: 0; transform: translateY(8px); transition: all .25s; pointer-events: none; z-index: 200; }
-#toast.show { opacity: 1; transform: translateY(0); }
-#toast i { font-size: 16px; flex-shrink: 0; }
+#toast{position:fixed;bottom:1.5rem;right:1rem;left:1rem;max-width:380px;margin:0 auto;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rl);padding:12px 16px;font-size:13px;color:var(--text);display:flex;align-items:center;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,.4);opacity:0;transform:translateY(8px);transition:all .25s;pointer-events:none;z-index:300;}
+#toast.show{opacity:1;transform:translateY(0);}
+#toast i{font-size:16px;flex-shrink:0;}
 
-/* TEST RESULT */
-.test-result { padding: 8px 12px; border-radius: var(--radius); font-size: 12px; display: none; margin-top: 8px; }
-.test-result.ok  { background: var(--green-s); color: var(--green); border: 1px solid var(--green-b); display: block; }
-.test-result.err { background: var(--red-s); color: var(--red); border: 1px solid rgba(248,81,73,.3); display: block; }
-
-/* TEMPLATE PREVIEW */
-.template-preview { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 12px; font-size: 12px; color: var(--text2); font-family: 'JetBrains Mono', monospace; line-height: 1.6; min-height: 60px; white-space: pre-wrap; word-break: break-word; }
-
-/* TABS dentro do card */
-.card-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border2); margin: -1.25rem -1.25rem 1.25rem; padding: 0 1.25rem; }
-.card-tab { padding: 10px 14px; font-size: 12px; font-weight: 500; color: var(--text2); background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; transition: all .15s; }
-.card-tab.active { color: var(--accent-h); border-bottom-color: var(--accent-h); }
-.card-tab-panel { display: none; }
-.card-tab-panel.active { display: block; }
-
-@media (max-width: 480px) {
-  .stats-grid { grid-template-columns: 1fr 1fr; }
-  .stat-value { font-size: 18px; }
-  .row { flex-direction: column; }
+@media(max-width:600px){
+  .stats-grid{grid-template-columns:1fr 1fr;}
+  .stat-value{font-size:18px;}
+  .row{flex-direction:column;}
+  .cal-grid{gap:2px;}
+  .cal-day{min-height:48px;}
+  .cal-event-pill{display:none;}
 }
 </style>
 </head>
@@ -191,171 +194,111 @@ select option { background: var(--surface2); }
 
 <!-- HEADER -->
 <header class="header">
-  <div class="header-left">
+  <div style="display:flex;align-items:center">
     <div class="logo-mark">GF</div>
-    <div class="logo-name">Gull Finance <span>/ Agenda</span></div>
+    <div class="logo-name" style="margin-left:10px">Gull Finance <span>/ Agenda</span></div>
   </div>
   <div class="header-right">
-    <div id="syncPill" class="sync-pill sync-offline">
-      <div class="sync-dot"></div>
-      <span id="syncLabel">Conectando...</span>
-    </div>
-  </div>
-</header>
-
-<!-- GOOGLE CALENDAR BANNER -->
-<div id="gcalBanner">
-  <div class="gcal-banner-text">
-    <i class="ti ti-brand-google"></i>
-    <span id="gcalBannerMsg">Conecte seu Google Calendar para sincronizar eventos automaticamente.</span>
-  </div>
-  <div style="display:flex;gap:8px;align-items:center">
-    <div id="gcalUserInfo">
-      <img id="gcalAvatar" src="" style="width:20px;height:20px;border-radius:50%">
-      <span id="gcalUserName"></span>
-      <button class="btn btn-sm btn-red" onclick="desconectarGoogle()"><i class="ti ti-logout"></i> Sair</button>
+    <div id="gcalUser" class="gcal-user">
+      <img id="gcalAvatar" class="gcal-avatar" src="">
+      <span id="gcalName" style="font-size:12px"></span>
+      <button class="btn btn-sm" onclick="desconectarGoogle()" style="padding:3px 8px;font-size:11px"><i class="ti ti-logout"></i></button>
     </div>
     <button id="gcalConnectBtn" class="btn btn-sm btn-gcal" onclick="conectarGoogle()">
       <i class="ti ti-brand-google"></i> Conectar Google
     </button>
-    <button id="gcalSyncBtn" class="btn btn-sm" onclick="sincronizarCalendar()" style="display:none">
-      <i class="ti ti-refresh"></i> Sincronizar
-    </button>
+    <div id="syncPill" class="sync-pill sync-offline">
+      <div class="sync-dot"></div><span id="syncLabel">Firebase...</span>
+    </div>
   </div>
-</div>
+</header>
 
 <!-- NAV -->
 <nav class="nav">
-  <button class="nav-btn active" onclick="showPage('agenda', this)"><i class="ti ti-calendar-event"></i> Agenda</button>
-  <button class="nav-btn" onclick="showPage('historico', this)"><i class="ti ti-history"></i> Histórico</button>
-  <button class="nav-btn" onclick="showPage('config', this)"><i class="ti ti-settings"></i> Configurações</button>
+  <button class="nav-btn active" onclick="showPage('calendario',this)"><i class="ti ti-calendar-month"></i> Calendário</button>
+  <button class="nav-btn" onclick="showPage('lista',this)"><i class="ti ti-list"></i> Lista</button>
+  <button class="nav-btn" onclick="showPage('historico',this)"><i class="ti ti-history"></i> Histórico</button>
+  <button class="nav-btn" onclick="showPage('config',this)"><i class="ti ti-settings"></i> Configurações</button>
 </nav>
 
 <div class="main">
 
-<!-- ── AGENDA ── -->
-<div id="page-agenda" class="page active">
+<!-- ══ CALENDÁRIO ══════════════════════════════════════════════════ -->
+<div id="page-calendario" class="page active">
   <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-label">Hoje</div>
-      <div class="stat-value" id="statHoje">0</div>
-      <div class="stat-sub" id="statHojeSub">nenhum agendado</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Pendentes</div>
-      <div class="stat-value" id="statPendentes">0</div>
-      <div class="stat-sub">aguardando conclusão</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Enviados (30d)</div>
-      <div class="stat-value" id="statEnviados">0</div>
-      <div class="stat-sub">via WhatsApp</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Google Cal</div>
-      <div class="stat-value" id="statGcal">—</div>
-      <div class="stat-sub" id="statGcalSub">não conectado</div>
-    </div>
+    <div class="stat-card"><div class="stat-label">Hoje</div><div class="stat-value" id="statHoje">0</div><div class="stat-sub" id="statHojeSub">eventos</div></div>
+    <div class="stat-card"><div class="stat-label">Mês</div><div class="stat-value" id="statMes">0</div><div class="stat-sub">este mês</div></div>
+    <div class="stat-card"><div class="stat-label">Pendentes</div><div class="stat-value" id="statPend">0</div><div class="stat-sub">sem conclusão</div></div>
+    <div class="stat-card"><div class="stat-label">Google Cal</div><div class="stat-value" id="statGcal">—</div><div class="stat-sub" id="statGcalSub">não conectado</div></div>
   </div>
 
-  <!-- Novo evento com tabs Manual / Google Calendar -->
+  <!-- Calendário -->
   <div class="card">
-    <div class="card-tabs">
-      <button class="card-tab active" onclick="showCardTab('manual', this)"><i class="ti ti-pencil"></i> Manual</button>
-      <button class="card-tab" onclick="showCardTab('gcal', this)"><i class="ti ti-brand-google"></i> Do Google Calendar</button>
-    </div>
-
-    <!-- TAB: Manual -->
-    <div id="cardTab-manual" class="card-tab-panel active">
-      <div class="card-title" style="margin-bottom:.75rem"><i class="ti ti-plus"></i> Novo Evento</div>
-      <div class="field">
-        <label>Título</label>
-        <input type="text" id="novoTitulo" placeholder="Ex: Reunião de resultados Q2">
-      </div>
-      <div class="row">
-        <div class="field"><label>Data</label><input type="date" id="novaData"></div>
-        <div class="field"><label>Hora</label><input type="time" id="novaHora"></div>
-      </div>
-      <div class="field">
-        <label>Grupo WhatsApp</label>
-        <select id="novoGrupo"><option value="">— selecione um grupo —</option></select>
-      </div>
-      <div class="field">
-        <label>Observação (opcional)</label>
-        <input type="text" id="novaObs" placeholder="Informações adicionais">
-      </div>
-      <div class="field">
-        <label>Preview da mensagem</label>
-        <div class="template-preview" id="msgPreview">Configure um template em Configurações.</div>
+    <div class="cal-header">
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="btn btn-icon" onclick="navMes(-1)"><i class="ti ti-chevron-left"></i></button>
+        <div class="cal-title" id="calTitle"></div>
+        <button class="btn btn-icon" onclick="navMes(1)"><i class="ti ti-chevron-right"></i></button>
+        <button class="btn btn-sm" onclick="irHoje()">Hoje</button>
       </div>
       <div style="display:flex;gap:8px">
-        <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="criarEvento()">
-          <i class="ti ti-send"></i> Criar e notificar
-        </button>
-        <button class="btn btn-gcal" onclick="criarEventoNoCalendar()" id="btnCriarCalendar" title="Criar também no Google Calendar">
-          <i class="ti ti-brand-google"></i>
-        </button>
-      </div>
-    </div>
-
-    <!-- TAB: Google Calendar -->
-    <div id="cardTab-gcal" class="card-tab-panel">
-      <div class="card-title" style="margin-bottom:.75rem"><i class="ti ti-brand-google"></i> Importar do Google Calendar</div>
-      <p style="font-size:12px;color:var(--text2);margin-bottom:1rem">Selecione eventos do seu Google Calendar para importar e notificar grupos no WhatsApp.</p>
-
-      <div id="gcalNotConnected" style="text-align:center;padding:1.5rem 0">
-        <i class="ti ti-calendar-off" style="font-size:32px;color:var(--text3);display:block;margin-bottom:.5rem"></i>
-        <p style="font-size:13px;color:var(--text2)">Google Calendar não conectado</p>
-        <button class="btn btn-gcal" style="margin-top:12px" onclick="conectarGoogle()">
-          <i class="ti ti-brand-google"></i> Conectar agora
-        </button>
-      </div>
-
-      <div id="gcalEventsList" style="display:none">
-        <div style="display:flex;gap:8px;margin-bottom:12px">
-          <input type="date" id="gcalFiltroData" style="flex:1">
-          <button class="btn btn-sm btn-gcal" onclick="buscarEventosCalendar()"><i class="ti ti-search"></i> Buscar</button>
+        <div class="view-toggle">
+          <button class="view-btn active" id="vbMes" onclick="setView('mes',this)">Mês</button>
+          <button class="view-btn" id="vbSem" onclick="setView('semana',this)">Semana</button>
         </div>
-        <div id="gcalEventosContainer"></div>
+        <button class="btn btn-primary btn-sm" onclick="abrirModalEvento()"><i class="ti ti-plus"></i> Novo evento</button>
       </div>
     </div>
+
+    <!-- Filtro categorias -->
+    <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">
+      <button class="btn btn-sm" id="filtro-all" onclick="setFiltroCategoria('all',this)" style="border-color:var(--accent);color:var(--accent-h)">Todos</button>
+      <button class="btn btn-sm" id="filtro-Securitizadora" onclick="setFiltroCategoria('Securitizadora',this)">🟢 Securitizadora</button>
+      <button class="btn btn-sm" id="filtro-Consultoria" onclick="setFiltroCategoria('Consultoria',this)">🟠 Consultoria</button>
+      <button class="btn btn-sm" id="filtro-Rede P5" onclick="setFiltroCategoria('Rede P5',this)">🟣 Rede P5</button>
+      <button class="btn btn-sm" id="filtro-Tempo Pessoal" onclick="setFiltroCategoria('Tempo Pessoal',this)">🔵 Pessoal</button>
+    </div>
+
+    <div class="cal-grid" id="calGrid"></div>
   </div>
 
-  <!-- Lista -->
-  <div class="section-header">
+  <!-- Dia expandido -->
+  <div id="dayExpanded" style="display:none"></div>
+</div>
+
+<!-- ══ LISTA ═══════════════════════════════════════════════════════ -->
+<div id="page-lista" class="page">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;gap:10px;flex-wrap:wrap">
     <div>
-      <div class="section-title">Próximos eventos</div>
-      <div class="section-sub" id="labelFiltro">Todos os eventos</div>
+      <div style="font-size:14px;font-weight:600">Todos os eventos</div>
+      <div style="font-size:12px;color:var(--text2)" id="listaSubtitle">carregando...</div>
     </div>
-    <div style="display:flex;gap:6px">
-      <button class="btn btn-sm" onclick="filtrarHoje()"><i class="ti ti-calendar"></i> Hoje</button>
-      <button class="btn btn-sm" onclick="filtrarTodos()"><i class="ti ti-list"></i> Todos</button>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-sm" onclick="listaFiltro('todos')">Todos</button>
+      <button class="btn btn-sm" onclick="listaFiltro('hoje')">Hoje</button>
+      <button class="btn btn-sm" onclick="listaFiltro('pendentes')">Pendentes</button>
+      <button class="btn btn-primary btn-sm" onclick="abrirModalEvento()"><i class="ti ti-plus"></i> Novo</button>
     </div>
   </div>
   <div id="listaEventos"></div>
 </div>
 
-<!-- ── HISTÓRICO ── -->
+<!-- ══ HISTÓRICO ═══════════════════════════════════════════════════ -->
 <div id="page-historico" class="page">
-  <div class="section-header">
-    <div>
-      <div class="section-title">Histórico de mensagens</div>
-      <div class="section-sub">Todas as notificações enviadas</div>
-    </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+    <div><div style="font-size:14px;font-weight:600">Histórico de mensagens</div><div style="font-size:12px;color:var(--text2)">Notificações enviadas via WhatsApp</div></div>
     <button class="btn btn-sm btn-red" onclick="limparHistorico()"><i class="ti ti-trash"></i> Limpar</button>
   </div>
-  <div class="card" style="padding:1rem">
-    <div id="listaHistorico"></div>
-  </div>
+  <div class="card" style="padding:1rem"><div id="listaHistorico"></div></div>
 </div>
 
-<!-- ── CONFIGURAÇÕES ── -->
+<!-- ══ CONFIG ══════════════════════════════════════════════════════ -->
 <div id="page-config" class="page">
   <div class="card">
     <div class="card-title"><i class="ti ti-brand-whatsapp"></i> Evolution API / WhatsApp</div>
     <div class="field"><label>URL da API</label><input type="url" id="cfgApiUrl" placeholder="https://sua-api.exemplo.com" oninput="salvarConfig()"></div>
-    <div class="field"><label>API Key</label><input type="password" id="cfgApiKey" placeholder="••••••••••••" oninput="salvarConfig()"></div>
-    <div class="field"><label>Nome da instância</label><input type="text" id="cfgInstancia" placeholder="minha-instancia" oninput="salvarConfig()"></div>
+    <div class="field"><label>API Key</label><input type="password" id="cfgApiKey" oninput="salvarConfig()"></div>
+    <div class="field"><label>Nome da instância</label><input type="text" id="cfgInstancia" oninput="salvarConfig()"></div>
     <div class="row">
       <button class="btn btn-green" onclick="testarConexao()"><i class="ti ti-plug"></i> Testar</button>
       <button class="btn" onclick="buscarGrupos()"><i class="ti ti-refresh"></i> Buscar grupos</button>
@@ -367,645 +310,929 @@ select option { background: var(--surface2); }
       <div id="gruposList" style="margin-top:8px"></div>
     </div>
   </div>
-
   <div class="card">
     <div class="card-title"><i class="ti ti-brand-google"></i> Google Calendar</div>
-    <div id="cfgGcalStatus" style="font-size:12px;color:var(--text2);margin-bottom:12px">Status: não conectado</div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn btn-gcal" onclick="conectarGoogle()"><i class="ti ti-brand-google"></i> Conectar / Trocar conta</button>
-      <button class="btn btn-sm" onclick="sincronizarCalendar()"><i class="ti ti-refresh"></i> Sincronizar agora</button>
-    </div>
-    <div class="divider"></div>
-    <div class="field">
-      <label>Sincronização automática</label>
+    <div id="cfgGcalStatus" style="font-size:12px;color:var(--text2);margin-bottom:12px">Não conectado</div>
+    <div class="field"><label>Sincronização automática</label>
       <select id="cfgSyncInterval" oninput="salvarConfig()">
         <option value="0">Somente manual</option>
         <option value="5">A cada 5 minutos</option>
         <option value="15">A cada 15 minutos</option>
         <option value="30">A cada 30 minutos</option>
-        <option value="60">A cada hora</option>
+        <option value="60">A cada 1 hora</option>
       </select>
     </div>
-    <div class="field">
-      <label>Dias à frente para importar</label>
-      <select id="cfgSyncDias" oninput="salvarConfig()">
-        <option value="1">Somente hoje</option>
-        <option value="3">Próximos 3 dias</option>
-        <option value="7" selected>Próximos 7 dias</option>
-        <option value="30">Próximos 30 dias</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>Grupo padrão para eventos do Calendar</label>
-      <select id="cfgGrupoDefault" oninput="salvarConfig()">
-        <option value="">— nenhum —</option>
-      </select>
+    <div class="field"><label>Grupo padrão para eventos do Calendar</label>
+      <select id="cfgGrupoDefault" oninput="salvarConfig()"><option value="">— nenhum —</option></select>
     </div>
   </div>
-
   <div class="card">
-    <div class="card-title"><i class="ti ti-message"></i> Templates de Mensagem</div>
-    <div class="field">
-      <label>Mensagem de criação</label>
-      <textarea id="cfgTemplateCriacao" rows="4" oninput="salvarConfig();atualizarPreviewTemplate()"></textarea>
-    </div>
-    <div class="field"><label>Preview</label><div class="template-preview" id="templatePreviewConfig"></div></div>
-    <div class="field">
-      <label>Mensagem de conclusão</label>
-      <textarea id="cfgTemplateConclusao" rows="3" oninput="salvarConfig()"></textarea>
-    </div>
-    <p style="font-size:11px;color:var(--text2);margin-top:4px">
-      Variáveis: <code style="background:var(--bg);padding:1px 5px;border-radius:4px">{titulo}</code>
-      <code style="background:var(--bg);padding:1px 5px;border-radius:4px">{data}</code>
-      <code style="background:var(--bg);padding:1px 5px;border-radius:4px">{hora}</code>
-    </p>
+    <div class="card-title"><i class="ti ti-message"></i> Templates</div>
+    <div class="field"><label>Criação de evento</label><textarea id="cfgTplCriacao" rows="4" oninput="salvarConfig()"></textarea></div>
+    <div class="field"><label>Preview</label><div class="template-preview" id="tplPreview"></div></div>
+    <div class="field"><label>Conclusão</label><textarea id="cfgTplConclusao" rows="3" oninput="salvarConfig()"></textarea></div>
+    <p style="font-size:11px;color:var(--text2);margin-top:4px">Variáveis: <code style="background:var(--bg);padding:1px 5px;border-radius:4px">{titulo}</code> <code style="background:var(--bg);padding:1px 5px;border-radius:4px">{data}</code> <code style="background:var(--bg);padding:1px 5px;border-radius:4px">{hora}</code></p>
   </div>
 </div>
 
 </div><!-- /main -->
+
+<!-- ══ MODAL: NOVO/EDITAR EVENTO ═══════════════════════════════════ -->
+<div class="overlay" id="modalEvento">
+  <div class="modal">
+    <div class="modal-title">
+      <span id="modalEventoTitulo"><i class="ti ti-calendar-plus"></i> Novo Evento</span>
+      <button class="modal-close" onclick="fecharModal('modalEvento')"><i class="ti ti-x"></i></button>
+    </div>
+    <input type="hidden" id="evEditKey">
+    <input type="hidden" id="evGcalId">
+
+    <div class="field"><label>Título / Assunto *</label><input type="text" id="evTitulo" placeholder="Ex: Reunião de resultados Q2"></div>
+    <div class="row">
+      <div class="field"><label>Data início *</label><input type="date" id="evDataInicio"></div>
+      <div class="field"><label>Hora início</label><input type="time" id="evHoraInicio"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>Data fim</label><input type="date" id="evDataFim"></div>
+      <div class="field"><label>Hora fim</label><input type="time" id="evHoraFim"></div>
+    </div>
+    <div class="field"><label>Local</label><input type="text" id="evLocal" placeholder="Endereço, link ou nome do lugar"></div>
+    <div class="row">
+      <div class="field"><label>Categoria *</label>
+        <select id="evCategoria">
+          <option value="">— selecione —</option>
+          <option value="Securitizadora">🟢 Securitizadora</option>
+          <option value="Consultoria">🟠 Consultoria</option>
+          <option value="Rede P5">🟣 Rede P5</option>
+          <option value="Tempo Pessoal">🔵 Tempo Pessoal</option>
+        </select>
+      </div>
+      <div class="field"><label>Grupo WhatsApp</label>
+        <select id="evGrupo"><option value="">— não notificar —</option></select>
+      </div>
+    </div>
+    <div class="field"><label>Descrição / Pauta</label><textarea id="evDescricao" rows="3" placeholder="Detalhes do evento, pauta, participantes..."></textarea></div>
+
+    <div id="evGcalSync" style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+      <input type="checkbox" id="evSyncGcal" style="width:auto;accent-color:var(--gcal)">
+      <label for="evSyncGcal" style="text-transform:none;letter-spacing:0;font-size:12px;color:var(--text2);cursor:pointer">Criar também no Google Calendar</label>
+    </div>
+
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary btn-full" onclick="salvarEvento()"><i class="ti ti-check"></i> Salvar evento</button>
+      <button id="evDeleteBtn" class="btn btn-red btn-icon" onclick="excluirEventoModal()" style="display:none" title="Excluir"><i class="ti ti-trash"></i></button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: DETALHE + CRM ════════════════════════════════════════ -->
+<div class="overlay" id="modalDetalhe">
+  <div class="modal" style="max-width:600px">
+    <div class="modal-title">
+      <span><i class="ti ti-calendar-event"></i> Detalhe do Evento</span>
+      <button class="modal-close" onclick="fecharModal('modalDetalhe')"><i class="ti ti-x"></i></button>
+    </div>
+
+    <!-- Info do evento -->
+    <div id="detalheInfo"></div>
+
+    <div class="divider"></div>
+
+    <!-- CRM -->
+    <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:.75rem;display:flex;align-items:center;gap:6px">
+      <i class="ti ti-chart-bar" style="color:var(--accent-h)"></i> Atualizações CRM
+    </div>
+
+    <!-- Novo update CRM -->
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:12px;margin-bottom:1rem">
+      <div class="row" style="margin-bottom:8px">
+        <div class="field" style="margin-bottom:0">
+          <label>Status</label>
+          <select id="crmStatus">
+            <option value="avancou">✅ Avançou</option>
+            <option value="proximo">📋 Próximos passos</option>
+            <option value="concluido">🏁 Concluído</option>
+            <option value="pausado">⏸ Pausado</option>
+            <option value="cancelado">❌ Cancelado</option>
+          </select>
+        </div>
+        <div class="field" style="margin-bottom:0">
+          <label>Categoria</label>
+          <select id="crmCategoria">
+            <option value="Securitizadora">🟢 Securitizadora</option>
+            <option value="Consultoria">🟠 Consultoria</option>
+            <option value="Rede P5">🟣 Rede P5</option>
+            <option value="Tempo Pessoal">🔵 Tempo Pessoal</option>
+          </select>
+        </div>
+      </div>
+      <div class="field" style="margin-bottom:8px">
+        <label>Nota</label>
+        <textarea id="crmNota" rows="3" placeholder="Descreva o andamento, próximos passos ou conclusão..."></textarea>
+      </div>
+      <button class="btn btn-primary btn-sm btn-full" onclick="salvarUpdateCRM()"><i class="ti ti-send"></i> Registrar update</button>
+    </div>
+
+    <!-- Timeline CRM -->
+    <div id="crmTimeline" class="crm-timeline"></div>
+
+    <!-- Ações -->
+    <div class="divider"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-green btn-sm" onclick="concluirEventoDetalhe()"><i class="ti ti-check"></i> Marcar concluído</button>
+      <button class="btn btn-sm" onclick="editarEventoDetalhe()"><i class="ti ti-pencil"></i> Editar</button>
+      <button class="btn btn-red btn-sm" onclick="excluirEventoDetalhe()"><i class="ti ti-trash"></i> Excluir</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast"><i id="toastIcon" class="ti ti-check"></i><span id="toastMsg"></span></div>
 
 <!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
-<!-- GOOGLE IDENTITY SERVICES -->
 <script src="https://accounts.google.com/gsi/client" async></script>
 
 <script>
-// ── FIREBASE ──────────────────────────────────────────────────────
-const firebaseConfig = {
-  apiKey:            "AIzaSyBuIInCIlrBRzmBtOo4RXZxDAvkls1nx_s",
-  authDomain:        "gull-finance-agenda.firebaseapp.com",
-  databaseURL:       "https://gull-finance-agenda-default-rtdb.firebaseio.com",
-  projectId:         "gull-finance-agenda",
-  storageBucket:     "gull-finance-agenda.firebasestorage.app",
-  messagingSenderId: "562396377371",
-  appId:             "1:562396377371:web:a7ed48beb9a14a69a7a3be"
+// ══════════════════════════════════════════════════════════════════
+// FIREBASE
+// ══════════════════════════════════════════════════════════════════
+const FB_CONFIG = {
+  apiKey:"AIzaSyBuIInCIlrBRzmBtOo4RXZxDAvkls1nx_s",
+  authDomain:"gull-finance-agenda.firebaseapp.com",
+  databaseURL:"https://gull-finance-agenda-default-rtdb.firebaseio.com",
+  projectId:"gull-finance-agenda",
+  storageBucket:"gull-finance-agenda.firebasestorage.app",
+  messagingSenderId:"562396377371",
+  appId:"1:562396377371:web:a7ed48beb9a14a69a7a3be"
 };
-
-// ── GOOGLE OAUTH ──────────────────────────────────────────────────
 const GCAL_CLIENT_ID = '706655487360-rfprh37om4kjkqkqj1did7a45ib2qgb5.apps.googleusercontent.com';
 const GCAL_SCOPES    = 'https://www.googleapis.com/auth/calendar';
 
-var db          = null;
-var _eventos    = [];
-var _historico  = [];
-var _config     = {};
-var _grupos     = [];
-var _gcalToken  = null;
-var _gcalUser   = null;
-var _syncTimer  = null;
-var _tokenClient = null;
+var db=null, _ev=[], _hist=[], _cfg={}, _grupos=[], _gcalToken=null, _gcalUser=null;
+var _calAno=new Date().getFullYear(), _calMes=new Date().getMonth();
+var _calView='mes', _filtroCategoria='all', _listFiltro='todos';
+var _syncTimer=null, _tokenClient=null, _detalheKey=null, _gcalSyncTimer=null;
 
-// ── INIT ──────────────────────────────────────────────────────────
+// ── FIREBASE INIT ─────────────────────────────────────────────────
 try {
-  firebase.initializeApp(firebaseConfig);
+  firebase.initializeApp(FB_CONFIG);
   db = firebase.database();
   setSyncStatus(true);
-  iniciarListeners();
-} catch(e) {
-  setSyncStatus(false);
-  console.error('Firebase:', e);
-}
-
-carregarConfig();
-iniciarGoogleAuth();
-
-// ── FIREBASE ──────────────────────────────────────────────────────
-function setSyncStatus(online) {
-  var pill = document.getElementById('syncPill');
-  var lbl  = document.getElementById('syncLabel');
-  pill.className    = 'sync-pill ' + (online ? 'sync-online' : 'sync-offline');
-  lbl.textContent   = online ? 'Online' : 'Offline';
-}
-
-function iniciarListeners() {
-  if (!db) return;
-  db.ref('eventos').on('value', function(snap) {
-    _eventos = [];
-    snap.forEach(function(c){ _eventos.push(Object.assign({_key:c.key}, c.val())); });
-    _eventos.sort(function(a,b){ return (a.ts||0)-(b.ts||0); });
-    renderEventos(); atualizarStats();
+  db.ref('eventos').on('value',function(s){
+    _ev=[];
+    s.forEach(function(c){_ev.push(Object.assign({_key:c.key},c.val()));});
+    _ev.sort(function(a,b){return (a.ts||0)-(b.ts||0);});
+    renderAll();
   });
-  db.ref('historico').on('value', function(snap) {
-    _historico = [];
-    snap.forEach(function(c){ _historico.push(Object.assign({_key:c.key}, c.val())); });
-    _historico.sort(function(a,b){ return (b.criadoEm||0)-(a.criadoEm||0); });
-    renderHistorico(); atualizarStats();
+  db.ref('historico').on('value',function(s){
+    _hist=[];
+    s.forEach(function(c){_hist.push(Object.assign({_key:c.key},c.val()));});
+    _hist.sort(function(a,b){return (b.criadoEm||0)-(a.criadoEm||0);});
+    renderHistorico();
+    atualizarStats();
   });
+} catch(e){ setSyncStatus(false); console.error(e); }
+
+function setSyncStatus(ok){
+  var p=document.getElementById('syncPill'),l=document.getElementById('syncLabel');
+  p.className='sync-pill '+(ok?'sync-online':'sync-offline');
+  l.textContent=ok?'Online':'Offline';
 }
 
 // ── CONFIG ────────────────────────────────────────────────────────
-function carregarConfig() {
-  try { _config = JSON.parse(localStorage.getItem('gfa_config') || '{}'); } catch(e){ _config={}; }
-  _config.templateCriacao   = _config.templateCriacao   || '📅 *{titulo}*\n🗓 {data} às {hora}\n\nEvento registrado na agenda Gull Finance.';
-  _config.templateConclusao = _config.templateConclusao || '✅ *{titulo}* concluído!\n🗓 {data} às {hora}';
+function carregarConfig(){
+  try{_cfg=JSON.parse(localStorage.getItem('gfa_cfg')||'{}');}catch(e){_cfg={};}
+  _cfg.tplCriacao  = _cfg.tplCriacao  || '📅 *{titulo}*\n🗓 {data} às {hora}\n\nEvento registrado — Gull Finance.';
+  _cfg.tplConclusao= _cfg.tplConclusao|| '✅ *{titulo}* concluído!\n🗓 {data} às {hora}';
+  document.getElementById('cfgApiUrl').value      = _cfg.apiUrl    ||'';
+  document.getElementById('cfgApiKey').value      = _cfg.apiKey    ||'';
+  document.getElementById('cfgInstancia').value   = _cfg.instancia ||'';
+  document.getElementById('cfgTplCriacao').value  = _cfg.tplCriacao;
+  document.getElementById('cfgTplConclusao').value= _cfg.tplConclusao;
+  document.getElementById('cfgSyncInterval').value= _cfg.syncInterval||'0';
+  _grupos=_cfg.grupos||[];
+  popularGrupos();
+  atualizarTplPreview();
 
-  document.getElementById('cfgApiUrl').value            = _config.apiUrl    || '';
-  document.getElementById('cfgApiKey').value            = _config.apiKey    || '';
-  document.getElementById('cfgInstancia').value         = _config.instancia || '';
-  document.getElementById('cfgTemplateCriacao').value   = _config.templateCriacao;
-  document.getElementById('cfgTemplateConclusao').value = _config.templateConclusao;
-  document.getElementById('cfgSyncInterval').value      = _config.syncInterval || '0';
-  document.getElementById('cfgSyncDias').value          = _config.syncDias     || '7';
-
-  _grupos = _config.grupos || [];
-  popularSelectGrupos();
-  atualizarPreviewTemplate();
-  atualizarPreviewMsg();
-
-  // Restaurar token Google salvo
-  var savedToken = localStorage.getItem('gfa_gcal_token');
-  var savedUser  = localStorage.getItem('gfa_gcal_user');
-  if (savedToken && savedUser) {
-    _gcalToken = savedToken;
-    _gcalUser  = JSON.parse(savedUser);
-    atualizarUIGcal(true);
-  }
-
+  var t=localStorage.getItem('gfa_gcal_token'), u=localStorage.getItem('gfa_gcal_user');
+  if(t&&u){_gcalToken=t;_gcalUser=JSON.parse(u);atualizarUIGcal(true);}
+  configurarSyncAuto();
+  iniciarSyncGcalAuto();
+}
+function salvarConfig(){
+  _cfg.apiUrl      =document.getElementById('cfgApiUrl').value.trim();
+  _cfg.apiKey      =document.getElementById('cfgApiKey').value.trim();
+  _cfg.instancia   =document.getElementById('cfgInstancia').value.trim();
+  _cfg.tplCriacao  =document.getElementById('cfgTplCriacao').value;
+  _cfg.tplConclusao=document.getElementById('cfgTplConclusao').value;
+  _cfg.syncInterval=document.getElementById('cfgSyncInterval').value;
+  _cfg.grupoDefault=document.getElementById('cfgGrupoDefault').value;
+  localStorage.setItem('gfa_cfg',JSON.stringify(_cfg));
+  atualizarTplPreview();
   configurarSyncAuto();
 }
-
-function salvarConfig() {
-  _config.apiUrl       = document.getElementById('cfgApiUrl').value.trim();
-  _config.apiKey       = document.getElementById('cfgApiKey').value.trim();
-  _config.instancia    = document.getElementById('cfgInstancia').value.trim();
-  _config.templateCriacao   = document.getElementById('cfgTemplateCriacao').value;
-  _config.templateConclusao = document.getElementById('cfgTemplateConclusao').value;
-  _config.syncInterval = document.getElementById('cfgSyncInterval').value;
-  _config.syncDias     = document.getElementById('cfgSyncDias').value;
-  _config.grupoDefault = document.getElementById('cfgGrupoDefault').value;
-  localStorage.setItem('gfa_config', JSON.stringify(_config));
-  atualizarPreviewMsg();
-  configurarSyncAuto();
+function atualizarTplPreview(){
+  document.getElementById('tplPreview').textContent=tpl(_cfg.tplCriacao,'Reunião Gull','15/07/2025','14:00');
 }
 
 // ── GOOGLE AUTH ───────────────────────────────────────────────────
-function iniciarGoogleAuth() {
-  // Aguarda o script do Google carregar
-  var tentativas = 0;
-  var check = setInterval(function() {
-    tentativas++;
-    if (window.google && window.google.accounts) {
-      clearInterval(check);
-      _tokenClient = google.accounts.oauth2.initTokenClient({
-        client_id: GCAL_CLIENT_ID,
-        scope: GCAL_SCOPES,
-        callback: function(resp) {
-          if (resp.error) { toast('Erro ao conectar Google: ' + resp.error, 'error'); return; }
-          _gcalToken = resp.access_token;
-          localStorage.setItem('gfa_gcal_token', _gcalToken);
-          buscarPerfilGoogle();
+(function initGcal(){
+  var tries=0,iv=setInterval(function(){
+    tries++;
+    if(window.google&&window.google.accounts){
+      clearInterval(iv);
+      _tokenClient=google.accounts.oauth2.initTokenClient({
+        client_id:GCAL_CLIENT_ID,scope:GCAL_SCOPES,
+        callback:function(r){
+          if(r.error){toast('Erro Google: '+r.error,'error');return;}
+          _gcalToken=r.access_token;
+          localStorage.setItem('gfa_gcal_token',_gcalToken);
+          buscarPerfilGcal();
         }
       });
     }
-    if (tentativas > 20) clearInterval(check);
-  }, 300);
-}
+    if(tries>30)clearInterval(iv);
+  },200);
+})();
 
-function conectarGoogle() {
-  if (!_tokenClient) { toast('Aguarde o carregamento do Google...', 'info'); return; }
-  _tokenClient.requestAccessToken();
+function conectarGoogle(){if(!_tokenClient){toast('Aguarde...','info');return;}_tokenClient.requestAccessToken();}
+function desconectarGoogle(){
+  if(_gcalToken)try{google.accounts.oauth2.revoke(_gcalToken);}catch(e){}
+  _gcalToken=null;_gcalUser=null;
+  localStorage.removeItem('gfa_gcal_token');localStorage.removeItem('gfa_gcal_user');
+  atualizarUIGcal(false);clearInterval(_gcalSyncTimer);
+  toast('Google Calendar desconectado.','ok');
 }
-
-function desconectarGoogle() {
-  if (_gcalToken) google.accounts.oauth2.revoke(_gcalToken);
-  _gcalToken = null; _gcalUser = null;
-  localStorage.removeItem('gfa_gcal_token');
-  localStorage.removeItem('gfa_gcal_user');
-  atualizarUIGcal(false);
-  toast('Google Calendar desconectado.', 'ok');
-}
-
-async function buscarPerfilGoogle() {
-  try {
-    var res  = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
-      headers: { Authorization: 'Bearer ' + _gcalToken }
-    });
-    _gcalUser = await res.json();
-    localStorage.setItem('gfa_gcal_user', JSON.stringify(_gcalUser));
+async function buscarPerfilGcal(){
+  try{
+    var r=await fetch('https://www.googleapis.com/oauth2/v2/userinfo',{headers:{Authorization:'Bearer '+_gcalToken}});
+    _gcalUser=await r.json();
+    localStorage.setItem('gfa_gcal_user',JSON.stringify(_gcalUser));
     atualizarUIGcal(true);
-    toast('Google Calendar conectado como ' + _gcalUser.name + '!', 'ok');
-    sincronizarCalendar();
-  } catch(e) { toast('Erro ao buscar perfil Google.', 'error'); }
+    toast('Google conectado — '+_gcalUser.name,'ok');
+    sincronizarGcalCompleto();
+  }catch(e){toast('Erro perfil Google','error');}
+}
+function atualizarUIGcal(ok){
+  document.getElementById('gcalConnectBtn').style.display=ok?'none':'';
+  var u=document.getElementById('gcalUser');
+  u.classList.toggle('show',ok&&!!_gcalUser);
+  if(ok&&_gcalUser){
+    var av=document.getElementById('gcalAvatar');
+    if(_gcalUser.picture)av.src=_gcalUser.picture;
+    document.getElementById('gcalName').textContent=_gcalUser.name||'';
+  }
+  document.getElementById('cfgGcalStatus').textContent=ok?('Conectado: '+(_gcalUser&&_gcalUser.email||'')):'Não conectado';
+  document.getElementById('cfgGcalStatus').style.color=ok?'var(--green)':'';
+  document.getElementById('statGcal').textContent=ok?'✓':'—';
+  document.getElementById('statGcalSub').textContent=ok?(_gcalUser&&_gcalUser.name||'conectado'):'não conectado';
+  if(ok)iniciarSyncGcalAuto();
 }
 
-function atualizarUIGcal(conectado) {
-  var connectBtn  = document.getElementById('gcalConnectBtn');
-  var syncBtn     = document.getElementById('gcalSyncBtn');
-  var userInfo    = document.getElementById('gcalUserInfo');
-  var bannerMsg   = document.getElementById('gcalBannerMsg');
-  var cfgStatus   = document.getElementById('cfgGcalStatus');
-  var notConn     = document.getElementById('gcalNotConnected');
-  var eventsList  = document.getElementById('gcalEventsList');
-
-  if (conectado && _gcalUser) {
-    connectBtn.style.display = 'none';
-    syncBtn.style.display    = '';
-    userInfo.classList.add('show');
-    document.getElementById('gcalAvatar').src   = _gcalUser.picture || '';
-    document.getElementById('gcalUserName').textContent = _gcalUser.name || '';
-    bannerMsg.textContent = 'Sincronizado com ' + (_gcalUser.email || 'Google Calendar');
-    cfgStatus.textContent = 'Conectado como ' + (_gcalUser.email || '');
-    cfgStatus.style.color = 'var(--green)';
-    notConn.style.display    = 'none';
-    eventsList.style.display = '';
-    document.getElementById('statGcal').textContent  = '✓';
-    document.getElementById('statGcalSub').textContent = _gcalUser.name || 'conectado';
-  } else {
-    connectBtn.style.display = '';
-    syncBtn.style.display    = 'none';
-    userInfo.classList.remove('show');
-    bannerMsg.textContent    = 'Conecte seu Google Calendar para sincronizar eventos.';
-    cfgStatus.textContent    = 'Status: não conectado';
-    cfgStatus.style.color    = '';
-    notConn.style.display    = '';
-    eventsList.style.display = 'none';
-    document.getElementById('statGcal').textContent  = '—';
-    document.getElementById('statGcalSub').textContent = 'não conectado';
-  }
-
-  // Data padrão = hoje no filtro de busca
-  if (!document.getElementById('gcalFiltroData').value) {
-    document.getElementById('gcalFiltroData').value = new Date().toISOString().split('T')[0];
-  }
+// ══════════════════════════════════════════════════════════════════
+// SINCRONIZAÇÃO BIDIRECIONAL GOOGLE CALENDAR
+// ══════════════════════════════════════════════════════════════════
+function iniciarSyncGcalAuto(){
+  clearInterval(_gcalSyncTimer);
+  if(!_gcalToken)return;
+  var mins=parseInt(_cfg.syncInterval||'5');
+  if(mins<=0)mins=5;
+  _gcalSyncTimer=setInterval(sincronizarGcalCompleto, mins*60*1000);
 }
 
-// ── GOOGLE CALENDAR API ───────────────────────────────────────────
-async function buscarEventosCalendar() {
-  if (!_gcalToken) { toast('Conecte o Google Calendar primeiro.', 'error'); return; }
+async function sincronizarGcalCompleto(){
+  if(!_gcalToken||!db)return;
+  try{
+    // 1. Buscar eventos do Google Calendar (próximos 30 dias)
+    var now=new Date();
+    var timeMin=now.toISOString();
+    var timeMax=new Date(now.getTime()+30*86400000).toISOString();
+    var url='https://www.googleapis.com/calendar/v3/calendars/primary/events'
+      +'?timeMin='+encodeURIComponent(timeMin)
+      +'&timeMax='+encodeURIComponent(timeMax)
+      +'&singleEvents=true&orderBy=startTime&maxResults=100';
+    var res=await fetch(url,{headers:{Authorization:'Bearer '+_gcalToken}});
+    if(res.status===401){_gcalToken=null;localStorage.removeItem('gfa_gcal_token');atualizarUIGcal(false);return;}
+    var data=await res.json();
+    var gcalEvs=data.items||[];
 
-  var dataFiltro = document.getElementById('gcalFiltroData').value || new Date().toISOString().split('T')[0];
-  var dias = parseInt(_config.syncDias || '7');
-  var timeMin = new Date(dataFiltro + 'T00:00:00').toISOString();
-  var timeMax = new Date(new Date(dataFiltro).getTime() + dias * 86400000).toISOString();
-
-  var container = document.getElementById('gcalEventosContainer');
-  container.innerHTML = '<p style="font-size:12px;color:var(--text2)">Buscando eventos...</p>';
-
-  try {
-    var url = 'https://www.googleapis.com/calendar/v3/calendars/primary/events'
-      + '?timeMin=' + encodeURIComponent(timeMin)
-      + '&timeMax=' + encodeURIComponent(timeMax)
-      + '&singleEvents=true&orderBy=startTime&maxResults=50';
-
-    var res  = await fetch(url, { headers: { Authorization: 'Bearer ' + _gcalToken } });
-
-    if (res.status === 401) {
-      _gcalToken = null;
-      localStorage.removeItem('gfa_gcal_token');
-      atualizarUIGcal(false);
-      toast('Sessão expirada. Reconecte o Google.', 'error');
-      return;
+    // 2. Para cada evento do GCal, verificar se já existe no Firebase
+    for(var i=0;i<gcalEvs.length;i++){
+      var gev=gcalEvs[i];
+      var jaExiste=_ev.find(function(e){return e.gcalId===gev.id;});
+      if(!jaExiste){
+        await importarGcalEvento(gev, false); // false = não notifica automaticamente
+      } else {
+        // Atualizar se o título/hora mudou no Calendar
+        var start=gev.start.dateTime||gev.start.date;
+        var d=new Date(start);
+        var novoTitulo=gev.summary||'Sem título';
+        var novaData=d.toISOString().split('T')[0];
+        var novaHora=gev.start.dateTime?d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):'00:00';
+        if(jaExiste.titulo!==novoTitulo||jaExiste.data!==novaData||jaExiste.hora!==novaHora){
+          await db.ref('eventos/'+jaExiste._key).update({
+            titulo:novoTitulo, data:novaData, dataBR:fmtBR(novaData), hora:novaHora,
+            ts:d.getTime(), gcalUpdatedAt:Date.now()
+          });
+        }
+      }
     }
 
-    var data = await res.json();
-    var items = data.items || [];
-
-    if (!items.length) {
-      container.innerHTML = '<div class="empty" style="padding:1.5rem 0"><i class="ti ti-calendar-off"></i><p>Nenhum evento encontrado nesse período</p></div>';
-      return;
+    // 3. Verificar eventos do Firebase sem gcalId que precisam ir pro Calendar
+    for(var j=0;j<_ev.length;j++){
+      var ev=_ev[j];
+      if(!ev.gcalId&&!ev.done&&ev.origem!=='sistema'){
+        var gcalId=await criarNoGcal(ev);
+        if(gcalId){
+          await db.ref('eventos/'+ev._key).update({gcalId:gcalId,gcalSynced:true});
+        }
+      }
     }
-
-    container.innerHTML = items.map(function(ev) {
-      var start = ev.start.dateTime || ev.start.date;
-      var isDateTime = !!ev.start.dateTime;
-      var d = new Date(start);
-      var dataBR = d.toLocaleDateString('pt-BR');
-      var hora   = isDateTime ? d.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'}) : 'dia inteiro';
-      var jaImportado = _eventos.some(function(e){ return e.gcalId === ev.id; });
-
-      return '<div style="padding:10px 0;border-bottom:1px solid var(--border2);display:flex;align-items:flex-start;gap:10px">'
-        + '<div style="flex:1">'
-          + '<div style="font-size:13px;font-weight:500;color:var(--text)">' + esc(ev.summary || 'Sem título') + '</div>'
-          + '<div style="font-size:11px;color:var(--text2);margin-top:2px">'
-            + '<i class="ti ti-calendar" style="font-size:11px"></i> ' + dataBR + ' ' + hora
-          + '</div>'
-        + '</div>'
-        + (jaImportado
-          ? '<span class="badge badge-green"><i class="ti ti-check"></i> Importado</span>'
-          : '<button class="btn btn-sm btn-gcal" onclick="importarEventoCalendar(' + JSON.stringify(ev).replace(/"/g,'&quot;') + ')">'
-            + '<i class="ti ti-download"></i> Importar</button>')
-        + '</div>';
-    }).join('');
-
-  } catch(e) {
-    container.innerHTML = '<p style="font-size:12px;color:var(--red)">Erro: ' + esc(e.message) + '</p>';
-  }
+  }catch(e){console.error('Sync GCal:',e);}
 }
 
-async function sincronizarCalendar() {
-  if (!_gcalToken) return;
-  await buscarEventosCalendar();
-  toast('Calendar sincronizado!', 'ok');
+async function importarGcalEvento(gev, notificar){
+  if(!db)return;
+  var start=gev.start.dateTime||gev.start.date;
+  var isDateTime=!!gev.start.dateTime;
+  var d=new Date(start);
+  var data=d.toISOString().split('T')[0];
+  var hora=isDateTime?d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):'00:00';
+  var dataBR=fmtBR(data);
+  var titulo=gev.summary||'Evento';
+  var grupoJid=_cfg.grupoDefault||'';
+  var grupoNome=grupoJid?(_grupos.find(function(g){return g.jid===grupoJid;})||{}).nome||grupoJid:'';
+  var enviado=false;
+  if(notificar&&grupoJid){
+    var msg=tpl(_cfg.tplCriacao,titulo,dataBR,hora);
+    enviado=await enviarWA(grupoJid,msg);
+    var now=Date.now();
+    await db.ref('historico').push({tipo:'criacao',titulo,grupoNome,msg,status:enviado?'ok':'erro',criadoEm:now,origem:'google_calendar'});
+  }
+  await db.ref('eventos').push({
+    titulo,data,dataBR,hora,grupoJid,grupoNome,
+    obs:gev.description||'',local:gev.location||'',
+    ts:d.getTime(),criadoEm:Date.now(),done:false,
+    gcalId:gev.id,gcalLink:gev.htmlLink||'',origem:'google_calendar',
+    notificadoCriacao:enviado
+  });
 }
 
-async function importarEventoCalendar(ev) {
-  var grupoJid = _config.grupoDefault || document.getElementById('novoGrupo').value;
-  if (!grupoJid) {
-    toast('Selecione um grupo padrão em Configurações ou na aba Manual.', 'warn');
-    return;
-  }
-
-  var start = ev.start.dateTime || ev.start.date;
-  var isDateTime = !!ev.start.dateTime;
-  var d      = new Date(start);
-  var data   = d.toISOString().split('T')[0];
-  var hora   = isDateTime ? d.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'}) : '00:00';
-  var dataBR = d.toLocaleDateString('pt-BR');
-  var titulo = ev.summary || 'Evento do Google Calendar';
-  var grupoNome = (_grupos.find(function(g){ return g.jid === grupoJid; }) || {}).nome || grupoJid;
-
-  var msg     = aplicarTemplate(_config.templateCriacao, titulo, dataBR, hora);
-  var enviado = await enviarWhatsApp(grupoJid, msg);
-  var now     = Date.now();
-
-  var evento = {
-    titulo: titulo, data: data, dataBR: dataBR, hora: hora,
-    grupoJid: grupoJid, grupoNome: grupoNome,
-    obs: ev.description || '', ts: d.getTime(),
-    criadoEm: now, done: false,
-    gcalId: ev.id, gcalLink: ev.htmlLink || '',
-    origem: 'google_calendar',
-    notificadoCriacao: enviado, notificadoCriacaoEm: now
-  };
-
-  if (db) {
-    var ref = await db.ref('eventos').push(evento);
-    await db.ref('historico').push({
-      tipo: 'criacao', eventoId: ref.key, titulo: titulo,
-      grupoNome: grupoNome, msg: msg,
-      status: enviado ? 'ok' : 'erro', criadoEm: now, origem: 'google_calendar'
+async function criarNoGcal(ev){
+  if(!_gcalToken)return null;
+  try{
+    var startDT=ev.data+'T'+(ev.hora||'00:00')+':00';
+    var endDT=ev.dataFim?(ev.dataFim+'T'+(ev.horaFim||ev.hora||'00:00')+':00'):calcEndTime(ev.data,ev.hora);
+    var body={
+      summary:ev.titulo,
+      description:ev.obs||ev.descricao||'',
+      location:ev.local||'',
+      start:{dateTime:startDT,timeZone:'America/Sao_Paulo'},
+      end:{dateTime:endDT,timeZone:'America/Sao_Paulo'}
+    };
+    var res=await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events',{
+      method:'POST',headers:{Authorization:'Bearer '+_gcalToken,'Content-Type':'application/json'},
+      body:JSON.stringify(body)
     });
-  }
-
-  // Atualiza a lista do calendar
-  buscarEventosCalendar();
-  toast(enviado ? '✓ Importado e grupo notificado!' : '⚠ Importado, mas envio falhou.', enviado ? 'ok' : 'warn');
+    if(!res.ok)return null;
+    var r=await res.json();
+    return r.id;
+  }catch(e){return null;}
 }
 
-async function criarEventoNoCalendar() {
-  if (!_gcalToken) { toast('Conecte o Google Calendar primeiro.', 'error'); return; }
-  var titulo = document.getElementById('novoTitulo').value.trim();
-  var data   = document.getElementById('novaData').value;
-  var hora   = document.getElementById('novaHora').value;
-  if (!titulo || !data || !hora) { toast('Preencha título, data e hora primeiro.', 'error'); return; }
-
-  var startDT = data + 'T' + hora + ':00';
-  var endDT   = data + 'T' + (String(parseInt(hora.split(':')[0])+1).padStart(2,'0')) + ':' + hora.split(':')[1] + ':00';
-
-  try {
-    var res = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
-      method: 'POST',
-      headers: { Authorization: 'Bearer ' + _gcalToken, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        summary: titulo,
-        description: document.getElementById('novaObs').value.trim(),
-        start: { dateTime: startDT, timeZone: 'America/Sao_Paulo' },
-        end:   { dateTime: endDT,   timeZone: 'America/Sao_Paulo' }
+async function atualizarNoGcal(ev){
+  if(!_gcalToken||!ev.gcalId)return;
+  try{
+    var startDT=ev.data+'T'+(ev.hora||'00:00')+':00';
+    var endDT=ev.dataFim?(ev.dataFim+'T'+(ev.horaFim||ev.hora||'00:00')+':00'):calcEndTime(ev.data,ev.hora);
+    await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events/'+ev.gcalId,{
+      method:'PATCH',headers:{Authorization:'Bearer '+_gcalToken,'Content-Type':'application/json'},
+      body:JSON.stringify({
+        summary:ev.titulo,description:ev.obs||ev.descricao||'',location:ev.local||'',
+        start:{dateTime:startDT,timeZone:'America/Sao_Paulo'},
+        end:{dateTime:endDT,timeZone:'America/Sao_Paulo'}
       })
     });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    toast('✓ Evento criado no Google Calendar!', 'ok');
-  } catch(e) { toast('Erro ao criar no Calendar: ' + e.message, 'error'); }
+  }catch(e){}
 }
 
-function configurarSyncAuto() {
-  clearInterval(_syncTimer);
-  var mins = parseInt(_config.syncInterval || '0');
-  if (mins > 0) {
-    _syncTimer = setInterval(function(){ sincronizarCalendar(); }, mins * 60 * 1000);
+async function excluirDoGcal(gcalId){
+  if(!_gcalToken||!gcalId)return;
+  try{await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events/'+gcalId,{method:'DELETE',headers:{Authorization:'Bearer '+_gcalToken}});}catch(e){}
+}
+
+function calcEndTime(data,hora){
+  if(!hora)return data+'T01:00:00';
+  var p=hora.split(':');
+  var h=parseInt(p[0])+1;
+  return data+'T'+String(h).padStart(2,'0')+':'+p[1]+':00';
+}
+
+// ══════════════════════════════════════════════════════════════════
+// MODAL EVENTO
+// ══════════════════════════════════════════════════════════════════
+function abrirModalEvento(key){
+  document.getElementById('evEditKey').value='';
+  document.getElementById('evGcalId').value='';
+  document.getElementById('evTitulo').value='';
+  document.getElementById('evDataInicio').value=new Date().toISOString().split('T')[0];
+  document.getElementById('evHoraInicio').value='';
+  document.getElementById('evDataFim').value='';
+  document.getElementById('evHoraFim').value='';
+  document.getElementById('evLocal').value='';
+  document.getElementById('evCategoria').value='';
+  document.getElementById('evGrupo').value='';
+  document.getElementById('evDescricao').value='';
+  document.getElementById('evSyncGcal').checked=!!_gcalToken;
+  document.getElementById('modalEventoTitulo').innerHTML='<i class="ti ti-calendar-plus"></i> Novo Evento';
+  document.getElementById('evDeleteBtn').style.display='none';
+
+  if(key){
+    var ev=_ev.find(function(e){return e._key===key;});
+    if(ev){
+      document.getElementById('evEditKey').value=key;
+      document.getElementById('evGcalId').value=ev.gcalId||'';
+      document.getElementById('evTitulo').value=ev.titulo||'';
+      document.getElementById('evDataInicio').value=ev.data||'';
+      document.getElementById('evHoraInicio').value=ev.hora||'';
+      document.getElementById('evDataFim').value=ev.dataFim||'';
+      document.getElementById('evHoraFim').value=ev.horaFim||'';
+      document.getElementById('evLocal').value=ev.local||'';
+      document.getElementById('evCategoria').value=ev.categoria||'';
+      document.getElementById('evGrupo').value=ev.grupoJid||'';
+      document.getElementById('evDescricao').value=ev.obs||ev.descricao||'';
+      document.getElementById('modalEventoTitulo').innerHTML='<i class="ti ti-pencil"></i> Editar Evento';
+      document.getElementById('evDeleteBtn').style.display='';
+    }
   }
+  abrirModal('modalEvento');
 }
 
-// ── GRUPOS ────────────────────────────────────────────────────────
-function popularSelectGrupos() {
-  ['novoGrupo','cfgGrupoDefault'].forEach(function(id) {
-    var sel = document.getElementById(id);
-    var val = sel.value;
-    sel.innerHTML = '<option value="">— selecione —</option>';
-    _grupos.forEach(function(g){
-      var o = document.createElement('option');
-      o.value = g.jid; o.textContent = g.nome;
-      sel.appendChild(o);
-    });
-    sel.value = val;
-  });
-  if (_config.grupoDefault) document.getElementById('cfgGrupoDefault').value = _config.grupoDefault;
+async function salvarEvento(){
+  var titulo=document.getElementById('evTitulo').value.trim();
+  var dataInicio=document.getElementById('evDataInicio').value;
+  var horaInicio=document.getElementById('evHoraInicio').value;
+  var dataFim=document.getElementById('evDataFim').value;
+  var horaFim=document.getElementById('evHoraFim').value;
+  var local=document.getElementById('evLocal').value.trim();
+  var categoria=document.getElementById('evCategoria').value;
+  var grupoJid=document.getElementById('evGrupo').value;
+  var descricao=document.getElementById('evDescricao').value.trim();
+  var syncGcal=document.getElementById('evSyncGcal').checked;
+  var editKey=document.getElementById('evEditKey').value;
+  var gcalId=document.getElementById('evGcalId').value;
+
+  if(!titulo){toast('Informe o título.','error');return;}
+  if(!dataInicio){toast('Informe a data de início.','error');return;}
+  if(!categoria){toast('Selecione uma categoria.','error');return;}
+
+  var grupoNome=grupoJid?(_grupos.find(function(g){return g.jid===grupoJid;})||{}).nome||grupoJid:'';
+  var dataBR=fmtBR(dataInicio);
+  var now=Date.now();
+
+  var payload={
+    titulo,data:dataInicio,dataBR,hora:horaInicio||'',
+    dataFim:dataFim||dataInicio,horaFim:horaFim||'',
+    local,categoria,obs:descricao,descricao,
+    grupoJid,grupoNome,
+    ts:new Date(dataInicio+'T'+(horaInicio||'00:00')).getTime(),
+    atualizadoEm:now
+  };
+
+  if(editKey){
+    // UPDATE
+    if(db)await db.ref('eventos/'+editKey).update(payload);
+    var evAtual=_ev.find(function(e){return e._key===editKey;})||{};
+    var evMerged=Object.assign({},evAtual,payload,{gcalId:evAtual.gcalId||gcalId});
+    if(syncGcal&&_gcalToken){
+      if(evMerged.gcalId)await atualizarNoGcal(evMerged);
+      else{var newId=await criarNoGcal(evMerged);if(newId&&db)await db.ref('eventos/'+editKey).update({gcalId:newId});}
+    }
+    toast('Evento atualizado!','ok');
+  } else {
+    // CREATE
+    payload.criadoEm=now;payload.done=false;payload.origem='manual';
+    var gcalNewId=null;
+    if(syncGcal&&_gcalToken){gcalNewId=await criarNoGcal(payload);if(gcalNewId)payload.gcalId=gcalNewId;}
+    if(db){
+      var ref=await db.ref('eventos').push(payload);
+      if(grupoJid){
+        var msg=tpl(_cfg.tplCriacao,titulo,dataBR,horaInicio||'');
+        var enviado=await enviarWA(grupoJid,msg);
+        await db.ref('historico').push({tipo:'criacao',eventoId:ref.key,titulo,grupoNome,msg,status:enviado?'ok':'erro',criadoEm:now});
+        if(enviado)await db.ref('eventos/'+ref.key).update({notificadoCriacao:true});
+      }
+    }
+    toast(gcalNewId?'✓ Evento criado e sincronizado com Google Calendar!':'✓ Evento criado!','ok');
+  }
+  fecharModal('modalEvento');
 }
 
-async function buscarGrupos() {
-  var url = _config.apiUrl, key = _config.apiKey, inst = _config.instancia;
-  if (!url||!key||!inst){ toast('Configure URL, Key e Instância.','error'); return; }
-  toast('Buscando grupos...','info');
-  try {
-    var res = await fetch(url.replace(/\/$/,'')+'/group/fetchAllGroups/'+inst+'?getParticipants=false',{headers:{'apikey':key}});
-    if (!res.ok) throw new Error('HTTP '+res.status);
-    var data = await res.json();
-    var lista = Array.isArray(data)?data:(data.data||[]);
-    _grupos = lista.filter(function(g){return g.id&&g.id.endsWith('@g.us');}).map(function(g){return{jid:g.id,nome:g.subject||g.id};});
-    _config.grupos = _grupos; salvarConfig(); popularSelectGrupos();
-    document.getElementById('gruposSection').style.display='';
-    document.getElementById('gruposList').innerHTML = _grupos.map(function(g){
-      return '<div style="padding:6px 0;border-bottom:1px solid var(--border2);font-size:12px;color:var(--text)">'
-        +'<span class="badge badge-green" style="margin-right:6px"><i class="ti ti-brand-whatsapp"></i></span>'+esc(g.nome)
-        +'<span style="color:var(--text3);margin-left:6px;font-family:monospace;font-size:10px">'+esc(g.jid)+'</span></div>';
+async function excluirEventoModal(){
+  var key=document.getElementById('evEditKey').value;
+  var gcalId=document.getElementById('evGcalId').value;
+  if(!key||!confirm('Excluir este evento?'))return;
+  if(db)await db.ref('eventos/'+key).remove();
+  if(gcalId&&_gcalToken)await excluirDoGcal(gcalId);
+  fecharModal('modalEvento');
+  toast('Evento excluído.','ok');
+}
+
+// ══════════════════════════════════════════════════════════════════
+// MODAL DETALHE + CRM
+// ══════════════════════════════════════════════════════════════════
+function abrirDetalhe(key){
+  var ev=_ev.find(function(e){return e._key===key;});
+  if(!ev)return;
+  _detalheKey=key;
+
+  var catClass=catCls(ev.categoria);
+  var html='<div style="margin-bottom:1rem">'
+    +'<div style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px">'+esc(ev.titulo)+'</div>'
+    +'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">'
+    +(ev.categoria?'<span class="badge '+catClass+'">'+esc(ev.categoria)+'</span>':'')
+    +(ev.origem==='google_calendar'?'<span class="badge badge-gcal"><i class="ti ti-brand-google"></i> Calendar</span>':'')
+    +(ev.done?'<span class="badge badge-green"><i class="ti ti-check"></i> Concluído</span>':'')
+    +'</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">'
+    +'<div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:10px">'
+      +'<div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Início</div>'
+      +'<div style="font-size:13px;color:var(--text)">'+esc(ev.dataBR||ev.data||'—')+(ev.hora?' às '+ev.hora:'')+'</div>'
+    +'</div>'
+    +'<div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:10px">'
+      +'<div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Fim</div>'
+      +'<div style="font-size:13px;color:var(--text)">'+esc(ev.dataFim&&ev.dataFim!==ev.data?fmtBR(ev.dataFim):ev.dataBR||ev.data||'—')+(ev.horaFim?' às '+ev.horaFim:'')+'</div>'
+    +'</div>'
+    +(ev.local?'<div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:10px;grid-column:1/-1">'
+      +'<div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px"><i class="ti ti-map-pin" style="font-size:10px"></i> Local</div>'
+      +'<div style="font-size:13px;color:var(--text)">'+esc(ev.local)+'</div>'
+    +'</div>':'')
+    +(ev.grupoNome?'<div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:10px;grid-column:1/-1">'
+      +'<div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px"><i class="ti ti-brand-whatsapp" style="font-size:10px"></i> Grupo</div>'
+      +'<div style="font-size:13px;color:var(--text)">'+esc(ev.grupoNome)+'</div>'
+    +'</div>':'')
+    +(ev.obs||ev.descricao?'<div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:10px;grid-column:1/-1">'
+      +'<div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Descrição</div>'
+      +'<div style="font-size:12px;color:var(--text2);line-height:1.6">'+esc(ev.obs||ev.descricao)+'</div>'
+    +'</div>':'')
+    +'</div></div>';
+  document.getElementById('detalheInfo').innerHTML=html;
+
+  // Pré-preencher categoria CRM
+  if(ev.categoria)document.getElementById('crmCategoria').value=ev.categoria;
+
+  // Carregar timeline CRM do Firebase
+  renderCrmTimeline(key);
+  abrirModal('modalDetalhe');
+}
+
+function renderCrmTimeline(key){
+  if(!db){document.getElementById('crmTimeline').innerHTML='';return;}
+  db.ref('crm/'+key).orderByChild('criadoEm').once('value',function(snap){
+    var updates=[];
+    snap.forEach(function(c){updates.push(c.val());});
+    updates.sort(function(a,b){return (b.criadoEm||0)-(a.criadoEm||0);});
+    var container=document.getElementById('crmTimeline');
+    if(!updates.length){container.innerHTML='<p style="font-size:12px;color:var(--text3);text-align:center;padding:1rem">Nenhum update registrado</p>';return;}
+    container.innerHTML=updates.map(function(u,i){
+      var sc=statusCls(u.status);
+      var si=statusIcon(u.status);
+      return '<div class="crm-entry">'
+        +'<div class="crm-line"><div class="crm-entry-dot" style="background:'+statusColor(u.status)+'"></div>'+(i<updates.length-1?'<div class="crm-connector"></div>':'')+'</div>'
+        +'<div class="crm-content">'
+          +'<span class="crm-status-badge '+sc+'">'+si+' '+statusLabel(u.status)+'</span>'
+          +(u.categoria?'<span class="badge '+catCls(u.categoria)+'" style="margin-left:4px;font-size:10px">'+esc(u.categoria)+'</span>':'')
+          +(u.nota?'<div class="crm-nota">'+esc(u.nota)+'</div>':'')
+          +'<div class="crm-time">'+(u.criadoEm?new Date(u.criadoEm).toLocaleString('pt-BR'):'—')+'</div>'
+        +'</div></div>';
     }).join('');
-    toast(_grupos.length+' grupos encontrados.','ok');
-  } catch(e){ toast('Erro: '+e.message,'error'); }
+  });
 }
 
-async function testarConexao() {
-  var url=_config.apiUrl,key=_config.apiKey,inst=_config.instancia;
-  var el=document.getElementById('testResult');
-  if (!url||!key||!inst){el.className='test-result err';el.textContent='⚠ Preencha URL, Key e Instância.';return;}
-  el.className='test-result ok';el.textContent='Testando...';
-  try {
-    var res=await fetch(url.replace(/\/$/,'')+'/instance/fetchInstances',{headers:{'apikey':key}});
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    el.className='test-result ok';el.textContent='✓ Conexão OK.';
-  } catch(e){el.className='test-result err';el.textContent='✗ Falha: '+e.message;}
-}
-
-// ── EVENTOS ───────────────────────────────────────────────────────
-var _filtroHoje = false;
-
-async function criarEvento() {
-  var titulo=document.getElementById('novoTitulo').value.trim();
-  var data=document.getElementById('novaData').value;
-  var hora=document.getElementById('novaHora').value;
-  var grupoJid=document.getElementById('novoGrupo').value;
-  var obs=document.getElementById('novaObs').value.trim();
-  if (!titulo){toast('Informe o título.','error');return;}
-  if (!data){toast('Informe a data.','error');return;}
-  if (!hora){toast('Informe a hora.','error');return;}
-  if (!grupoJid){toast('Selecione um grupo.','error');return;}
-
-  var grupoNome=(_grupos.find(function(g){return g.jid===grupoJid;})||{}).nome||grupoJid;
-  var dataBR=formatarDataBR(data);
-  var msg=aplicarTemplate(_config.templateCriacao,titulo,dataBR,hora);
-  var enviado=await enviarWhatsApp(grupoJid,msg);
+async function salvarUpdateCRM(){
+  if(!_detalheKey){toast('Nenhum evento selecionado','error');return;}
+  var status=document.getElementById('crmStatus').value;
+  var nota=document.getElementById('crmNota').value.trim();
+  var categoria=document.getElementById('crmCategoria').value;
+  if(!nota){toast('Escreva uma nota antes de registrar.','error');return;}
   var now=Date.now();
-
-  var evento={titulo,data,dataBR,hora,grupoJid,grupoNome,obs,ts:new Date(data+'T'+hora).getTime(),criadoEm:now,done:false,notificadoCriacao:enviado,notificadoCriacaoEm:now,origem:'manual'};
-  if (db) {
-    var ref=await db.ref('eventos').push(evento);
-    await db.ref('historico').push({tipo:'criacao',eventoId:ref.key,titulo,grupoNome,msg,status:enviado?'ok':'erro',criadoEm:now});
+  if(db){
+    await db.ref('crm/'+_detalheKey).push({status,nota,categoria,criadoEm:now});
+    if(status==='concluido'){
+      var ev=_ev.find(function(e){return e._key===_detalheKey;});
+      if(ev){
+        await db.ref('eventos/'+_detalheKey).update({done:true,concluidoEm:now});
+        if(ev.grupoJid){
+          var msg=tpl(_cfg.tplConclusao,ev.titulo,ev.dataBR||fmtBR(ev.data),ev.hora||'');
+          var enviado=await enviarWA(ev.grupoJid,msg);
+          await db.ref('historico').push({tipo:'conclusao',eventoId:_detalheKey,titulo:ev.titulo,grupoNome:ev.grupoNome,msg,status:enviado?'ok':'erro',criadoEm:now});
+        }
+      }
+    }
   }
-  document.getElementById('novoTitulo').value='';
-  document.getElementById('novaObs').value='';
-  atualizarPreviewMsg();
-  toast(enviado?'✓ Criado e grupo notificado!':'⚠ Criado, mas envio falhou.',enviado?'ok':'warn');
+  document.getElementById('crmNota').value='';
+  renderCrmTimeline(_detalheKey);
+  toast('Update registrado!','ok');
 }
 
-async function concluirEvento(key) {
-  var ev=_eventos.find(function(e){return e._key===key;});
-  if (!ev||!confirm('Marcar "'+ev.titulo+'" como concluído?')) return;
-  var dataBR=ev.dataBR||formatarDataBR(ev.data);
-  var msg=aplicarTemplate(_config.templateConclusao,ev.titulo,dataBR,ev.hora);
-  var enviado=await enviarWhatsApp(ev.grupoJid,msg);
+async function concluirEventoDetalhe(){
+  if(!_detalheKey||!confirm('Marcar como concluído?'))return;
+  var ev=_ev.find(function(e){return e._key===_detalheKey;});
+  if(!ev)return;
   var now=Date.now();
-  if (db) {
-    await db.ref('eventos/'+key).update({done:true,concluidoEm:now});
-    await db.ref('historico').push({tipo:'conclusao',eventoId:key,titulo:ev.titulo,grupoNome:ev.grupoNome,msg,status:enviado?'ok':'erro',criadoEm:now});
+  if(db)await db.ref('eventos/'+_detalheKey).update({done:true,concluidoEm:now});
+  if(ev.grupoJid){
+    var msg=tpl(_cfg.tplConclusao,ev.titulo,ev.dataBR||fmtBR(ev.data),ev.hora||'');
+    var enviado=await enviarWA(ev.grupoJid,msg);
+    if(db)await db.ref('historico').push({tipo:'conclusao',eventoId:_detalheKey,titulo:ev.titulo,grupoNome:ev.grupoNome,msg,status:enviado?'ok':'erro',criadoEm:now});
   }
-  toast(enviado?'✓ Concluído e notificado!':'⚠ Concluído, mas envio falhou.',enviado?'ok':'warn');
+  fecharModal('modalDetalhe');
+  toast('Evento concluído!','ok');
+}
+function editarEventoDetalhe(){fecharModal('modalDetalhe');abrirModalEvento(_detalheKey);}
+async function excluirEventoDetalhe(){
+  if(!_detalheKey||!confirm('Excluir este evento?'))return;
+  var ev=_ev.find(function(e){return e._key===_detalheKey;});
+  if(ev&&ev.gcalId&&_gcalToken)await excluirDoGcal(ev.gcalId);
+  if(db){await db.ref('eventos/'+_detalheKey).remove();await db.ref('crm/'+_detalheKey).remove();}
+  fecharModal('modalDetalhe');
+  toast('Evento excluído.','ok');
 }
 
-async function excluirEvento(key) {
-  var ev=_eventos.find(function(e){return e._key===key;});
-  if (!ev||!confirm('Excluir "'+ev.titulo+'"?')) return;
-  if (db) await db.ref('eventos/'+key).remove();
-  toast('Evento removido.','ok');
+// ══════════════════════════════════════════════════════════════════
+// CALENDÁRIO VISUAL
+// ══════════════════════════════════════════════════════════════════
+function renderCalendario(){
+  var title=document.getElementById('calTitle');
+  var grid=document.getElementById('calGrid');
+  var nomes=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  title.textContent=nomes[_calMes]+' '+_calAno;
+
+  // Dias da semana
+  var dows=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  var html=dows.map(function(d){return '<div class="cal-dow">'+d+'</div>';}).join('');
+
+  var primeiro=new Date(_calAno,_calMes,1);
+  var ultimo=new Date(_calAno,_calMes+1,0);
+  var hojeStr=new Date().toISOString().split('T')[0];
+
+  // Dias do mês anterior
+  for(var i=0;i<primeiro.getDay();i++){
+    var d=new Date(_calAno,_calMes,-(primeiro.getDay()-i-1));
+    html+=renderDiaHtml(d,true,hojeStr);
+  }
+  // Dias do mês
+  for(var d=1;d<=ultimo.getDate();d++){
+    var dt=new Date(_calAno,_calMes,d);
+    html+=renderDiaHtml(dt,false,hojeStr);
+  }
+  // Completar grid
+  var total=primeiro.getDay()+ultimo.getDate();
+  var resto=total%7===0?0:7-(total%7);
+  for(var i=1;i<=resto;i++){
+    var dt=new Date(_calAno,_calMes+1,i);
+    html+=renderDiaHtml(dt,true,hojeStr);
+  }
+  grid.innerHTML=html;
 }
 
-function filtrarHoje(){_filtroHoje=true;document.getElementById('labelFiltro').textContent='Somente hoje';renderEventos();}
-function filtrarTodos(){_filtroHoje=false;document.getElementById('labelFiltro').textContent='Todos os eventos';renderEventos();}
+function renderDiaHtml(dt,outroMes,hojeStr){
+  var dtStr=dt.toISOString().split('T')[0];
+  var hoje=dtStr===hojeStr;
+  var evsDia=eventosDoDia(dtStr);
+  var cls='cal-day'+(hoje?' today':'')+(outroMes?' other-month':'');
 
-function renderEventos() {
+  var pills=evsDia.slice(0,3).map(function(ev){
+    var bg=catColor(ev.categoria);
+    return '<div class="cal-event-pill" style="background:'+bg+'22;color:'+bg+';border:1px solid '+bg+'44">'+esc(ev.titulo)+'</div>';
+  }).join('');
+  if(evsDia.length>3)pills+='<div style="font-size:9px;color:var(--text3)">+'+( evsDia.length-3)+' mais</div>';
+
+  return '<div class="'+cls+'" onclick="expandirDia(\''+dtStr+'\')">'
+    +'<div class="cal-day-num">'+dt.getDate()+'</div>'
+    +(evsDia.length?'<div class="cal-dots">'+pills+'</div>':'')
+    +'</div>';
+}
+
+function eventosDoDia(dtStr){
+  return _ev.filter(function(ev){
+    if(_filtroCategoria!=='all'&&ev.categoria!==_filtroCategoria)return false;
+    return ev.data===dtStr;
+  });
+}
+
+function expandirDia(dtStr){
+  var evs=eventosDoDia(dtStr);
+  var container=document.getElementById('dayExpanded');
+  if(!evs.length){container.style.display='none';return;}
+  var dt=new Date(dtStr+'T12:00:00');
+  var label=dt.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
+  var html='<div class="day-expanded">'
+    +'<div class="day-expanded-title"><span><i class="ti ti-calendar"></i> '+label+'</span>'
+    +'<button class="btn btn-icon btn-sm" onclick="document.getElementById(\'dayExpanded\').style.display=\'none\'"><i class="ti ti-x"></i></button></div>';
+  html+=evs.map(function(ev){return renderEventoCard(ev);}).join('');
+  html+='</div>';
+  container.innerHTML=html;
+  container.style.display='';
+  container.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function navMes(d){_calMes+=d;if(_calMes>11){_calMes=0;_calAno++;}if(_calMes<0){_calMes=11;_calAno--;}renderCalendario();}
+function irHoje(){_calAno=new Date().getFullYear();_calMes=new Date().getMonth();renderCalendario();}
+function setView(v,btn){_calView=v;document.querySelectorAll('.view-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');renderCalendario();}
+function setFiltroCategoria(c,btn){
+  _filtroCategoria=c;
+  document.querySelectorAll('[id^="filtro-"]').forEach(function(b){b.style.borderColor='';b.style.color='';});
+  btn.style.borderColor='var(--accent)';btn.style.color='var(--accent-h)';
+  renderCalendario();
+  var exp=document.getElementById('dayExpanded');if(exp.style.display!=='none'){exp.style.display='none';}
+}
+
+// ══════════════════════════════════════════════════════════════════
+// LISTA
+// ══════════════════════════════════════════════════════════════════
+function listaFiltro(f){_listFiltro=f;renderLista();}
+function renderLista(){
   var container=document.getElementById('listaEventos');
   var hoje=new Date().toISOString().split('T')[0];
-  var lista=_filtroHoje?_eventos.filter(function(e){return e.data===hoje;}):_eventos;
-  if (!lista.length){
-    container.innerHTML='<div class="empty"><i class="ti ti-calendar-off"></i><p>Nenhum evento encontrado</p><small>Crie um evento ou importe do Google Calendar</small></div>';
-    return;
-  }
-  container.innerHTML=lista.map(function(ev){
-    var cor=ev.done?'var(--text3)':(ev.data===hoje?'var(--accent-h)':'var(--green)');
-    var gcalBadge=ev.origem==='google_calendar'?'<span class="badge badge-gcal" style="margin-left:6px"><i class="ti ti-brand-google"></i> Calendar</span>':'';
-    return '<div class="event-card'+(ev.done?' done':'')+(ev.origem==='google_calendar'?' from-gcal':'')+'">'
-      +'<div class="event-dot" style="background:'+cor+'"></div>'
-      +'<div class="event-body">'
-        +'<div class="event-title">'+esc(ev.titulo)+gcalBadge+'</div>'
-        +'<div class="event-meta">'
-          +'<span><i class="ti ti-calendar"></i>'+(ev.dataBR||ev.data)+' '+(ev.hora||'')+'</span>'
-          +'<span><i class="ti ti-brand-whatsapp"></i>'+esc(ev.grupoNome||'—')+'</span>'
-          +(ev.obs?'<span><i class="ti ti-note"></i>'+esc(ev.obs)+'</span>':'')
-        +'</div>'
-      +'</div>'
-      +'<div class="event-actions">'
-        +(!ev.done?'<button class="btn btn-sm btn-green btn-icon" title="Concluir" onclick="concluirEvento(\''+ev._key+'\')"><i class="ti ti-check"></i></button>':'')
-        +'<button class="btn btn-sm btn-red btn-icon" title="Excluir" onclick="excluirEvento(\''+ev._key+'\')"><i class="ti ti-trash"></i></button>'
-      +'</div>'
-      +'</div>';
-  }).join('');
+  var lista=_ev.filter(function(ev){
+    if(_filtroCategoria!=='all'&&ev.categoria!==_filtroCategoria)return false;
+    if(_listFiltro==='hoje')return ev.data===hoje;
+    if(_listFiltro==='pendentes')return !ev.done;
+    return true;
+  });
+  document.getElementById('listaSubtitle').textContent=lista.length+' evento'+(lista.length!==1?'s':'');
+  if(!lista.length){container.innerHTML='<div class="empty"><i class="ti ti-calendar-off"></i><p>Nenhum evento encontrado</p></div>';return;}
+  container.innerHTML=lista.map(function(ev){return renderEventoCard(ev);}).join('');
 }
 
-function atualizarStats() {
+function renderEventoCard(ev){
   var hoje=new Date().toISOString().split('T')[0];
-  var eventoHoje=_eventos.filter(function(e){return e.data===hoje;}).length;
-  var pendentes=_eventos.filter(function(e){return !e.done;}).length;
-  var cutoff=Date.now()-30*24*60*60*1000;
-  var enviados=_historico.filter(function(h){return (h.criadoEm||0)>=cutoff&&h.status==='ok';}).length;
-  document.getElementById('statHoje').textContent=eventoHoje;
-  document.getElementById('statHojeSub').textContent=eventoHoje===0?'nenhum agendado':eventoHoje+' evento'+(eventoHoje>1?'s':'');
-  document.getElementById('statPendentes').textContent=pendentes;
-  document.getElementById('statEnviados').textContent=enviados;
+  var cor=ev.done?'var(--text3)':(ev.data===hoje?'var(--accent-h)':'var(--green)');
+  var catCl=catCls(ev.categoria);
+  return '<div class="list-event'+(ev.done?' done':'')+(ev.origem==='google_calendar'?' from-gcal':'')+'" onclick="abrirDetalhe(\''+ev._key+'\')">'
+    +'<div class="ev-dot" style="background:'+cor+'"></div>'
+    +'<div class="ev-body">'
+      +'<div class="ev-title">'+esc(ev.titulo)
+        +(ev.categoria?'<span class="badge '+catCl+'" style="margin-left:6px;font-size:10px">'+esc(ev.categoria)+'</span>':'')
+        +(ev.origem==='google_calendar'?'<span class="badge badge-gcal" style="margin-left:4px;font-size:10px"><i class="ti ti-brand-google"></i></span>':'')
+      +'</div>'
+      +'<div class="ev-meta">'
+        +'<span><i class="ti ti-calendar"></i>'+(ev.dataBR||ev.data||'—')+(ev.hora?' às '+ev.hora:'')+'</span>'
+        +(ev.local?'<span><i class="ti ti-map-pin"></i>'+esc(ev.local)+'</span>':'')
+        +(ev.grupoNome?'<span><i class="ti ti-brand-whatsapp"></i>'+esc(ev.grupoNome)+'</span>':'')
+      +'</div>'
+    +'</div>'
+    +'<div class="ev-actions">'
+      +'<button class="btn btn-sm btn-icon" title="Editar" onclick="event.stopPropagation();abrirModalEvento(\''+ev._key+'\')"><i class="ti ti-pencil"></i></button>'
+    +'</div>'
+    +'</div>';
 }
 
-// ── HISTÓRICO ─────────────────────────────────────────────────────
-function renderHistorico() {
-  var container=document.getElementById('listaHistorico');
-  if (!_historico.length){container.innerHTML='<div class="empty"><i class="ti ti-history"></i><p>Nenhuma mensagem enviada ainda</p></div>';return;}
-  container.innerHTML=_historico.slice(0,100).map(function(h){
+// ══════════════════════════════════════════════════════════════════
+// HISTÓRICO
+// ══════════════════════════════════════════════════════════════════
+function renderHistorico(){
+  var c=document.getElementById('listaHistorico');
+  if(!_hist.length){c.innerHTML='<div class="empty"><i class="ti ti-history"></i><p>Nenhuma mensagem enviada</p></div>';return;}
+  c.innerHTML=_hist.slice(0,100).map(function(h){
     var cor=h.status==='ok'?'var(--green)':'var(--red)';
-    var icone=h.tipo==='conclusao'?'ti-check':'ti-send';
-    var gcalTag=h.origem==='google_calendar'?' <span class="badge badge-gcal" style="font-size:10px"><i class="ti ti-brand-google"></i></span>':'';
-    return '<div class="log-item">'
-      +'<div class="log-dot" style="background:'+cor+'"></div>'
+    return '<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2)">'
+      +'<div style="width:6px;height:6px;border-radius:50%;background:'+cor+';margin-top:5px;flex-shrink:0"></div>'
       +'<div style="flex:1">'
-        +'<div style="font-size:12px;color:var(--text)"><i class="ti '+icone+'" style="font-size:11px;margin-right:4px"></i>'
-          +'<strong>'+esc(h.titulo||'—')+'</strong> → '+esc(h.grupoNome||'—')+gcalTag
-          +' <span class="'+(h.status==='ok'?'log-status-ok':'log-status-err')+'">'+(h.status==='ok'?'✓ enviado':'✗ falhou')+'</span>'
+        +'<div style="font-size:12px;color:var(--text)"><strong>'+esc(h.titulo||'—')+'</strong>'
+          +(h.grupoNome?' → '+esc(h.grupoNome):'')
+          +' <span style="color:'+(h.status==='ok'?'var(--green)':'var(--red)')+'">'+( h.status==='ok'?'✓ enviado':'✗ falhou')+'</span>'
         +'</div>'
-        +'<div class="log-time">'+(h.criadoEm?new Date(h.criadoEm).toLocaleString('pt-BR'):'—')+'</div>'
+        +'<div style="font-size:10px;color:var(--text3);font-family:monospace">'+(h.criadoEm?new Date(h.criadoEm).toLocaleString('pt-BR'):'—')+'</div>'
       +'</div></div>';
   }).join('');
 }
+function limparHistorico(){if(!confirm('Limpar histórico?'))return;if(db)db.ref('historico').remove();toast('Histórico limpo.','ok');}
 
-function limparHistorico(){if(!confirm('Limpar todo o histórico?'))return;if(db)db.ref('historico').remove();toast('Histórico limpo.','ok');}
+// ══════════════════════════════════════════════════════════════════
+// STATS
+// ══════════════════════════════════════════════════════════════════
+function atualizarStats(){
+  var hoje=new Date().toISOString().split('T')[0];
+  var hojeCnt=_ev.filter(function(e){return e.data===hoje;}).length;
+  var mesCnt=_ev.filter(function(e){return e.data&&e.data.startsWith(_calAno+'-'+String(_calMes+1).padStart(2,'0'));}).length;
+  var pend=_ev.filter(function(e){return !e.done;}).length;
+  document.getElementById('statHoje').textContent=hojeCnt;
+  document.getElementById('statHojeSub').textContent=hojeCnt===1?'1 evento':hojeCnt+' eventos';
+  document.getElementById('statMes').textContent=mesCnt;
+  document.getElementById('statPend').textContent=pend;
+}
 
-// ── WHATSAPP ──────────────────────────────────────────────────────
-async function enviarWhatsApp(jid,mensagem){
-  var url=_config.apiUrl,key=_config.apiKey,inst=_config.instancia;
+function renderAll(){renderCalendario();renderLista();atualizarStats();}
+
+// ══════════════════════════════════════════════════════════════════
+// GRUPOS / WHATSAPP
+// ══════════════════════════════════════════════════════════════════
+function popularGrupos(){
+  ['evGrupo','cfgGrupoDefault'].forEach(function(id){
+    var sel=document.getElementById(id);
+    var val=sel.value;
+    sel.innerHTML='<option value="">— não notificar —</option>';
+    _grupos.forEach(function(g){var o=document.createElement('option');o.value=g.jid;o.textContent=g.nome;sel.appendChild(o);});
+    sel.value=val;
+  });
+  if(_cfg.grupoDefault)document.getElementById('cfgGrupoDefault').value=_cfg.grupoDefault;
+}
+async function buscarGrupos(){
+  var url=_cfg.apiUrl,key=_cfg.apiKey,inst=_cfg.instancia;
+  if(!url||!key||!inst){toast('Configure API antes.','error');return;}
+  toast('Buscando...','info');
+  try{
+    var res=await fetch(url.replace(/\/$/,'')+'/group/fetchAllGroups/'+inst+'?getParticipants=false',{headers:{'apikey':key}});
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    var data=await res.json();
+    var lista=Array.isArray(data)?data:(data.data||[]);
+    _grupos=lista.filter(function(g){return g.id&&g.id.endsWith('@g.us');}).map(function(g){return{jid:g.id,nome:g.subject||g.id};});
+    _cfg.grupos=_grupos;salvarConfig();popularGrupos();
+    document.getElementById('gruposSection').style.display='';
+    document.getElementById('gruposList').innerHTML=_grupos.map(function(g){
+      return '<div style="padding:6px 0;border-bottom:1px solid var(--border2);font-size:12px;color:var(--text)">'
+        +'<span class="badge badge-green" style="margin-right:6px"><i class="ti ti-brand-whatsapp"></i></span>'+esc(g.nome)
+        +'<span style="color:var(--text3);margin-left:6px;font-size:10px;font-family:monospace">'+esc(g.jid)+'</span></div>';
+    }).join('');
+    toast(_grupos.length+' grupos.','ok');
+  }catch(e){toast('Erro: '+e.message,'error');}
+}
+async function testarConexao(){
+  var url=_cfg.apiUrl,key=_cfg.apiKey,inst=_cfg.instancia;
+  var el=document.getElementById('testResult');
+  if(!url||!key||!inst){el.className='test-result err';el.textContent='⚠ Preencha todos os campos.';return;}
+  el.className='test-result ok';el.textContent='Testando...';
+  try{
+    var res=await fetch(url.replace(/\/$/,'')+'/instance/fetchInstances',{headers:{'apikey':key}});
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    el.className='test-result ok';el.textContent='✓ Conexão OK.';
+  }catch(e){el.className='test-result err';el.textContent='✗ Falha: '+e.message;}
+}
+async function enviarWA(jid,mensagem){
+  var url=_cfg.apiUrl,key=_cfg.apiKey,inst=_cfg.instancia;
   if(!url||!key||!inst||!jid)return false;
   try{
     var res=await fetch(url.replace(/\/$/,'')+'/message/sendText/'+inst,{method:'POST',headers:{'apikey':key,'Content-Type':'application/json'},body:JSON.stringify({number:jid,text:mensagem})});
     return res.ok;
-  }catch(e){console.error('WA:',e);return false;}
+  }catch(e){return false;}
 }
 
-// ── HELPERS ───────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════
+// SYNC AUTO TIMER
+// ══════════════════════════════════════════════════════════════════
+function configurarSyncAuto(){
+  clearInterval(_syncTimer);
+  // Sync padrão a cada 5 min se tiver Google conectado
+  var mins=parseInt(_cfg.syncInterval||'5');
+  if(mins>0&&_gcalToken){_syncTimer=setInterval(sincronizarGcalCompleto,mins*60*1000);}
+}
+
+// ══════════════════════════════════════════════════════════════════
+// HELPERS UI
+// ══════════════════════════════════════════════════════════════════
 function showPage(id,btn){
   document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
   document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
   document.getElementById('page-'+id).classList.add('active');
   if(btn)btn.classList.add('active');
-  if(id==='config')atualizarPreviewTemplate();
+  if(id==='config')atualizarTplPreview();
 }
+function abrirModal(id){document.getElementById(id).classList.add('open');}
+function fecharModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.overlay').forEach(function(o){
+  o.addEventListener('click',function(e){if(e.target===o)fecharModal(o.id);});
+});
 
-function showCardTab(id,btn){
-  document.querySelectorAll('.card-tab-panel').forEach(function(p){p.classList.remove('active');});
-  document.querySelectorAll('.card-tab').forEach(function(b){b.classList.remove('active');});
-  document.getElementById('cardTab-'+id).classList.add('active');
-  if(btn)btn.classList.add('active');
-}
-
-function atualizarPreviewTemplate(){
-  var tpl=document.getElementById('cfgTemplateCriacao').value;
-  document.getElementById('templatePreviewConfig').textContent=aplicarTemplate(tpl,'Reunião de resultados','15/07/2025','14:00');
-}
-function atualizarPreviewMsg(){
-  var titulo=document.getElementById('novoTitulo').value||'Título do evento';
-  var data=formatarDataBR(document.getElementById('novaData').value)||'dd/mm/aaaa';
-  var hora=document.getElementById('novaHora').value||'00:00';
-  document.getElementById('msgPreview').textContent=aplicarTemplate(_config.templateCriacao||'',titulo,data,hora);
-}
-function aplicarTemplate(tpl,titulo,data,hora){return(tpl||'').replace(/{titulo}/g,titulo).replace(/{data}/g,data).replace(/{hora}/g,hora);}
-function formatarDataBR(iso){if(!iso)return'';var p=iso.split('-');return p[2]+'/'+p[1]+'/'+p[0];}
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-
-var _toastTimer=null;
+var _toastT=null;
 function toast(msg,tipo){
   var icons={ok:'ti-check',error:'ti-x',warn:'ti-alert-triangle',info:'ti-info-circle'};
   var colors={ok:'var(--green)',error:'var(--red)',warn:'var(--orange)',info:'var(--accent-h)'};
   var icon=document.getElementById('toastIcon');
-  icon.className='ti '+(icons[tipo]||'ti-check');
-  icon.style.color=colors[tipo]||'var(--green)';
+  icon.className='ti '+(icons[tipo]||'ti-check');icon.style.color=colors[tipo]||'var(--green)';
   document.getElementById('toastMsg').textContent=msg;
-  var el=document.getElementById('toast');
-  el.classList.add('show');
-  clearTimeout(_toastTimer);
-  _toastTimer=setTimeout(function(){el.classList.remove('show');},3500);
+  document.getElementById('toast').classList.add('show');
+  clearTimeout(_toastT);_toastT=setTimeout(function(){document.getElementById('toast').classList.remove('show');},3500);
 }
 
-// Init
-document.getElementById('novaData').value=new Date().toISOString().split('T')[0];
-document.getElementById('gcalFiltroData').value=new Date().toISOString().split('T')[0];
-document.getElementById('novoTitulo').addEventListener('input',atualizarPreviewMsg);
-document.getElementById('novaData').addEventListener('input',atualizarPreviewMsg);
-document.getElementById('novaHora').addEventListener('input',atualizarPreviewMsg);
+function tpl(t,titulo,data,hora){return(t||'').replace(/{titulo}/g,titulo).replace(/{data}/g,data).replace(/{hora}/g,hora);}
+function fmtBR(iso){if(!iso)return'';var p=iso.split('-');return p[2]+'/'+p[1]+'/'+p[0];}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function catCls(c){var m={'Securitizadora':'cat-sec','Consultoria':'cat-con','Rede P5':'cat-red','Tempo Pessoal':'cat-pes'};return m[c]||'badge-blue';}
+function catColor(c){var m={'Securitizadora':'var(--cat-sec)','Consultoria':'var(--cat-con)','Rede P5':'var(--cat-red)','Tempo Pessoal':'var(--cat-pes)'};return m[c]||'var(--accent-h)';}
+function statusCls(s){var m={avancou:'s-avancou',proximo:'s-proximo',concluido:'s-concluido',pausado:'s-pausado',cancelado:'s-cancelado'};return m[s]||'badge-blue';}
+function statusColor(s){var m={avancou:'var(--green)',proximo:'var(--gcal)',concluido:'var(--green)',pausado:'var(--orange)',cancelado:'var(--red)'};return m[s]||'var(--text2)';}
+function statusIcon(s){var m={avancou:'✅',proximo:'📋',concluido:'🏁',pausado:'⏸',cancelado:'❌'};return m[s]||'•';}
+function statusLabel(s){var m={avancou:'Avançou',proximo:'Próximos passos',concluido:'Concluído',pausado:'Pausado',cancelado:'Cancelado'};return m[s]||s;}
+
+// ══════════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════════
+carregarConfig();
+renderCalendario();
 </script>
 </body>
 </html>
