@@ -395,6 +395,67 @@ select option{background:var(--surface2);}
     </div>
     <div class="field"><label>Descrição / Pauta</label><textarea id="evDescricao" rows="3" placeholder="Detalhes do evento, pauta, participantes..."></textarea></div>
 
+    <!-- RECORRÊNCIA -->
+    <div class="field">
+      <label>Recorrência</label>
+      <select id="evRecorrencia" onchange="toggleRecorrencia()">
+        <option value="none">Não repetir</option>
+        <option value="daily">Diário</option>
+        <option value="weekly">Semanal</option>
+        <option value="biweekly">A cada 2 semanas</option>
+        <option value="monthly">Mensal</option>
+        <option value="custom">Personalizado</option>
+      </select>
+    </div>
+    <div id="recorrenciaOpts" style="display:none;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:12px;margin-bottom:12px">
+      <div id="recDias" style="display:none;margin-bottom:10px">
+        <label style="margin-bottom:6px">Repetir nos dias</label>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">
+          <label style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--text);cursor:pointer;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:4px 8px;text-transform:none;letter-spacing:0"><input type="checkbox" value="0" style="width:auto"> Dom</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--text);cursor:pointer;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:4px 8px;text-transform:none;letter-spacing:0"><input type="checkbox" value="1" style="width:auto"> Seg</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--text);cursor:pointer;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:4px 8px;text-transform:none;letter-spacing:0"><input type="checkbox" value="2" style="width:auto"> Ter</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--text);cursor:pointer;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:4px 8px;text-transform:none;letter-spacing:0"><input type="checkbox" value="3" style="width:auto"> Qua</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--text);cursor:pointer;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:4px 8px;text-transform:none;letter-spacing:0"><input type="checkbox" value="4" style="width:auto"> Qui</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--text);cursor:pointer;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:4px 8px;text-transform:none;letter-spacing:0"><input type="checkbox" value="5" style="width:auto"> Sex</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--text);cursor:pointer;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:4px 8px;text-transform:none;letter-spacing:0"><input type="checkbox" value="6" style="width:auto"> Sáb</label>
+        </div>
+      </div>
+      <div id="recCustom" style="display:none;margin-bottom:10px">
+        <div class="row">
+          <div class="field" style="margin-bottom:0">
+            <label>Repetir a cada</label>
+            <input type="number" id="recIntervalo" value="1" min="1" max="52">
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label>Unidade</label>
+            <select id="recUnidade">
+              <option value="days">dias</option>
+              <option value="weeks" selected>semanas</option>
+              <option value="months">meses</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row" style="margin-bottom:8px">
+        <div class="field" style="margin-bottom:0">
+          <label>Terminar por</label>
+          <select id="recFimTipo" onchange="toggleRecFim()">
+            <option value="date">Data específica</option>
+            <option value="count">Número de repetições</option>
+          </select>
+        </div>
+        <div class="field" style="margin-bottom:0" id="recFimDataField">
+          <label>Data final</label>
+          <input type="date" id="recFimData" oninput="atualizarRecPreview()">
+        </div>
+        <div class="field" style="margin-bottom:0;display:none" id="recFimCountField">
+          <label>Repetições</label>
+          <input type="number" id="recFimCount" value="4" min="2" max="365" oninput="atualizarRecPreview()">
+        </div>
+      </div>
+      <div id="recPreview" style="font-size:11px;color:var(--text2);background:var(--surface2);border-radius:var(--r);padding:8px 10px;line-height:1.7;min-height:36px"></div>
+    </div>
+
     <div id="evGcalSync" style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
       <input type="checkbox" id="evSyncGcal" style="width:auto;accent-color:var(--gcal)">
       <label for="evSyncGcal" style="text-transform:none;letter-spacing:0;font-size:12px;color:var(--text2);cursor:pointer">Criar também no Google Calendar</label>
@@ -768,6 +829,10 @@ function abrirModalEvento(key){
   document.getElementById('evGrupo').value='';
   document.getElementById('evDescricao').value='';
   document.getElementById('evSyncGcal').checked=!!_gcalToken;
+  document.getElementById('evRecorrencia').value='none';
+  document.getElementById('recorrenciaOpts').style.display='none';
+  document.getElementById('recPreview').textContent='';
+  document.getElementById('evRecorrencia').closest('.field').style.display='';
   document.getElementById('modalEventoTitulo').innerHTML='<i class="ti ti-calendar-plus"></i> Novo Evento';
   document.getElementById('evDeleteBtn').style.display='none';
 
@@ -789,6 +854,9 @@ function abrirModalEvento(key){
       document.getElementById('evDescricao').value=ev.obs||ev.descricao||'';
       document.getElementById('modalEventoTitulo').innerHTML='<i class="ti ti-pencil"></i> Editar Evento';
       document.getElementById('evDeleteBtn').style.display='';
+      // Ocultar recorrência ao editar (só na criação)
+      document.getElementById('evRecorrencia').closest('.field').style.display='none';
+      document.getElementById('recorrenciaOpts').style.display='none';
     }
   }
   abrirModal('modalEvento');
@@ -837,21 +905,48 @@ async function salvarEvento(){
     }
     toast('Evento atualizado!','ok');
   } else {
-    // CREATE
-    payload.criadoEm=now;payload.done=false;payload.origem='manual';
-    var gcalNewId=null;
-    if(syncGcal&&_gcalToken){gcalNewId=await criarNoGcal(payload);if(gcalNewId)payload.gcalId=gcalNewId;}
-    if(db){
-      var ref=await db.ref('eventos').push(payload);
-      if(grupoJid){
-        var msg=tpl(_cfg.tplCriacao,titulo,dataBR,horaInicio||'');
-        var enviado=await enviarWA(grupoJid,msg);
-        await db.ref('historico').push({tipo:'criacao',eventoId:ref.key,titulo,grupoNome,msg,status:enviado?'ok':'erro',criadoEm:now});
-        if(enviado)await db.ref('eventos/'+ref.key).update({notificadoCriacao:true});
+    // CREATE — verificar recorrência
+    var datasRec=gerarDatasRecorrencia();
+    if(datasRec&&datasRec.length>1){
+      var recId='rec_'+Date.now();
+      var criados=0;
+      for(var ri=0;ri<datasRec.length;ri++){
+        var rData=datasRec[ri];
+        var rDataBR=fmtBR(rData);
+        var rPay=Object.assign({},payload,{
+          data:rData,dataBR:rDataBR,dataFim:rData,
+          ts:new Date(rData+'T'+(horaInicio||'00:00')).getTime(),
+          criadoEm:now,done:false,origem:'manual',
+          recorrenciaId:recId,recorrenciaIndex:ri,recorrenciaTotal:datasRec.length
+        });
+        var gcalRId=null;
+        if(syncGcal&&_gcalToken){gcalRId=await criarNoGcal(rPay);if(gcalRId)rPay.gcalId=gcalRId;}
+        if(db){
+          var rRef=await db.ref('eventos').push(rPay);
+          if(grupoJid&&ri===0){
+            var rMsg=tpl(_cfg.tplCriacao,titulo,rDataBR,horaInicio||'');
+            var rEnv=await enviarWA(grupoJid,rMsg);
+            await db.ref('historico').push({tipo:'criacao',eventoId:rRef.key,titulo,grupoNome,msg:rMsg,status:rEnv?'ok':'erro',criadoEm:now});
+          }
+        }
+        criados++;
       }
+      toast('✓ '+criados+' eventos recorrentes criados!','ok');
+    } else {
+      payload.criadoEm=now;payload.done=false;payload.origem='manual';
+      var gcalNewId=null;
+      if(syncGcal&&_gcalToken){gcalNewId=await criarNoGcal(payload);if(gcalNewId)payload.gcalId=gcalNewId;}
+      if(db){
+        var ref=await db.ref('eventos').push(payload);
+        if(grupoJid){
+          var msg=tpl(_cfg.tplCriacao,titulo,dataBR,horaInicio||'');
+          var enviado=await enviarWA(grupoJid,msg);
+          await db.ref('historico').push({tipo:'criacao',eventoId:ref.key,titulo,grupoNome,msg,status:enviado?'ok':'erro',criadoEm:now});
+          if(enviado)await db.ref('eventos/'+ref.key).update({notificadoCriacao:true});
+        }
+      }
+      toast(gcalNewId?'✓ Evento criado e sincronizado!':'✓ Evento criado!','ok');
     }
-    toast(gcalNewId?'✓ Evento criado e sincronizado com Google Calendar!':'✓ Evento criado!','ok');
-  }
   fecharModal('modalEvento');
 }
 
@@ -1182,6 +1277,7 @@ function renderEventoCard(ev){
     +'<div class="ev-body">'
       +'<div class="ev-title">'+esc(ev.titulo)
         +cats.map(function(c){return'<span class="badge '+catCls(c)+'" style="margin-left:5px;font-size:10px">'+esc(c)+'</span>';}).join('')
+        +(ev.recorrenciaId?'<span class="badge" style="margin-left:4px;font-size:10px;background:var(--purple-s);color:var(--purple)"><i class="ti ti-repeat"></i> '+( ev.recorrenciaIndex!==undefined?ev.recorrenciaIndex+1+'/'+ev.recorrenciaTotal:'rec')+'</span>':'')
         +(ev.origem==='google_calendar'?'<span class="badge badge-gcal" style="margin-left:4px;font-size:10px"><i class="ti ti-brand-google"></i></span>':'')
       +'</div>'
       +'<div class="ev-meta">'
@@ -1337,6 +1433,117 @@ function statusLabel(s){var m={avancou:'Avançou',proximo:'Próximos passos',con
 // ══════════════════════════════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════
+// RECORRÊNCIA
+// ══════════════════════════════════════════════════════════════════
+function toggleRecorrencia(){
+  var v=document.getElementById('evRecorrencia').value;
+  var opts=document.getElementById('recorrenciaOpts');
+  var recDias=document.getElementById('recDias');
+  var recCustom=document.getElementById('recCustom');
+  opts.style.display=v==='none'?'none':'';
+  recDias.style.display=(v==='weekly'||v==='biweekly')?'':'none';
+  recCustom.style.display=v==='custom'?'':'none';
+  // data fim padrão = 3 meses à frente
+  if(v!=='none'&&!document.getElementById('recFimData').value){
+    var d=new Date(document.getElementById('evDataInicio').value||new Date());
+    d.setMonth(d.getMonth()+3);
+    document.getElementById('recFimData').value=d.toISOString().split('T')[0];
+  }
+  atualizarRecPreview();
+}
+
+function toggleRecFim(){
+  var t=document.getElementById('recFimTipo').value;
+  document.getElementById('recFimDataField').style.display=t==='date'?'':'none';
+  document.getElementById('recFimCountField').style.display=t==='count'?'':'none';
+  atualizarRecPreview();
+}
+
+function gerarDatasRecorrencia(){
+  var tipo=document.getElementById('evRecorrencia').value;
+  if(tipo==='none')return null;
+
+  var dataInicio=document.getElementById('evDataInicio').value;
+  if(!dataInicio)return null;
+
+  var fimTipo=document.getElementById('recFimTipo').value;
+  var fimData=document.getElementById('recFimData').value;
+  var fimCount=parseInt(document.getElementById('recFimCount').value)||4;
+
+  var datas=[];
+  var cur=new Date(dataInicio+'T12:00:00');
+  var limite=fimTipo==='date'&&fimData?new Date(fimData+'T23:59:59'):null;
+  var maxIt=fimTipo==='count'?fimCount:365;
+  var it=0;
+
+  if(tipo==='daily'){
+    while(it<maxIt&&(!limite||cur<=limite)){
+      datas.push(cur.toISOString().split('T')[0]);
+      cur=new Date(cur);cur.setDate(cur.getDate()+1);it++;
+    }
+  } else if(tipo==='weekly'){
+    var dias=Array.from(document.querySelectorAll('#recDias input[type=checkbox]:checked')).map(function(c){return parseInt(c.value);});
+    if(!dias.length)dias=[cur.getDay()];
+    // iterar dia a dia por até 1 ano
+    var scan=new Date(cur);
+    var daysScanned=0;
+    while(datas.length<maxIt&&daysScanned<365&&(!limite||scan<=limite)){
+      if(dias.indexOf(scan.getDay())>-1)datas.push(scan.toISOString().split('T')[0]);
+      scan=new Date(scan);scan.setDate(scan.getDate()+1);daysScanned++;
+    }
+  } else if(tipo==='biweekly'){
+    var dias2=Array.from(document.querySelectorAll('#recDias input[type=checkbox]:checked')).map(function(c){return parseInt(c.value);});
+    if(!dias2.length)dias2=[cur.getDay()];
+    var semana=0;
+    var scan2=new Date(cur);
+    var prevSunday=new Date(scan2);prevSunday.setDate(scan2.getDate()-scan2.getDay());
+    while(datas.length<maxIt&&(!limite||scan2<=limite)){
+      var thisSunday=new Date(scan2);thisSunday.setDate(scan2.getDate()-scan2.getDay());
+      var diffWeeks=Math.round((thisSunday-prevSunday)/(7*86400000));
+      if(diffWeeks>0){semana+=diffWeeks;prevSunday=new Date(thisSunday);}
+      if(semana%2===0&&dias2.indexOf(scan2.getDay())>-1)datas.push(scan2.toISOString().split('T')[0]);
+      scan2=new Date(scan2);scan2.setDate(scan2.getDate()+1);
+      if(datas.length>200)break;
+    }
+  } else if(tipo==='monthly'){
+    var dia=cur.getDate();
+    while(it<maxIt&&(!limite||cur<=limite)){
+      datas.push(cur.toISOString().split('T')[0]);
+      cur=new Date(cur);cur.setMonth(cur.getMonth()+1);
+      cur.setDate(Math.min(dia,new Date(cur.getFullYear(),cur.getMonth()+1,0).getDate()));
+      it++;
+    }
+  } else if(tipo==='custom'){
+    var intervalo=parseInt(document.getElementById('recIntervalo').value)||1;
+    var unidade=document.getElementById('recUnidade').value;
+    while(it<maxIt&&(!limite||cur<=limite)){
+      datas.push(cur.toISOString().split('T')[0]);
+      cur=new Date(cur);
+      if(unidade==='days')cur.setDate(cur.getDate()+intervalo);
+      else if(unidade==='weeks')cur.setDate(cur.getDate()+intervalo*7);
+      else if(unidade==='months')cur.setMonth(cur.getMonth()+intervalo);
+      it++;if(it>365)break;
+    }
+  }
+  return datas.length?datas:null;
+}
+
+function atualizarRecPreview(){
+  var datas=gerarDatasRecorrencia();
+  var el=document.getElementById('recPreview');
+  if(!datas||!datas.length){el.textContent='';return;}
+  var mostrar=datas.slice(0,5).map(function(d){return fmtBR(d);});
+  var resto=datas.length>5?(' ... + '+(datas.length-5)+' mais'):'';
+  el.innerHTML='<strong style="color:var(--accent-h)">'+datas.length+' evento'+(datas.length>1?'s':'')+'</strong> serão criados:<br>'
+    +mostrar.join('  ·  ')+resto;
+}
+
+// Ouvir mudanças nos dias da semana e intervalo para atualizar preview
+document.addEventListener('change',function(e){
+  if(e.target.closest&&(e.target.closest('#recDias')||e.target.id==='recIntervalo'||e.target.id==='recUnidade'))atualizarRecPreview();
+});
+
 carregarConfig();
 renderCalendario();
 </script>
