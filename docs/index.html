@@ -579,10 +579,7 @@ select option{background:var(--surface2);}
     <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:12px;margin-bottom:1rem">
 
       <!-- Botões de ação rápida -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
-        <button class="btn btn-green" onclick="selecionarAcaoCRM('checkin')" id="crmBtn-checkin">
-          <i class="ti ti-login"></i> Check-in
-        </button>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">
         <button class="btn btn-primary" onclick="selecionarAcaoCRM('checkout')" id="crmBtn-checkout">
           <i class="ti ti-logout"></i> Check-out
         </button>
@@ -591,7 +588,7 @@ select option{background:var(--surface2);}
           <i class="ti ti-clock-exclamation"></i> Atrasado
         </button>
         <button class="btn btn-red" onclick="selecionarAcaoCRM('cancelado')" id="crmBtn-cancelado">
-          <i class="ti ti-x"></i> Check-in cancelado
+          <i class="ti ti-x"></i> Cancelado
         </button>
       </div>
 
@@ -601,15 +598,25 @@ select option{background:var(--surface2);}
           Ação: <span id="crmAcaoLabel" style="color:var(--accent-h)"></span>
         </div>
 
-        <!-- Data/Hora do registro (editável) -->
+        <!-- Data/Hora de início e término -->
         <div class="row" style="margin-bottom:8px">
           <div class="field" style="margin-bottom:0">
-            <label>Data do registro</label>
-            <input type="date" id="crmDataRegistro">
+            <label>Data início *</label>
+            <input type="date" id="crmDataInicio">
           </div>
           <div class="field" style="margin-bottom:0">
-            <label>Hora do registro</label>
-            <input type="time" id="crmHoraRegistro">
+            <label>Hora início *</label>
+            <input type="time" id="crmHoraInicio">
+          </div>
+        </div>
+        <div class="row" style="margin-bottom:8px">
+          <div class="field" style="margin-bottom:0">
+            <label>Data término *</label>
+            <input type="date" id="crmDataFim">
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label>Hora término *</label>
+            <input type="time" id="crmHoraFim">
           </div>
         </div>
 
@@ -1162,8 +1169,20 @@ function renderCrmTimeline(key){
     container.innerHTML=updates.map(function(u,i){
       var sc=statusCls(u.status);
       var si=statusIcon(u.status);
-      var dt=u.criadoEm?new Date(u.criadoEm):null;
-      var dataHora=dt?dt.toLocaleDateString('pt-BR')+' às '+dt.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):'—';
+      // Mostrar período início→fim se disponível, senão criadoEm
+      var dataHora;
+      if(u.horaInicio&&u.horaFim){
+        var dIni = u.dataInicio ? fmtBR(u.dataInicio) : (u.criadoEm?new Date(u.criadoEm).toLocaleDateString('pt-BR'):'');
+        var dFim = u.dataFim    ? fmtBR(u.dataFim)    : dIni;
+        if(dIni===dFim){
+          dataHora = dIni + ' · ' + u.horaInicio + ' → ' + u.horaFim;
+        } else {
+          dataHora = dIni + ' ' + u.horaInicio + ' → ' + dFim + ' ' + u.horaFim;
+        }
+      } else {
+        var dt=u.criadoEm?new Date(u.criadoEm):null;
+        dataHora=dt?dt.toLocaleDateString('pt-BR')+' às '+dt.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):'—';
+      }
       var reagendaInfo='';
       if(u.reagendaData){
         reagendaInfo='<div style="background:rgba(240,136,62,.1);border:1px solid rgba(240,136,62,.3);border-radius:4px;padding:5px 8px;margin-top:5px;font-size:11px;color:var(--orange)">'
@@ -1185,10 +1204,9 @@ function renderCrmTimeline(key){
   });
 }
 
-// ── CRM CHECK-IN/OUT ─────────────────────────────────────────────
+// ── CRM CHECK-OUT ────────────────────────────────────────────────
 function selecionarAcaoCRM(acao){
-  // Highlight botão selecionado
-  ['checkin','checkout','atrasado','cancelado'].forEach(function(a){
+  ['checkout','atrasado','cancelado'].forEach(function(a){
     var btn=document.getElementById('crmBtn-'+a);
     if(btn) btn.style.opacity = a===acao?'1':'0.5';
   });
@@ -1196,45 +1214,38 @@ function selecionarAcaoCRM(acao){
   document.getElementById('crmAcaoAtual').value = acao;
   document.getElementById('crmAcaoSelecionada').style.display = '';
 
-  // Pré-preencher com data/hora atual (editável pelo usuário)
+  // Pré-preencher início com hora do evento, fim com agora
   var agora = new Date();
-  document.getElementById('crmDataRegistro').value = agora.toISOString().split('T')[0];
-  document.getElementById('crmHoraRegistro').value = agora.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  var ev = _ev.find(function(e){return e._key===_detalheKey;});
+  var hojeStr = agora.toISOString().split('T')[0];
+  var agoraHora = agora.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
 
-  var labels = {checkin:'Check-in',checkout:'Check-out',atrasado:'Atrasado',cancelado:'Check-in cancelado'};
-  var colors = {checkin:'var(--green)',checkout:'var(--accent-h)',atrasado:'var(--orange)',cancelado:'var(--red)'};
+  document.getElementById('crmDataInicio').value = (ev&&ev.data) ? ev.data : hojeStr;
+  document.getElementById('crmHoraInicio').value = (ev&&ev.hora) ? ev.hora : agoraHora;
+  document.getElementById('crmDataFim').value    = hojeStr;
+  document.getElementById('crmHoraFim').value    = agoraHora;
+
+  var labels = {checkout:'Check-out',atrasado:'Atrasado',cancelado:'Cancelado'};
+  var colors = {checkout:'var(--accent-h)',atrasado:'var(--orange)',cancelado:'var(--red)'};
   var label = document.getElementById('crmAcaoLabel');
   label.textContent = labels[acao]||acao;
   label.style.color = colors[acao]||'var(--text)';
 
-  // Nota: obrigatória no checkout, opcional nos outros
-  var notaField = document.getElementById('crmNotaField');
   var notaLabel = document.getElementById('crmNotaLabel');
   var notaArea  = document.getElementById('crmNota');
   if(acao==='checkout'){
     notaLabel.textContent = 'Resumo obrigatório *';
     notaLabel.style.color = 'var(--accent-h)';
     notaArea.placeholder  = 'Descreva o que aconteceu, principais avanços e próximos passos...';
-    notaField.style.display = '';
-  } else if(acao==='checkin'){
-    notaLabel.textContent = 'Observação (opcional)';
-    notaLabel.style.color = '';
-    notaArea.placeholder  = 'Ex: participantes presentes, local confirmado...';
-    notaField.style.display = '';
   } else {
-    // atrasado / cancelado — nota opcional, mas reagendamento obrigatório
     notaLabel.textContent = 'Motivo (opcional)';
     notaLabel.style.color = '';
     notaArea.placeholder  = 'Descreva o motivo...';
-    notaField.style.display = '';
   }
 
-  // Reagendamento: mostrar para atrasado e cancelado
   var reagBox = document.getElementById('reagendaBox');
   if(acao==='atrasado'||acao==='cancelado'){
     reagBox.classList.add('show');
-    // Preencher com a data/hora atual do evento
-    var ev = _ev.find(function(e){return e._key===_detalheKey;});
     if(ev){
       document.getElementById('reagendaData').value = ev.data||'';
       document.getElementById('reagendaHora').value = ev.hora||'';
@@ -1253,11 +1264,19 @@ async function salvarUpdateCRM(){
   if(!acao){toast('Selecione uma ação (Check-in, Check-out...).','error');return;}
   if(acao==='checkout'&&!nota){toast('O Check-out exige um resumo obrigatório.','error');return;}
 
-  // Usar data/hora editada pelo usuário
-  var dataReg  = document.getElementById('crmDataRegistro').value;
-  var horaReg  = document.getElementById('crmHoraRegistro').value;
-  var nowDate  = (dataReg && horaReg) ? new Date(dataReg + 'T' + horaReg + ':00').getTime() : Date.now();
-  // fallback: se a data/hora editada for inválida, usar agora
+  var dataInicio = document.getElementById('crmDataInicio').value;
+  var horaInicio = document.getElementById('crmHoraInicio').value;
+  var dataFim    = document.getElementById('crmDataFim').value;
+  var horaFim    = document.getElementById('crmHoraFim').value;
+
+  // Validar campos obrigatórios no checkout
+  if(acao==='checkout'){
+    if(!dataInicio||!horaInicio){toast('Informe a data e hora de início.','error');return;}
+    if(!dataFim||!horaFim){toast('Informe a data e hora de término.','error');return;}
+  }
+
+  // Timestamp baseado no fim do evento (ou agora)
+  var nowDate = (dataFim&&horaFim) ? new Date(dataFim+'T'+horaFim+':00').getTime() : Date.now();
   if(isNaN(nowDate)) nowDate = Date.now();
   var now = nowDate;
   var ev  = _ev.find(function(e){return e._key===_detalheKey;});
@@ -1272,12 +1291,14 @@ async function salvarUpdateCRM(){
   }
 
   var entry = {
-    status:   acao,
-    nota:     nota,
-    categoria:categoria,
-    criadoEm: now,
-    hora:     horaReg || new Date(now).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
-    data:     dataReg || new Date(now).toISOString().split('T')[0]
+    status:    acao,
+    nota:      nota,
+    categoria: categoria,
+    criadoEm:  now,
+    dataInicio: dataInicio || new Date().toISOString().split('T')[0],
+    horaInicio: horaInicio || '',
+    dataFim:   dataFim    || new Date().toISOString().split('T')[0],
+    horaFim:   horaFim    || new Date(now).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})
   };
 
   if(novaData) entry.reagendaData = novaData;
@@ -1287,9 +1308,21 @@ async function salvarUpdateCRM(){
   if(db){
     await db.ref('crm/'+_detalheKey).push(entry);
 
-    // Atualizar evento se checkout → concluído
+    // Atualizar evento se checkout → concluído + atualizar horários
     if(acao==='checkout'&&ev){
-      await db.ref('eventos/'+_detalheKey).update({done:true,concluidoEm:now,checkoutEm:now});
+      var updatePayload = {done:true, concluidoEm:now, checkoutEm:now};
+      if(dataInicio) updatePayload.data    = dataInicio;
+      if(dataInicio) updatePayload.dataBR  = fmtBR(dataInicio);
+      if(horaInicio) updatePayload.hora    = horaInicio;
+      if(dataFim)    updatePayload.dataFim = dataFim;
+      if(horaFim)    updatePayload.horaFim = horaFim;
+      if(dataInicio&&horaInicio) updatePayload.ts = new Date(dataInicio+'T'+horaInicio+':00').getTime();
+      await db.ref('eventos/'+_detalheKey).update(updatePayload);
+      // Sincronizar com Google Calendar se vinculado
+      if(_gcalToken&&ev.gcalId){
+        var evAtualizado=Object.assign({},ev,updatePayload);
+        await atualizarNoGcal(evAtualizado);
+      }
       if(ev.grupoJid){
         var msg=tpl(_cfg.tplConclusao,ev.titulo,ev.dataBR||fmtBR(ev.data),ev.hora||'');
         var enviado=await enviarWA(ev.grupoJid,msg);
@@ -1321,14 +1354,18 @@ async function salvarUpdateCRM(){
   document.getElementById('crmAcaoAtual').value='';
   document.getElementById('crmAcaoSelecionada').style.display='none';
   document.getElementById('reagendaBox').classList.remove('show');
-  ['checkin','checkout','atrasado','cancelado'].forEach(function(a){
+  document.getElementById('crmDataInicio').value='';
+  document.getElementById('crmHoraInicio').value='';
+  document.getElementById('crmDataFim').value='';
+  document.getElementById('crmHoraFim').value='';
+  ['checkout','atrasado','cancelado'].forEach(function(a){
     var btn=document.getElementById('crmBtn-'+a);
     if(btn) btn.style.opacity='1';
   });
 
   renderCrmTimeline(_detalheKey);
 
-  var actionLabels={checkin:'Check-in registrado!',checkout:'Check-out registrado!',atrasado:'Atraso registrado e evento reagendado.',cancelado:'Cancelamento registrado e evento reagendado.'};
+  var actionLabels={checkout:'Check-out registrado! Horários atualizados.',atrasado:'Atraso registrado e evento reagendado.',cancelado:'Cancelamento registrado e evento reagendado.'};
   toast(actionLabels[acao]||'Registrado!','ok');
 }
 
@@ -1702,10 +1739,10 @@ function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
 
 function catCls(c){var m={'Securitizadora':'cat-sec','Consultoria':'cat-con','Rede P5':'cat-red','Tempo Pessoal':'cat-pes'};return m[c]||'badge-blue';}
 function catColor(c){var m={'Securitizadora':'var(--cat-sec)','Consultoria':'var(--cat-con)','Rede P5':'var(--cat-red)','Tempo Pessoal':'var(--cat-pes)'};return m[c]||'var(--accent-h)';}
-function statusCls(s){var m={checkin:'s-checkin',checkout:'s-checkout',atrasado:'s-atrasado',cancelado:'s-cancelado'};return m[s]||'badge-blue';}
-function statusColor(s){var m={checkin:'var(--green)',checkout:'var(--accent-h)',atrasado:'var(--orange)',cancelado:'var(--red)'};return m[s]||'var(--text2)';}
-function statusIcon(s){var m={checkin:'✅',checkout:'🔵',atrasado:'⚠️',cancelado:'❌'};return m[s]||'•';}
-function statusLabel(s){var m={checkin:'Check-in',checkout:'Check-out',atrasado:'Atrasado',cancelado:'Check-in cancelado'};return m[s]||s;}
+function statusCls(s){var m={checkout:'s-checkout',atrasado:'s-atrasado',cancelado:'s-cancelado'};return m[s]||'badge-blue';}
+function statusColor(s){var m={checkout:'var(--accent-h)',atrasado:'var(--orange)',cancelado:'var(--red)'};return m[s]||'var(--text2)';}
+function statusIcon(s){var m={checkout:'✅',atrasado:'⚠️',cancelado:'❌'};return m[s]||'•';}
+function statusLabel(s){var m={checkout:'Check-out',atrasado:'Atrasado',cancelado:'Cancelado'};return m[s]||s;}
 
 // ══════════════════════════════════════════════════════════════════
 // INIT
