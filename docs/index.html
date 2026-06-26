@@ -437,6 +437,20 @@ select option{background:var(--surface2);}
     <div class="field"><label>Conclusão</label><textarea id="cfgTplConclusao" rows="3" oninput="salvarConfig()"></textarea></div>
     <p style="font-size:11px;color:var(--text2);margin-top:4px">Variáveis: <code style="background:var(--bg);padding:1px 5px;border-radius:4px">{titulo}</code> <code style="background:var(--bg);padding:1px 5px;border-radius:4px">{data}</code> <code style="background:var(--bg);padding:1px 5px;border-radius:4px">{hora}</code></p>
   </div>
+
+  <div class="card">
+    <div class="card-title"><i class="ti ti-eraser" style="color:var(--red)"></i> Limpeza de dados</div>
+    <p style="font-size:12px;color:var(--text2);margin-bottom:12px">Remove eventos duplicados com mesmo título e mesma data.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <div class="field" style="flex:1;margin-bottom:0;min-width:180px">
+        <label>Filtrar por título (opcional)</label>
+        <input type="text" id="limpezaTitulo" placeholder="Ex: CONFERENCIA ARQUIVO">
+      </div>
+      <button class="btn btn-red btn-sm" style="align-self:flex-end" onclick="limparDuplicatas(document.getElementById('limpezaTitulo').value)">
+        <i class="ti ti-trash"></i> Remover duplicatas
+      </button>
+    </div>
+  </div>
 </div>
 
 </div><!-- /main -->
@@ -1042,7 +1056,7 @@ async function salvarEvento(){
     if(db)await db.ref('eventos/'+editKey).update(payload);
     var evAtual=_ev.find(function(e){return e._key===editKey;})||{};
     var evMerged=Object.assign({},evAtual,payload,{gcalId:evAtual.gcalId||gcalId});
-    if(syncGcal&&_gcalToken){
+    if(_gcalToken){
       if(evMerged.gcalId)await atualizarNoGcal(evMerged);
       else{var newId=await criarNoGcal(evMerged);if(newId&&db)await db.ref('eventos/'+editKey).update({gcalId:newId});}
     }
@@ -1063,7 +1077,7 @@ async function salvarEvento(){
           recorrenciaId:recId,recorrenciaIndex:ri,recorrenciaTotal:datasRec.length
         });
         var gcalRId=null;
-        if(syncGcal&&_gcalToken){gcalRId=await criarNoGcal(rPay);if(gcalRId)rPay.gcalId=gcalRId;}
+        if(_gcalToken){gcalRId=await criarNoGcal(rPay);if(gcalRId)rPay.gcalId=gcalRId;}
         if(db){
           var rRef=await db.ref('eventos').push(rPay);
           if(grupoJid&&ri===0){
@@ -1078,7 +1092,7 @@ async function salvarEvento(){
     } else {
       payload.criadoEm=now;payload.done=false;payload.origem='manual';
       var gcalNewId=null;
-      if(syncGcal&&_gcalToken){gcalNewId=await criarNoGcal(payload);if(gcalNewId)payload.gcalId=gcalNewId;}
+      if(_gcalToken){gcalNewId=await criarNoGcal(payload);if(gcalNewId)payload.gcalId=gcalNewId;}
       if(db){
         var ref=await db.ref('eventos').push(payload);
         if(grupoJid){
@@ -2593,6 +2607,48 @@ function exportarPDF(){
   win.document.write(html);
   win.document.close();
   setTimeout(function(){ win.print(); }, 500);
+}
+
+// ── LIMPEZA DE DUPLICATAS ─────────────────────────────────────────
+async function limparDuplicatas(tituloFiltro){
+  if(!db) return;
+  var alvo = _ev.filter(function(e){
+    return tituloFiltro ? e.titulo.toLowerCase().includes(tituloFiltro.toLowerCase()) : true;
+  });
+
+  // Agrupar por titulo+data
+  var grupos = {};
+  alvo.forEach(function(ev){
+    var key = (ev.titulo||'').trim().toLowerCase() + '|' + (ev.data||'');
+    if(!grupos[key]) grupos[key]=[];
+    grupos[key].push(ev);
+  });
+
+  var duplicados = [];
+  Object.keys(grupos).forEach(function(k){
+    if(grupos[k].length > 1){
+      // Manter o mais antigo (criadoEm menor), deletar os outros
+      grupos[k].sort(function(a,b){ return (a.criadoEm||0)-(b.criadoEm||0); });
+      duplicados = duplicados.concat(grupos[k].slice(1)); // skip first (keep it)
+    }
+  });
+
+  if(!duplicados.length){
+    toast('Nenhuma duplicata encontrada.','ok');
+    return 0;
+  }
+
+  var count = duplicados.length;
+  if(!confirm('Encontradas ' + count + ' duplicatas de "'+tituloFiltro+'". Excluir todas?')) return 0;
+
+  var promises = duplicados.map(async function(ev){
+    if(ev.gcalId && _gcalToken) await excluirDoGcal(ev.gcalId);
+    await db.ref('eventos/'+ev._key).remove();
+    await db.ref('crm/'+ev._key).remove();
+  });
+  await Promise.all(promises);
+  toast(count + ' duplicatas removidas.','ok');
+  return count;
 }
 
 carregarConfig();
