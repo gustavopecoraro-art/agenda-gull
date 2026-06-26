@@ -30,65 +30,47 @@
   --orange-s: rgba(240,136,62,0.12);
   --purple:   #BC8CFF;
   --purple-s: rgba(188,140,255,0.12);
+  --gcal:     #4285F4;
+  --gcal-s:   rgba(66,133,244,0.12);
   --radius:   8px;
   --radius-lg:12px;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: 'Inter', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  font-size: 14px;
-  line-height: 1.5;
-}
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; line-height: 1.5; }
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
 /* HEADER */
-.header {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: 0 1rem;
-  height: 52px;
-  display: flex; align-items: center; justify-content: space-between;
-  position: sticky; top: 0; z-index: 50;
-}
+.header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 1rem; height: 52px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
 .header-left { display: flex; align-items: center; gap: 12px; }
-.logo-mark {
-  width: 28px; height: 28px;
-  background: var(--accent); border-radius: 6px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 700; color: #fff; letter-spacing: -0.5px;
-}
+.logo-mark { width: 28px; height: 28px; background: var(--accent); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; letter-spacing: -0.5px; }
 .logo-name { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: -0.2px; }
 .logo-name span { color: var(--text2); font-weight: 400; }
-.sync-pill {
-  display: flex; align-items: center; gap: 5px;
-  font-size: 11px; font-weight: 500;
-  padding: 3px 9px; border-radius: 999px; border: 1px solid;
-}
-.sync-online  { color: var(--green); border-color: var(--green-b); background: var(--green-s); }
-.sync-offline { color: var(--text2); border-color: var(--border); background: var(--surface2); }
+.header-right { display: flex; align-items: center; gap: 8px; }
+.sync-pill { display: flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 999px; border: 1px solid; }
+.sync-online  { color: var(--green);  border-color: var(--green-b); background: var(--green-s); }
+.sync-offline { color: var(--text2);  border-color: var(--border);  background: var(--surface2); }
 .sync-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
 
+/* GCAL CONNECT BANNER */
+#gcalBanner {
+  background: var(--gcal-s);
+  border-bottom: 1px solid rgba(66,133,244,0.25);
+  padding: 10px 1rem;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  flex-wrap: wrap;
+}
+#gcalBanner.hidden { display: none; }
+.gcal-banner-text { font-size: 12px; color: var(--text2); display: flex; align-items: center; gap: 8px; }
+.gcal-banner-text i { color: var(--gcal); font-size: 16px; }
+#gcalUserInfo { display: none; font-size: 12px; color: var(--text2); display: flex; align-items: center; gap: 8px; }
+#gcalUserInfo.show { display: flex; }
+
 /* NAV */
-.nav {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border2);
-  display: flex; overflow-x: auto; padding: 0 1rem;
-}
+.nav { background: var(--surface); border-bottom: 1px solid var(--border2); display: flex; overflow-x: auto; padding: 0 1rem; }
 .nav::-webkit-scrollbar { height: 0; }
-.nav-btn {
-  display: flex; align-items: center; gap: 6px;
-  padding: 11px 14px;
-  font-size: 12px; font-weight: 500;
-  color: var(--text2); background: none; border: none;
-  border-bottom: 2px solid transparent;
-  cursor: pointer; white-space: nowrap;
-  transition: color .15s, border-color .15s;
-}
+.nav-btn { display: flex; align-items: center; gap: 6px; padding: 11px 14px; font-size: 12px; font-weight: 500; color: var(--text2); background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap; transition: color .15s, border-color .15s; }
 .nav-btn:hover { color: var(--text); }
 .nav-btn.active { color: var(--accent-h); border-bottom-color: var(--accent-h); }
 .nav-btn i { font-size: 15px; }
@@ -99,40 +81,14 @@ body {
 .page.active { display: block; }
 
 /* CARDS */
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 1.25rem;
-  margin-bottom: 1rem;
-}
-.card-title {
-  font-size: 13px; font-weight: 600; color: var(--text);
-  margin-bottom: 1rem;
-  display: flex; align-items: center; gap: 8px;
-}
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1rem; }
+.card-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
 .card-title i { color: var(--accent-h); font-size: 16px; }
 
 /* FORMS */
 .field { margin-bottom: 12px; }
-label {
-  display: block;
-  font-size: 11px; font-weight: 500;
-  color: var(--text2); text-transform: uppercase;
-  letter-spacing: 0.6px; margin-bottom: 5px;
-}
-input, select, textarea {
-  width: 100%;
-  padding: 8px 10px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  color: var(--text);
-  font-size: 13px;
-  font-family: 'Inter', sans-serif;
-  outline: none;
-  transition: border-color .15s;
-}
+label { display: block; font-size: 11px; font-weight: 500; color: var(--text2); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 5px; }
+input, select, textarea { width: 100%; padding: 8px 10px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-size: 13px; font-family: 'Inter', sans-serif; outline: none; transition: border-color .15s; }
 input:focus, select:focus, textarea:focus { border-color: var(--accent); }
 input::placeholder { color: var(--text3); }
 select option { background: var(--surface2); }
@@ -140,14 +96,7 @@ select option { background: var(--surface2); }
 .row > * { flex: 1; min-width: 0; }
 
 /* BUTTONS */
-.btn {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 8px 14px; border-radius: var(--radius);
-  border: 1px solid var(--border);
-  font-size: 13px; font-weight: 500;
-  cursor: pointer; transition: all .15s;
-  background: var(--surface2); color: var(--text);
-}
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: var(--radius); border: 1px solid var(--border); font-size: 13px; font-weight: 500; cursor: pointer; transition: all .15s; background: var(--surface2); color: var(--text); }
 .btn:hover { border-color: var(--accent); color: var(--accent-h); }
 .btn:active { transform: scale(.98); }
 .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
@@ -156,47 +105,30 @@ select option { background: var(--surface2); }
 .btn-green:hover { background: rgba(63,185,80,0.2); color: var(--green); }
 .btn-red { background: var(--red-s); border-color: rgba(248,81,73,.3); color: var(--red); }
 .btn-red:hover { background: rgba(248,81,73,.2); color: var(--red); }
+.btn-gcal { background: var(--gcal-s); border-color: rgba(66,133,244,0.3); color: var(--gcal); }
+.btn-gcal:hover { background: rgba(66,133,244,0.2); color: var(--gcal); }
 .btn-sm { padding: 5px 10px; font-size: 12px; }
 .btn-full { width: 100%; justify-content: center; }
 .btn-icon { padding: 6px 8px; }
 
 /* BADGES */
-.badge {
-  display: inline-flex; align-items: center; gap: 4px;
-  padding: 2px 8px; border-radius: 999px;
-  font-size: 11px; font-weight: 500;
-}
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 500; }
 .badge-blue   { background: var(--accent-s); color: var(--accent-h); }
 .badge-green  { background: var(--green-s);  color: var(--green); }
+.badge-gcal   { background: var(--gcal-s);   color: var(--gcal); }
 .badge-purple { background: var(--purple-s); color: var(--purple); }
 
 /* STATS */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 10px; margin-bottom: 1rem;
-}
-.stat-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 1rem;
-}
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 1rem; }
+.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem; }
 .stat-label { font-size: 11px; color: var(--text2); font-weight: 500; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
 .stat-value { font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; font-family: 'JetBrains Mono', monospace; }
 .stat-sub   { font-size: 11px; color: var(--text2); margin-top: 3px; }
 
 /* EVENTS */
-.event-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 1rem;
-  margin-bottom: 8px;
-  display: flex; align-items: flex-start; gap: 12px;
-  transition: border-color .15s;
-}
+.event-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem; margin-bottom: 8px; display: flex; align-items: flex-start; gap: 12px; transition: border-color .15s; }
 .event-card:hover { border-color: var(--accent); }
+.event-card.from-gcal { border-left: 3px solid var(--gcal); }
 .event-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
 .event-body { flex: 1; min-width: 0; }
 .event-title { font-size: 14px; font-weight: 500; color: var(--text); }
@@ -207,11 +139,7 @@ select option { background: var(--surface2); }
 .event-card.done .event-title { text-decoration: line-through; }
 
 /* LOG */
-.log-item {
-  display: flex; align-items: flex-start; gap: 10px;
-  padding: 10px 0; border-bottom: 1px solid var(--border2);
-  font-size: 12px;
-}
+.log-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border2); font-size: 12px; }
 .log-item:last-child { border-bottom: none; }
 .log-dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
 .log-time { color: var(--text3); font-size: 11px; margin-top: 2px; font-family: 'JetBrains Mono', monospace; }
@@ -219,10 +147,7 @@ select option { background: var(--surface2); }
 .log-status-err { color: var(--red); }
 
 /* SECTION HEADER */
-.section-header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 1rem;
-}
+.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
 .section-title { font-size: 14px; font-weight: 600; color: var(--text); }
 .section-sub   { font-size: 12px; color: var(--text2); margin-top: 2px; }
 
@@ -236,17 +161,7 @@ select option { background: var(--surface2); }
 .divider { height: 1px; background: var(--border2); margin: 1rem 0; }
 
 /* TOAST */
-#toast {
-  position: fixed; bottom: 1.5rem; right: 1rem; left: 1rem;
-  max-width: 380px; margin: 0 auto;
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: var(--radius-lg); padding: 12px 16px;
-  font-size: 13px; color: var(--text);
-  display: flex; align-items: center; gap: 10px;
-  box-shadow: 0 8px 24px rgba(0,0,0,.4);
-  opacity: 0; transform: translateY(8px);
-  transition: all .25s; pointer-events: none; z-index: 200;
-}
+#toast { position: fixed; bottom: 1.5rem; right: 1rem; left: 1rem; max-width: 380px; margin: 0 auto; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 12px 16px; font-size: 13px; color: var(--text); display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.4); opacity: 0; transform: translateY(8px); transition: all .25s; pointer-events: none; z-index: 200; }
 #toast.show { opacity: 1; transform: translateY(0); }
 #toast i { font-size: 16px; flex-shrink: 0; }
 
@@ -256,14 +171,14 @@ select option { background: var(--surface2); }
 .test-result.err { background: var(--red-s); color: var(--red); border: 1px solid rgba(248,81,73,.3); display: block; }
 
 /* TEMPLATE PREVIEW */
-.template-preview {
-  background: var(--bg); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 10px 12px;
-  font-size: 12px; color: var(--text2);
-  font-family: 'JetBrains Mono', monospace;
-  line-height: 1.6; min-height: 60px;
-  white-space: pre-wrap; word-break: break-word;
-}
+.template-preview { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 12px; font-size: 12px; color: var(--text2); font-family: 'JetBrains Mono', monospace; line-height: 1.6; min-height: 60px; white-space: pre-wrap; word-break: break-word; }
+
+/* TABS dentro do card */
+.card-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border2); margin: -1.25rem -1.25rem 1.25rem; padding: 0 1.25rem; }
+.card-tab { padding: 10px 14px; font-size: 12px; font-weight: 500; color: var(--text2); background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; transition: all .15s; }
+.card-tab.active { color: var(--accent-h); border-bottom-color: var(--accent-h); }
+.card-tab-panel { display: none; }
+.card-tab-panel.active { display: block; }
 
 @media (max-width: 480px) {
   .stats-grid { grid-template-columns: 1fr 1fr; }
@@ -280,32 +195,49 @@ select option { background: var(--surface2); }
     <div class="logo-mark">GF</div>
     <div class="logo-name">Gull Finance <span>/ Agenda</span></div>
   </div>
-  <div id="syncPill" class="sync-pill sync-offline">
-    <div class="sync-dot"></div>
-    <span id="syncLabel">Conectando...</span>
+  <div class="header-right">
+    <div id="syncPill" class="sync-pill sync-offline">
+      <div class="sync-dot"></div>
+      <span id="syncLabel">Conectando...</span>
+    </div>
   </div>
 </header>
 
+<!-- GOOGLE CALENDAR BANNER -->
+<div id="gcalBanner">
+  <div class="gcal-banner-text">
+    <i class="ti ti-brand-google"></i>
+    <span id="gcalBannerMsg">Conecte seu Google Calendar para sincronizar eventos automaticamente.</span>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center">
+    <div id="gcalUserInfo">
+      <img id="gcalAvatar" src="" style="width:20px;height:20px;border-radius:50%">
+      <span id="gcalUserName"></span>
+      <button class="btn btn-sm btn-red" onclick="desconectarGoogle()"><i class="ti ti-logout"></i> Sair</button>
+    </div>
+    <button id="gcalConnectBtn" class="btn btn-sm btn-gcal" onclick="conectarGoogle()">
+      <i class="ti ti-brand-google"></i> Conectar Google
+    </button>
+    <button id="gcalSyncBtn" class="btn btn-sm" onclick="sincronizarCalendar()" style="display:none">
+      <i class="ti ti-refresh"></i> Sincronizar
+    </button>
+  </div>
+</div>
+
 <!-- NAV -->
 <nav class="nav">
-  <button class="nav-btn active" onclick="showPage('agenda', this)">
-    <i class="ti ti-calendar-event"></i> Agenda
-  </button>
-  <button class="nav-btn" onclick="showPage('historico', this)">
-    <i class="ti ti-history"></i> Histórico
-  </button>
-  <button class="nav-btn" onclick="showPage('config', this)">
-    <i class="ti ti-settings"></i> Configurações
-  </button>
+  <button class="nav-btn active" onclick="showPage('agenda', this)"><i class="ti ti-calendar-event"></i> Agenda</button>
+  <button class="nav-btn" onclick="showPage('historico', this)"><i class="ti ti-history"></i> Histórico</button>
+  <button class="nav-btn" onclick="showPage('config', this)"><i class="ti ti-settings"></i> Configurações</button>
 </nav>
 
 <div class="main">
 
-<!-- ── AGENDA ──────────────────────────────────────────────────── -->
+<!-- ── AGENDA ── -->
 <div id="page-agenda" class="page active">
   <div class="stats-grid">
     <div class="stat-card">
-      <div class="stat-label">Eventos hoje</div>
+      <div class="stat-label">Hoje</div>
       <div class="stat-value" id="statHoje">0</div>
       <div class="stat-sub" id="statHojeSub">nenhum agendado</div>
     </div>
@@ -319,43 +251,77 @@ select option { background: var(--surface2); }
       <div class="stat-value" id="statEnviados">0</div>
       <div class="stat-sub">via WhatsApp</div>
     </div>
+    <div class="stat-card">
+      <div class="stat-label">Google Cal</div>
+      <div class="stat-value" id="statGcal">—</div>
+      <div class="stat-sub" id="statGcalSub">não conectado</div>
+    </div>
   </div>
 
+  <!-- Novo evento com tabs Manual / Google Calendar -->
   <div class="card">
-    <div class="card-title"><i class="ti ti-plus"></i> Novo Evento</div>
-    <div class="field">
-      <label>Título do evento</label>
-      <input type="text" id="novoTitulo" placeholder="Ex: Reunião de resultados Q2">
+    <div class="card-tabs">
+      <button class="card-tab active" onclick="showCardTab('manual', this)"><i class="ti ti-pencil"></i> Manual</button>
+      <button class="card-tab" onclick="showCardTab('gcal', this)"><i class="ti ti-brand-google"></i> Do Google Calendar</button>
     </div>
-    <div class="row">
+
+    <!-- TAB: Manual -->
+    <div id="cardTab-manual" class="card-tab-panel active">
+      <div class="card-title" style="margin-bottom:.75rem"><i class="ti ti-plus"></i> Novo Evento</div>
       <div class="field">
-        <label>Data</label>
-        <input type="date" id="novaData">
+        <label>Título</label>
+        <input type="text" id="novoTitulo" placeholder="Ex: Reunião de resultados Q2">
+      </div>
+      <div class="row">
+        <div class="field"><label>Data</label><input type="date" id="novaData"></div>
+        <div class="field"><label>Hora</label><input type="time" id="novaHora"></div>
       </div>
       <div class="field">
-        <label>Hora</label>
-        <input type="time" id="novaHora">
+        <label>Grupo WhatsApp</label>
+        <select id="novoGrupo"><option value="">— selecione um grupo —</option></select>
+      </div>
+      <div class="field">
+        <label>Observação (opcional)</label>
+        <input type="text" id="novaObs" placeholder="Informações adicionais">
+      </div>
+      <div class="field">
+        <label>Preview da mensagem</label>
+        <div class="template-preview" id="msgPreview">Configure um template em Configurações.</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="criarEvento()">
+          <i class="ti ti-send"></i> Criar e notificar
+        </button>
+        <button class="btn btn-gcal" onclick="criarEventoNoCalendar()" id="btnCriarCalendar" title="Criar também no Google Calendar">
+          <i class="ti ti-brand-google"></i>
+        </button>
       </div>
     </div>
-    <div class="field">
-      <label>Grupo WhatsApp</label>
-      <select id="novoGrupo">
-        <option value="">— selecione um grupo —</option>
-      </select>
+
+    <!-- TAB: Google Calendar -->
+    <div id="cardTab-gcal" class="card-tab-panel">
+      <div class="card-title" style="margin-bottom:.75rem"><i class="ti ti-brand-google"></i> Importar do Google Calendar</div>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:1rem">Selecione eventos do seu Google Calendar para importar e notificar grupos no WhatsApp.</p>
+
+      <div id="gcalNotConnected" style="text-align:center;padding:1.5rem 0">
+        <i class="ti ti-calendar-off" style="font-size:32px;color:var(--text3);display:block;margin-bottom:.5rem"></i>
+        <p style="font-size:13px;color:var(--text2)">Google Calendar não conectado</p>
+        <button class="btn btn-gcal" style="margin-top:12px" onclick="conectarGoogle()">
+          <i class="ti ti-brand-google"></i> Conectar agora
+        </button>
+      </div>
+
+      <div id="gcalEventsList" style="display:none">
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+          <input type="date" id="gcalFiltroData" style="flex:1">
+          <button class="btn btn-sm btn-gcal" onclick="buscarEventosCalendar()"><i class="ti ti-search"></i> Buscar</button>
+        </div>
+        <div id="gcalEventosContainer"></div>
+      </div>
     </div>
-    <div class="field">
-      <label>Observação (opcional)</label>
-      <input type="text" id="novaObs" placeholder="Informações adicionais">
-    </div>
-    <div class="field">
-      <label>Preview da mensagem</label>
-      <div class="template-preview" id="msgPreview">Configure um template em Configurações.</div>
-    </div>
-    <button class="btn btn-primary btn-full" onclick="criarEvento()">
-      <i class="ti ti-send"></i> Criar e notificar grupo
-    </button>
   </div>
 
+  <!-- Lista -->
   <div class="section-header">
     <div>
       <div class="section-title">Próximos eventos</div>
@@ -369,40 +335,29 @@ select option { background: var(--surface2); }
   <div id="listaEventos"></div>
 </div>
 
-<!-- ── HISTÓRICO ──────────────────────────────────────────────── -->
+<!-- ── HISTÓRICO ── -->
 <div id="page-historico" class="page">
   <div class="section-header">
     <div>
       <div class="section-title">Histórico de mensagens</div>
       <div class="section-sub">Todas as notificações enviadas</div>
     </div>
-    <button class="btn btn-sm btn-red" onclick="limparHistorico()">
-      <i class="ti ti-trash"></i> Limpar
-    </button>
+    <button class="btn btn-sm btn-red" onclick="limparHistorico()"><i class="ti ti-trash"></i> Limpar</button>
   </div>
   <div class="card" style="padding:1rem">
     <div id="listaHistorico"></div>
   </div>
 </div>
 
-<!-- ── CONFIGURAÇÕES ──────────────────────────────────────────── -->
+<!-- ── CONFIGURAÇÕES ── -->
 <div id="page-config" class="page">
   <div class="card">
     <div class="card-title"><i class="ti ti-brand-whatsapp"></i> Evolution API / WhatsApp</div>
-    <div class="field">
-      <label>URL da API</label>
-      <input type="url" id="cfgApiUrl" placeholder="https://sua-api.exemplo.com" oninput="salvarConfig()">
-    </div>
-    <div class="field">
-      <label>API Key</label>
-      <input type="password" id="cfgApiKey" placeholder="••••••••••••" oninput="salvarConfig()">
-    </div>
-    <div class="field">
-      <label>Nome da instância</label>
-      <input type="text" id="cfgInstancia" placeholder="minha-instancia" oninput="salvarConfig()">
-    </div>
+    <div class="field"><label>URL da API</label><input type="url" id="cfgApiUrl" placeholder="https://sua-api.exemplo.com" oninput="salvarConfig()"></div>
+    <div class="field"><label>API Key</label><input type="password" id="cfgApiKey" placeholder="••••••••••••" oninput="salvarConfig()"></div>
+    <div class="field"><label>Nome da instância</label><input type="text" id="cfgInstancia" placeholder="minha-instancia" oninput="salvarConfig()"></div>
     <div class="row">
-      <button class="btn btn-green" onclick="testarConexao()"><i class="ti ti-plug"></i> Testar conexão</button>
+      <button class="btn btn-green" onclick="testarConexao()"><i class="ti ti-plug"></i> Testar</button>
       <button class="btn" onclick="buscarGrupos()"><i class="ti ti-refresh"></i> Buscar grupos</button>
     </div>
     <div id="testResult" class="test-result"></div>
@@ -414,50 +369,71 @@ select option { background: var(--surface2); }
   </div>
 
   <div class="card">
+    <div class="card-title"><i class="ti ti-brand-google"></i> Google Calendar</div>
+    <div id="cfgGcalStatus" style="font-size:12px;color:var(--text2);margin-bottom:12px">Status: não conectado</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-gcal" onclick="conectarGoogle()"><i class="ti ti-brand-google"></i> Conectar / Trocar conta</button>
+      <button class="btn btn-sm" onclick="sincronizarCalendar()"><i class="ti ti-refresh"></i> Sincronizar agora</button>
+    </div>
+    <div class="divider"></div>
+    <div class="field">
+      <label>Sincronização automática</label>
+      <select id="cfgSyncInterval" oninput="salvarConfig()">
+        <option value="0">Somente manual</option>
+        <option value="5">A cada 5 minutos</option>
+        <option value="15">A cada 15 minutos</option>
+        <option value="30">A cada 30 minutos</option>
+        <option value="60">A cada hora</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Dias à frente para importar</label>
+      <select id="cfgSyncDias" oninput="salvarConfig()">
+        <option value="1">Somente hoje</option>
+        <option value="3">Próximos 3 dias</option>
+        <option value="7" selected>Próximos 7 dias</option>
+        <option value="30">Próximos 30 dias</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Grupo padrão para eventos do Calendar</label>
+      <select id="cfgGrupoDefault" oninput="salvarConfig()">
+        <option value="">— nenhum —</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="card">
     <div class="card-title"><i class="ti ti-message"></i> Templates de Mensagem</div>
     <div class="field">
       <label>Mensagem de criação</label>
       <textarea id="cfgTemplateCriacao" rows="4" oninput="salvarConfig();atualizarPreviewTemplate()"></textarea>
     </div>
-    <div class="field">
-      <label>Preview</label>
-      <div class="template-preview" id="templatePreviewConfig"></div>
-    </div>
+    <div class="field"><label>Preview</label><div class="template-preview" id="templatePreviewConfig"></div></div>
     <div class="field">
       <label>Mensagem de conclusão</label>
       <textarea id="cfgTemplateConclusao" rows="3" oninput="salvarConfig()"></textarea>
     </div>
     <p style="font-size:11px;color:var(--text2);margin-top:4px">
-      Variáveis:
-      <code style="background:var(--bg);padding:1px 5px;border-radius:4px">{titulo}</code>
+      Variáveis: <code style="background:var(--bg);padding:1px 5px;border-radius:4px">{titulo}</code>
       <code style="background:var(--bg);padding:1px 5px;border-radius:4px">{data}</code>
       <code style="background:var(--bg);padding:1px 5px;border-radius:4px">{hora}</code>
     </p>
   </div>
-
-  <div class="card">
-    <div class="card-title"><i class="ti ti-info-circle"></i> Sobre</div>
-    <p style="font-size:12px;color:var(--text2);line-height:1.7">
-      <strong style="color:var(--text)">Gull Finance Agenda</strong> — notificações automáticas via WhatsApp integradas ao Firebase.
-    </p>
-    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-      <span class="badge badge-blue">Firebase RTDB</span>
-      <span class="badge badge-green">Evolution API</span>
-      <span class="badge badge-purple">Netlify Deploy</span>
-    </div>
-  </div>
 </div>
 
 </div><!-- /main -->
-
 <div id="toast"><i id="toastIcon" class="ti ti-check"></i><span id="toastMsg"></span></div>
 
-<!-- FIREBASE (compat SDK — sem autenticação) -->
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
+<!-- GOOGLE IDENTITY SERVICES -->
+<script src="https://accounts.google.com/gsi/client" async></script>
+
 <script>
-// ── FIREBASE CONFIG ───────────────────────────────────────────────
+// ── FIREBASE ──────────────────────────────────────────────────────
 const firebaseConfig = {
   apiKey:            "AIzaSyBuIInCIlrBRzmBtOo4RXZxDAvkls1nx_s",
   authDomain:        "gull-finance-agenda.firebaseapp.com",
@@ -465,61 +441,64 @@ const firebaseConfig = {
   projectId:         "gull-finance-agenda",
   storageBucket:     "gull-finance-agenda.firebasestorage.app",
   messagingSenderId: "562396377371",
-  appId:             "1:562396377371:web:a7ed48beb9a14a69a7a3be",
-  measurementId:     "G-8V4010378S"
+  appId:             "1:562396377371:web:a7ed48beb9a14a69a7a3be"
 };
-// ─────────────────────────────────────────────────────────────────
 
-var db = null;
-var _eventos   = [];
-var _historico = [];
-var _config    = {};
-var _grupos    = [];
+// ── GOOGLE OAUTH ──────────────────────────────────────────────────
+const GCAL_CLIENT_ID = '706655487360-rfprh37om4kjkqkqj1did7a45ib2qgb5.apps.googleusercontent.com';
+const GCAL_SCOPES    = 'https://www.googleapis.com/auth/calendar';
 
+var db          = null;
+var _eventos    = [];
+var _historico  = [];
+var _config     = {};
+var _grupos     = [];
+var _gcalToken  = null;
+var _gcalUser   = null;
+var _syncTimer  = null;
+var _tokenClient = null;
+
+// ── INIT ──────────────────────────────────────────────────────────
 try {
   firebase.initializeApp(firebaseConfig);
   db = firebase.database();
   setSyncStatus(true);
   iniciarListeners();
-  carregarConfig();
 } catch(e) {
   setSyncStatus(false);
-  console.error('Firebase:', e.message);
+  console.error('Firebase:', e);
 }
 
-// ── SYNC STATUS ───────────────────────────────────────────────────
+carregarConfig();
+iniciarGoogleAuth();
+
+// ── FIREBASE ──────────────────────────────────────────────────────
 function setSyncStatus(online) {
-  var pill  = document.getElementById('syncPill');
-  var label = document.getElementById('syncLabel');
+  var pill = document.getElementById('syncPill');
+  var lbl  = document.getElementById('syncLabel');
   pill.className    = 'sync-pill ' + (online ? 'sync-online' : 'sync-offline');
-  label.textContent = online ? 'Online' : 'Offline';
+  lbl.textContent   = online ? 'Online' : 'Offline';
 }
 
-// ── FIREBASE LISTENERS ────────────────────────────────────────────
 function iniciarListeners() {
   if (!db) return;
-
   db.ref('eventos').on('value', function(snap) {
     _eventos = [];
-    snap.forEach(function(c) { _eventos.push(Object.assign({ _key: c.key }, c.val())); });
-    _eventos.sort(function(a, b) { return (a.ts || 0) - (b.ts || 0); });
-    renderEventos();
-    atualizarStats();
+    snap.forEach(function(c){ _eventos.push(Object.assign({_key:c.key}, c.val())); });
+    _eventos.sort(function(a,b){ return (a.ts||0)-(b.ts||0); });
+    renderEventos(); atualizarStats();
   });
-
   db.ref('historico').on('value', function(snap) {
     _historico = [];
-    snap.forEach(function(c) { _historico.push(Object.assign({ _key: c.key }, c.val())); });
-    _historico.sort(function(a, b) { return (b.criadoEm || 0) - (a.criadoEm || 0); });
-    renderHistorico();
-    atualizarStats();
+    snap.forEach(function(c){ _historico.push(Object.assign({_key:c.key}, c.val())); });
+    _historico.sort(function(a,b){ return (b.criadoEm||0)-(a.criadoEm||0); });
+    renderHistorico(); atualizarStats();
   });
 }
 
-// ── CONFIG (localStorage) ─────────────────────────────────────────
+// ── CONFIG ────────────────────────────────────────────────────────
 function carregarConfig() {
-  try { _config = JSON.parse(localStorage.getItem('gfa_config') || '{}'); } catch(e) { _config = {}; }
-
+  try { _config = JSON.parse(localStorage.getItem('gfa_config') || '{}'); } catch(e){ _config={}; }
   _config.templateCriacao   = _config.templateCriacao   || '📅 *{titulo}*\n🗓 {data} às {hora}\n\nEvento registrado na agenda Gull Finance.';
   _config.templateConclusao = _config.templateConclusao || '✅ *{titulo}* concluído!\n🗓 {data} às {hora}';
 
@@ -528,102 +507,227 @@ function carregarConfig() {
   document.getElementById('cfgInstancia').value         = _config.instancia || '';
   document.getElementById('cfgTemplateCriacao').value   = _config.templateCriacao;
   document.getElementById('cfgTemplateConclusao').value = _config.templateConclusao;
+  document.getElementById('cfgSyncInterval').value      = _config.syncInterval || '0';
+  document.getElementById('cfgSyncDias').value          = _config.syncDias     || '7';
 
   _grupos = _config.grupos || [];
   popularSelectGrupos();
   atualizarPreviewTemplate();
   atualizarPreviewMsg();
+
+  // Restaurar token Google salvo
+  var savedToken = localStorage.getItem('gfa_gcal_token');
+  var savedUser  = localStorage.getItem('gfa_gcal_user');
+  if (savedToken && savedUser) {
+    _gcalToken = savedToken;
+    _gcalUser  = JSON.parse(savedUser);
+    atualizarUIGcal(true);
+  }
+
+  configurarSyncAuto();
 }
 
 function salvarConfig() {
-  _config.apiUrl      = document.getElementById('cfgApiUrl').value.trim();
-  _config.apiKey      = document.getElementById('cfgApiKey').value.trim();
-  _config.instancia   = document.getElementById('cfgInstancia').value.trim();
+  _config.apiUrl       = document.getElementById('cfgApiUrl').value.trim();
+  _config.apiKey       = document.getElementById('cfgApiKey').value.trim();
+  _config.instancia    = document.getElementById('cfgInstancia').value.trim();
   _config.templateCriacao   = document.getElementById('cfgTemplateCriacao').value;
   _config.templateConclusao = document.getElementById('cfgTemplateConclusao').value;
+  _config.syncInterval = document.getElementById('cfgSyncInterval').value;
+  _config.syncDias     = document.getElementById('cfgSyncDias').value;
+  _config.grupoDefault = document.getElementById('cfgGrupoDefault').value;
   localStorage.setItem('gfa_config', JSON.stringify(_config));
   atualizarPreviewMsg();
+  configurarSyncAuto();
 }
 
-// ── GRUPOS ────────────────────────────────────────────────────────
-function popularSelectGrupos() {
-  var sel = document.getElementById('novoGrupo');
-  sel.innerHTML = '<option value="">— selecione um grupo —</option>';
-  _grupos.forEach(function(g) {
-    var o = document.createElement('option');
-    o.value = g.jid; o.textContent = g.nome;
-    sel.appendChild(o);
-  });
+// ── GOOGLE AUTH ───────────────────────────────────────────────────
+function iniciarGoogleAuth() {
+  // Aguarda o script do Google carregar
+  var tentativas = 0;
+  var check = setInterval(function() {
+    tentativas++;
+    if (window.google && window.google.accounts) {
+      clearInterval(check);
+      _tokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: GCAL_CLIENT_ID,
+        scope: GCAL_SCOPES,
+        callback: function(resp) {
+          if (resp.error) { toast('Erro ao conectar Google: ' + resp.error, 'error'); return; }
+          _gcalToken = resp.access_token;
+          localStorage.setItem('gfa_gcal_token', _gcalToken);
+          buscarPerfilGoogle();
+        }
+      });
+    }
+    if (tentativas > 20) clearInterval(check);
+  }, 300);
 }
 
-async function buscarGrupos() {
-  var url = _config.apiUrl, key = _config.apiKey, inst = _config.instancia;
-  if (!url || !key || !inst) { toast('Configure URL, Key e Instância antes.', 'error'); return; }
-  toast('Buscando grupos...', 'info');
+function conectarGoogle() {
+  if (!_tokenClient) { toast('Aguarde o carregamento do Google...', 'info'); return; }
+  _tokenClient.requestAccessToken();
+}
+
+function desconectarGoogle() {
+  if (_gcalToken) google.accounts.oauth2.revoke(_gcalToken);
+  _gcalToken = null; _gcalUser = null;
+  localStorage.removeItem('gfa_gcal_token');
+  localStorage.removeItem('gfa_gcal_user');
+  atualizarUIGcal(false);
+  toast('Google Calendar desconectado.', 'ok');
+}
+
+async function buscarPerfilGoogle() {
   try {
-    var res = await fetch(url.replace(/\/$/, '') + '/group/fetchAllGroups/' + inst + '?getParticipants=false', {
-      headers: { 'apikey': key }
+    var res  = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+      headers: { Authorization: 'Bearer ' + _gcalToken }
     });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    var data = await res.json();
-    var lista = Array.isArray(data) ? data : (data.data || []);
-    _grupos = lista
-      .filter(function(g) { return g.id && g.id.endsWith('@g.us'); })
-      .map(function(g)    { return { jid: g.id, nome: g.subject || g.id }; });
-    _config.grupos = _grupos;
-    salvarConfig();
-    popularSelectGrupos();
+    _gcalUser = await res.json();
+    localStorage.setItem('gfa_gcal_user', JSON.stringify(_gcalUser));
+    atualizarUIGcal(true);
+    toast('Google Calendar conectado como ' + _gcalUser.name + '!', 'ok');
+    sincronizarCalendar();
+  } catch(e) { toast('Erro ao buscar perfil Google.', 'error'); }
+}
 
-    document.getElementById('gruposSection').style.display = '';
-    document.getElementById('gruposList').innerHTML = _grupos.map(function(g) {
-      return '<div style="padding:6px 0;border-bottom:1px solid var(--border2);font-size:12px;color:var(--text)">'
-        + '<span class="badge badge-green" style="margin-right:6px"><i class="ti ti-brand-whatsapp"></i></span>'
-        + esc(g.nome)
-        + '<span style="color:var(--text3);margin-left:6px;font-family:JetBrains Mono,monospace;font-size:10px">' + esc(g.jid) + '</span>'
+function atualizarUIGcal(conectado) {
+  var connectBtn  = document.getElementById('gcalConnectBtn');
+  var syncBtn     = document.getElementById('gcalSyncBtn');
+  var userInfo    = document.getElementById('gcalUserInfo');
+  var bannerMsg   = document.getElementById('gcalBannerMsg');
+  var cfgStatus   = document.getElementById('cfgGcalStatus');
+  var notConn     = document.getElementById('gcalNotConnected');
+  var eventsList  = document.getElementById('gcalEventsList');
+
+  if (conectado && _gcalUser) {
+    connectBtn.style.display = 'none';
+    syncBtn.style.display    = '';
+    userInfo.classList.add('show');
+    document.getElementById('gcalAvatar').src   = _gcalUser.picture || '';
+    document.getElementById('gcalUserName').textContent = _gcalUser.name || '';
+    bannerMsg.textContent = 'Sincronizado com ' + (_gcalUser.email || 'Google Calendar');
+    cfgStatus.textContent = 'Conectado como ' + (_gcalUser.email || '');
+    cfgStatus.style.color = 'var(--green)';
+    notConn.style.display    = 'none';
+    eventsList.style.display = '';
+    document.getElementById('statGcal').textContent  = '✓';
+    document.getElementById('statGcalSub').textContent = _gcalUser.name || 'conectado';
+  } else {
+    connectBtn.style.display = '';
+    syncBtn.style.display    = 'none';
+    userInfo.classList.remove('show');
+    bannerMsg.textContent    = 'Conecte seu Google Calendar para sincronizar eventos.';
+    cfgStatus.textContent    = 'Status: não conectado';
+    cfgStatus.style.color    = '';
+    notConn.style.display    = '';
+    eventsList.style.display = 'none';
+    document.getElementById('statGcal').textContent  = '—';
+    document.getElementById('statGcalSub').textContent = 'não conectado';
+  }
+
+  // Data padrão = hoje no filtro de busca
+  if (!document.getElementById('gcalFiltroData').value) {
+    document.getElementById('gcalFiltroData').value = new Date().toISOString().split('T')[0];
+  }
+}
+
+// ── GOOGLE CALENDAR API ───────────────────────────────────────────
+async function buscarEventosCalendar() {
+  if (!_gcalToken) { toast('Conecte o Google Calendar primeiro.', 'error'); return; }
+
+  var dataFiltro = document.getElementById('gcalFiltroData').value || new Date().toISOString().split('T')[0];
+  var dias = parseInt(_config.syncDias || '7');
+  var timeMin = new Date(dataFiltro + 'T00:00:00').toISOString();
+  var timeMax = new Date(new Date(dataFiltro).getTime() + dias * 86400000).toISOString();
+
+  var container = document.getElementById('gcalEventosContainer');
+  container.innerHTML = '<p style="font-size:12px;color:var(--text2)">Buscando eventos...</p>';
+
+  try {
+    var url = 'https://www.googleapis.com/calendar/v3/calendars/primary/events'
+      + '?timeMin=' + encodeURIComponent(timeMin)
+      + '&timeMax=' + encodeURIComponent(timeMax)
+      + '&singleEvents=true&orderBy=startTime&maxResults=50';
+
+    var res  = await fetch(url, { headers: { Authorization: 'Bearer ' + _gcalToken } });
+
+    if (res.status === 401) {
+      _gcalToken = null;
+      localStorage.removeItem('gfa_gcal_token');
+      atualizarUIGcal(false);
+      toast('Sessão expirada. Reconecte o Google.', 'error');
+      return;
+    }
+
+    var data = await res.json();
+    var items = data.items || [];
+
+    if (!items.length) {
+      container.innerHTML = '<div class="empty" style="padding:1.5rem 0"><i class="ti ti-calendar-off"></i><p>Nenhum evento encontrado nesse período</p></div>';
+      return;
+    }
+
+    container.innerHTML = items.map(function(ev) {
+      var start = ev.start.dateTime || ev.start.date;
+      var isDateTime = !!ev.start.dateTime;
+      var d = new Date(start);
+      var dataBR = d.toLocaleDateString('pt-BR');
+      var hora   = isDateTime ? d.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'}) : 'dia inteiro';
+      var jaImportado = _eventos.some(function(e){ return e.gcalId === ev.id; });
+
+      return '<div style="padding:10px 0;border-bottom:1px solid var(--border2);display:flex;align-items:flex-start;gap:10px">'
+        + '<div style="flex:1">'
+          + '<div style="font-size:13px;font-weight:500;color:var(--text)">' + esc(ev.summary || 'Sem título') + '</div>'
+          + '<div style="font-size:11px;color:var(--text2);margin-top:2px">'
+            + '<i class="ti ti-calendar" style="font-size:11px"></i> ' + dataBR + ' ' + hora
+          + '</div>'
+        + '</div>'
+        + (jaImportado
+          ? '<span class="badge badge-green"><i class="ti ti-check"></i> Importado</span>'
+          : '<button class="btn btn-sm btn-gcal" onclick="importarEventoCalendar(' + JSON.stringify(ev).replace(/"/g,'&quot;') + ')">'
+            + '<i class="ti ti-download"></i> Importar</button>')
         + '</div>';
     }).join('');
-    toast(_grupos.length + ' grupos encontrados.', 'ok');
-  } catch(e) { toast('Erro: ' + e.message, 'error'); }
+
+  } catch(e) {
+    container.innerHTML = '<p style="font-size:12px;color:var(--red)">Erro: ' + esc(e.message) + '</p>';
+  }
 }
 
-async function testarConexao() {
-  var url = _config.apiUrl, key = _config.apiKey, inst = _config.instancia;
-  var el = document.getElementById('testResult');
-  if (!url || !key || !inst) { el.className='test-result err'; el.textContent='⚠ Preencha URL, Key e Instância.'; return; }
-  el.className='test-result ok'; el.textContent='Testando...';
-  try {
-    var res = await fetch(url.replace(/\/$/, '') + '/instance/fetchInstances', { headers: { 'apikey': key } });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    el.className='test-result ok'; el.textContent='✓ Conexão OK — API respondendo.';
-  } catch(e) { el.className='test-result err'; el.textContent='✗ Falha: ' + e.message; }
+async function sincronizarCalendar() {
+  if (!_gcalToken) return;
+  await buscarEventosCalendar();
+  toast('Calendar sincronizado!', 'ok');
 }
 
-// ── EVENTOS ───────────────────────────────────────────────────────
-var _filtroHoje = false;
+async function importarEventoCalendar(ev) {
+  var grupoJid = _config.grupoDefault || document.getElementById('novoGrupo').value;
+  if (!grupoJid) {
+    toast('Selecione um grupo padrão em Configurações ou na aba Manual.', 'warn');
+    return;
+  }
 
-async function criarEvento() {
-  var titulo   = document.getElementById('novoTitulo').value.trim();
-  var data     = document.getElementById('novaData').value;
-  var hora     = document.getElementById('novaHora').value;
-  var grupoJid = document.getElementById('novoGrupo').value;
-  var obs      = document.getElementById('novaObs').value.trim();
-
-  if (!titulo)   { toast('Informe o título.', 'error'); return; }
-  if (!data)     { toast('Informe a data.', 'error'); return; }
-  if (!hora)     { toast('Informe a hora.', 'error'); return; }
-  if (!grupoJid) { toast('Selecione um grupo.', 'error'); return; }
-
+  var start = ev.start.dateTime || ev.start.date;
+  var isDateTime = !!ev.start.dateTime;
+  var d      = new Date(start);
+  var data   = d.toISOString().split('T')[0];
+  var hora   = isDateTime ? d.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'}) : '00:00';
+  var dataBR = d.toLocaleDateString('pt-BR');
+  var titulo = ev.summary || 'Evento do Google Calendar';
   var grupoNome = (_grupos.find(function(g){ return g.jid === grupoJid; }) || {}).nome || grupoJid;
-  var dataBR = formatarDataBR(data);
-  var msg    = aplicarTemplate(_config.templateCriacao, titulo, dataBR, hora);
+
+  var msg     = aplicarTemplate(_config.templateCriacao, titulo, dataBR, hora);
   var enviado = await enviarWhatsApp(grupoJid, msg);
-  var now = Date.now();
+  var now     = Date.now();
 
   var evento = {
     titulo: titulo, data: data, dataBR: dataBR, hora: hora,
-    grupoJid: grupoJid, grupoNome: grupoNome, obs: obs,
-    ts: new Date(data + 'T' + hora).getTime(),
+    grupoJid: grupoJid, grupoNome: grupoNome,
+    obs: ev.description || '', ts: d.getTime(),
     criadoEm: now, done: false,
+    gcalId: ev.id, gcalLink: ev.htmlLink || '',
+    origem: 'google_calendar',
     notificadoCriacao: enviado, notificadoCriacaoEm: now
   };
 
@@ -632,196 +736,276 @@ async function criarEvento() {
     await db.ref('historico').push({
       tipo: 'criacao', eventoId: ref.key, titulo: titulo,
       grupoNome: grupoNome, msg: msg,
-      status: enviado ? 'ok' : 'erro', criadoEm: now
+      status: enviado ? 'ok' : 'erro', criadoEm: now, origem: 'google_calendar'
     });
   }
 
-  document.getElementById('novoTitulo').value = '';
-  document.getElementById('novaObs').value    = '';
+  // Atualiza a lista do calendar
+  buscarEventosCalendar();
+  toast(enviado ? '✓ Importado e grupo notificado!' : '⚠ Importado, mas envio falhou.', enviado ? 'ok' : 'warn');
+}
+
+async function criarEventoNoCalendar() {
+  if (!_gcalToken) { toast('Conecte o Google Calendar primeiro.', 'error'); return; }
+  var titulo = document.getElementById('novoTitulo').value.trim();
+  var data   = document.getElementById('novaData').value;
+  var hora   = document.getElementById('novaHora').value;
+  if (!titulo || !data || !hora) { toast('Preencha título, data e hora primeiro.', 'error'); return; }
+
+  var startDT = data + 'T' + hora + ':00';
+  var endDT   = data + 'T' + (String(parseInt(hora.split(':')[0])+1).padStart(2,'0')) + ':' + hora.split(':')[1] + ':00';
+
+  try {
+    var res = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer ' + _gcalToken, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        summary: titulo,
+        description: document.getElementById('novaObs').value.trim(),
+        start: { dateTime: startDT, timeZone: 'America/Sao_Paulo' },
+        end:   { dateTime: endDT,   timeZone: 'America/Sao_Paulo' }
+      })
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    toast('✓ Evento criado no Google Calendar!', 'ok');
+  } catch(e) { toast('Erro ao criar no Calendar: ' + e.message, 'error'); }
+}
+
+function configurarSyncAuto() {
+  clearInterval(_syncTimer);
+  var mins = parseInt(_config.syncInterval || '0');
+  if (mins > 0) {
+    _syncTimer = setInterval(function(){ sincronizarCalendar(); }, mins * 60 * 1000);
+  }
+}
+
+// ── GRUPOS ────────────────────────────────────────────────────────
+function popularSelectGrupos() {
+  ['novoGrupo','cfgGrupoDefault'].forEach(function(id) {
+    var sel = document.getElementById(id);
+    var val = sel.value;
+    sel.innerHTML = '<option value="">— selecione —</option>';
+    _grupos.forEach(function(g){
+      var o = document.createElement('option');
+      o.value = g.jid; o.textContent = g.nome;
+      sel.appendChild(o);
+    });
+    sel.value = val;
+  });
+  if (_config.grupoDefault) document.getElementById('cfgGrupoDefault').value = _config.grupoDefault;
+}
+
+async function buscarGrupos() {
+  var url = _config.apiUrl, key = _config.apiKey, inst = _config.instancia;
+  if (!url||!key||!inst){ toast('Configure URL, Key e Instância.','error'); return; }
+  toast('Buscando grupos...','info');
+  try {
+    var res = await fetch(url.replace(/\/$/,'')+'/group/fetchAllGroups/'+inst+'?getParticipants=false',{headers:{'apikey':key}});
+    if (!res.ok) throw new Error('HTTP '+res.status);
+    var data = await res.json();
+    var lista = Array.isArray(data)?data:(data.data||[]);
+    _grupos = lista.filter(function(g){return g.id&&g.id.endsWith('@g.us');}).map(function(g){return{jid:g.id,nome:g.subject||g.id};});
+    _config.grupos = _grupos; salvarConfig(); popularSelectGrupos();
+    document.getElementById('gruposSection').style.display='';
+    document.getElementById('gruposList').innerHTML = _grupos.map(function(g){
+      return '<div style="padding:6px 0;border-bottom:1px solid var(--border2);font-size:12px;color:var(--text)">'
+        +'<span class="badge badge-green" style="margin-right:6px"><i class="ti ti-brand-whatsapp"></i></span>'+esc(g.nome)
+        +'<span style="color:var(--text3);margin-left:6px;font-family:monospace;font-size:10px">'+esc(g.jid)+'</span></div>';
+    }).join('');
+    toast(_grupos.length+' grupos encontrados.','ok');
+  } catch(e){ toast('Erro: '+e.message,'error'); }
+}
+
+async function testarConexao() {
+  var url=_config.apiUrl,key=_config.apiKey,inst=_config.instancia;
+  var el=document.getElementById('testResult');
+  if (!url||!key||!inst){el.className='test-result err';el.textContent='⚠ Preencha URL, Key e Instância.';return;}
+  el.className='test-result ok';el.textContent='Testando...';
+  try {
+    var res=await fetch(url.replace(/\/$/,'')+'/instance/fetchInstances',{headers:{'apikey':key}});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    el.className='test-result ok';el.textContent='✓ Conexão OK.';
+  } catch(e){el.className='test-result err';el.textContent='✗ Falha: '+e.message;}
+}
+
+// ── EVENTOS ───────────────────────────────────────────────────────
+var _filtroHoje = false;
+
+async function criarEvento() {
+  var titulo=document.getElementById('novoTitulo').value.trim();
+  var data=document.getElementById('novaData').value;
+  var hora=document.getElementById('novaHora').value;
+  var grupoJid=document.getElementById('novoGrupo').value;
+  var obs=document.getElementById('novaObs').value.trim();
+  if (!titulo){toast('Informe o título.','error');return;}
+  if (!data){toast('Informe a data.','error');return;}
+  if (!hora){toast('Informe a hora.','error');return;}
+  if (!grupoJid){toast('Selecione um grupo.','error');return;}
+
+  var grupoNome=(_grupos.find(function(g){return g.jid===grupoJid;})||{}).nome||grupoJid;
+  var dataBR=formatarDataBR(data);
+  var msg=aplicarTemplate(_config.templateCriacao,titulo,dataBR,hora);
+  var enviado=await enviarWhatsApp(grupoJid,msg);
+  var now=Date.now();
+
+  var evento={titulo,data,dataBR,hora,grupoJid,grupoNome,obs,ts:new Date(data+'T'+hora).getTime(),criadoEm:now,done:false,notificadoCriacao:enviado,notificadoCriacaoEm:now,origem:'manual'};
+  if (db) {
+    var ref=await db.ref('eventos').push(evento);
+    await db.ref('historico').push({tipo:'criacao',eventoId:ref.key,titulo,grupoNome,msg,status:enviado?'ok':'erro',criadoEm:now});
+  }
+  document.getElementById('novoTitulo').value='';
+  document.getElementById('novaObs').value='';
   atualizarPreviewMsg();
-  toast(enviado ? '✓ Evento criado e grupo notificado!' : '⚠ Evento criado, mas envio falhou.', enviado ? 'ok' : 'warn');
+  toast(enviado?'✓ Criado e grupo notificado!':'⚠ Criado, mas envio falhou.',enviado?'ok':'warn');
 }
 
 async function concluirEvento(key) {
-  var ev = _eventos.find(function(e){ return e._key === key; });
-  if (!ev || !confirm('Marcar "' + ev.titulo + '" como concluído?')) return;
-  var dataBR  = ev.dataBR || formatarDataBR(ev.data);
-  var msg     = aplicarTemplate(_config.templateConclusao, ev.titulo, dataBR, ev.hora);
-  var enviado = await enviarWhatsApp(ev.grupoJid, msg);
-  var now = Date.now();
+  var ev=_eventos.find(function(e){return e._key===key;});
+  if (!ev||!confirm('Marcar "'+ev.titulo+'" como concluído?')) return;
+  var dataBR=ev.dataBR||formatarDataBR(ev.data);
+  var msg=aplicarTemplate(_config.templateConclusao,ev.titulo,dataBR,ev.hora);
+  var enviado=await enviarWhatsApp(ev.grupoJid,msg);
+  var now=Date.now();
   if (db) {
-    await db.ref('eventos/' + key).update({ done: true, concluidoEm: now });
-    await db.ref('historico').push({
-      tipo: 'conclusao', eventoId: key, titulo: ev.titulo,
-      grupoNome: ev.grupoNome, msg: msg,
-      status: enviado ? 'ok' : 'erro', criadoEm: now
-    });
+    await db.ref('eventos/'+key).update({done:true,concluidoEm:now});
+    await db.ref('historico').push({tipo:'conclusao',eventoId:key,titulo:ev.titulo,grupoNome:ev.grupoNome,msg,status:enviado?'ok':'erro',criadoEm:now});
   }
-  toast(enviado ? '✓ Concluído e grupo notificado!' : '⚠ Concluído, mas envio falhou.', enviado ? 'ok' : 'warn');
+  toast(enviado?'✓ Concluído e notificado!':'⚠ Concluído, mas envio falhou.',enviado?'ok':'warn');
 }
 
 async function excluirEvento(key) {
-  var ev = _eventos.find(function(e){ return e._key === key; });
-  if (!ev || !confirm('Excluir "' + ev.titulo + '"?')) return;
-  if (db) await db.ref('eventos/' + key).remove();
-  toast('Evento removido.', 'ok');
+  var ev=_eventos.find(function(e){return e._key===key;});
+  if (!ev||!confirm('Excluir "'+ev.titulo+'"?')) return;
+  if (db) await db.ref('eventos/'+key).remove();
+  toast('Evento removido.','ok');
 }
 
-function filtrarHoje() {
-  _filtroHoje = true;
-  document.getElementById('labelFiltro').textContent = 'Somente hoje';
-  renderEventos();
-}
-function filtrarTodos() {
-  _filtroHoje = false;
-  document.getElementById('labelFiltro').textContent = 'Todos os eventos';
-  renderEventos();
-}
+function filtrarHoje(){_filtroHoje=true;document.getElementById('labelFiltro').textContent='Somente hoje';renderEventos();}
+function filtrarTodos(){_filtroHoje=false;document.getElementById('labelFiltro').textContent='Todos os eventos';renderEventos();}
 
 function renderEventos() {
-  var container = document.getElementById('listaEventos');
-  var hoje  = new Date().toISOString().split('T')[0];
-  var lista = _filtroHoje ? _eventos.filter(function(e){ return e.data === hoje; }) : _eventos;
-
-  if (!lista.length) {
-    container.innerHTML = '<div class="empty"><i class="ti ti-calendar-off"></i><p>Nenhum evento encontrado</p><small>Crie um evento acima para começar</small></div>';
+  var container=document.getElementById('listaEventos');
+  var hoje=new Date().toISOString().split('T')[0];
+  var lista=_filtroHoje?_eventos.filter(function(e){return e.data===hoje;}):_eventos;
+  if (!lista.length){
+    container.innerHTML='<div class="empty"><i class="ti ti-calendar-off"></i><p>Nenhum evento encontrado</p><small>Crie um evento ou importe do Google Calendar</small></div>';
     return;
   }
-  container.innerHTML = lista.map(function(ev) {
-    var cor = ev.done ? 'var(--text3)' : (ev.data === hoje ? 'var(--accent-h)' : 'var(--green)');
-    return '<div class="event-card' + (ev.done ? ' done' : '') + '">'
-      + '<div class="event-dot" style="background:' + cor + '"></div>'
-      + '<div class="event-body">'
-        + '<div class="event-title">' + esc(ev.titulo) + '</div>'
-        + '<div class="event-meta">'
-          + '<span><i class="ti ti-calendar"></i>' + (ev.dataBR || ev.data) + ' ' + (ev.hora || '') + '</span>'
-          + '<span><i class="ti ti-brand-whatsapp"></i>' + esc(ev.grupoNome || '—') + '</span>'
-          + (ev.obs ? '<span><i class="ti ti-note"></i>' + esc(ev.obs) + '</span>' : '')
-        + '</div>'
-      + '</div>'
-      + '<div class="event-actions">'
-        + (!ev.done ? '<button class="btn btn-sm btn-green btn-icon" title="Concluir" onclick="concluirEvento(\'' + ev._key + '\')"><i class="ti ti-check"></i></button>' : '')
-        + '<button class="btn btn-sm btn-red btn-icon" title="Excluir" onclick="excluirEvento(\'' + ev._key + '\')"><i class="ti ti-trash"></i></button>'
-      + '</div>'
-      + '</div>';
+  container.innerHTML=lista.map(function(ev){
+    var cor=ev.done?'var(--text3)':(ev.data===hoje?'var(--accent-h)':'var(--green)');
+    var gcalBadge=ev.origem==='google_calendar'?'<span class="badge badge-gcal" style="margin-left:6px"><i class="ti ti-brand-google"></i> Calendar</span>':'';
+    return '<div class="event-card'+(ev.done?' done':'')+(ev.origem==='google_calendar'?' from-gcal':'')+'">'
+      +'<div class="event-dot" style="background:'+cor+'"></div>'
+      +'<div class="event-body">'
+        +'<div class="event-title">'+esc(ev.titulo)+gcalBadge+'</div>'
+        +'<div class="event-meta">'
+          +'<span><i class="ti ti-calendar"></i>'+(ev.dataBR||ev.data)+' '+(ev.hora||'')+'</span>'
+          +'<span><i class="ti ti-brand-whatsapp"></i>'+esc(ev.grupoNome||'—')+'</span>'
+          +(ev.obs?'<span><i class="ti ti-note"></i>'+esc(ev.obs)+'</span>':'')
+        +'</div>'
+      +'</div>'
+      +'<div class="event-actions">'
+        +(!ev.done?'<button class="btn btn-sm btn-green btn-icon" title="Concluir" onclick="concluirEvento(\''+ev._key+'\')"><i class="ti ti-check"></i></button>':'')
+        +'<button class="btn btn-sm btn-red btn-icon" title="Excluir" onclick="excluirEvento(\''+ev._key+'\')"><i class="ti ti-trash"></i></button>'
+      +'</div>'
+      +'</div>';
   }).join('');
 }
 
 function atualizarStats() {
-  var hoje = new Date().toISOString().split('T')[0];
-  var eventoHoje = _eventos.filter(function(e){ return e.data === hoje; }).length;
-  var pendentes  = _eventos.filter(function(e){ return !e.done; }).length;
-  var cutoff     = Date.now() - 30 * 24 * 60 * 60 * 1000;
-  var enviados   = _historico.filter(function(h){ return (h.criadoEm || 0) >= cutoff && h.status === 'ok'; }).length;
-
-  document.getElementById('statHoje').textContent     = eventoHoje;
-  document.getElementById('statHojeSub').textContent  = eventoHoje === 1 ? '1 evento' : (eventoHoje === 0 ? 'nenhum agendado' : eventoHoje + ' eventos');
-  document.getElementById('statPendentes').textContent = pendentes;
-  document.getElementById('statEnviados').textContent  = enviados;
+  var hoje=new Date().toISOString().split('T')[0];
+  var eventoHoje=_eventos.filter(function(e){return e.data===hoje;}).length;
+  var pendentes=_eventos.filter(function(e){return !e.done;}).length;
+  var cutoff=Date.now()-30*24*60*60*1000;
+  var enviados=_historico.filter(function(h){return (h.criadoEm||0)>=cutoff&&h.status==='ok';}).length;
+  document.getElementById('statHoje').textContent=eventoHoje;
+  document.getElementById('statHojeSub').textContent=eventoHoje===0?'nenhum agendado':eventoHoje+' evento'+(eventoHoje>1?'s':'');
+  document.getElementById('statPendentes').textContent=pendentes;
+  document.getElementById('statEnviados').textContent=enviados;
 }
 
 // ── HISTÓRICO ─────────────────────────────────────────────────────
 function renderHistorico() {
-  var container = document.getElementById('listaHistorico');
-  if (!_historico.length) {
-    container.innerHTML = '<div class="empty"><i class="ti ti-history"></i><p>Nenhuma mensagem enviada ainda</p></div>';
-    return;
-  }
-  container.innerHTML = _historico.slice(0, 100).map(function(h) {
-    var cor   = h.status === 'ok' ? 'var(--green)' : 'var(--red)';
-    var icone = h.tipo === 'conclusao' ? 'ti-check' : 'ti-send';
-    var data  = h.criadoEm ? new Date(h.criadoEm).toLocaleString('pt-BR') : '—';
+  var container=document.getElementById('listaHistorico');
+  if (!_historico.length){container.innerHTML='<div class="empty"><i class="ti ti-history"></i><p>Nenhuma mensagem enviada ainda</p></div>';return;}
+  container.innerHTML=_historico.slice(0,100).map(function(h){
+    var cor=h.status==='ok'?'var(--green)':'var(--red)';
+    var icone=h.tipo==='conclusao'?'ti-check':'ti-send';
+    var gcalTag=h.origem==='google_calendar'?' <span class="badge badge-gcal" style="font-size:10px"><i class="ti ti-brand-google"></i></span>':'';
     return '<div class="log-item">'
-      + '<div class="log-dot" style="background:' + cor + '"></div>'
-      + '<div style="flex:1">'
-        + '<div style="font-size:12px;color:var(--text)">'
-          + '<i class="ti ' + icone + '" style="font-size:11px;margin-right:4px"></i>'
-          + '<strong>' + esc(h.titulo || '—') + '</strong> → ' + esc(h.grupoNome || '—')
-          + ' <span class="' + (h.status === 'ok' ? 'log-status-ok' : 'log-status-err') + '">'
-          + (h.status === 'ok' ? '✓ enviado' : '✗ falhou') + '</span>'
-        + '</div>'
-        + '<div class="log-time">' + data + '</div>'
-      + '</div>'
-      + '</div>';
+      +'<div class="log-dot" style="background:'+cor+'"></div>'
+      +'<div style="flex:1">'
+        +'<div style="font-size:12px;color:var(--text)"><i class="ti '+icone+'" style="font-size:11px;margin-right:4px"></i>'
+          +'<strong>'+esc(h.titulo||'—')+'</strong> → '+esc(h.grupoNome||'—')+gcalTag
+          +' <span class="'+(h.status==='ok'?'log-status-ok':'log-status-err')+'">'+(h.status==='ok'?'✓ enviado':'✗ falhou')+'</span>'
+        +'</div>'
+        +'<div class="log-time">'+(h.criadoEm?new Date(h.criadoEm).toLocaleString('pt-BR'):'—')+'</div>'
+      +'</div></div>';
   }).join('');
 }
 
-function limparHistorico() {
-  if (!confirm('Limpar todo o histórico?')) return;
-  if (db) db.ref('historico').remove();
-  toast('Histórico limpo.', 'ok');
-}
+function limparHistorico(){if(!confirm('Limpar todo o histórico?'))return;if(db)db.ref('historico').remove();toast('Histórico limpo.','ok');}
 
 // ── WHATSAPP ──────────────────────────────────────────────────────
-async function enviarWhatsApp(jid, mensagem) {
-  var url = _config.apiUrl, key = _config.apiKey, inst = _config.instancia;
-  if (!url || !key || !inst || !jid) return false;
-  try {
-    var res = await fetch(url.replace(/\/$/, '') + '/message/sendText/' + inst, {
-      method: 'POST',
-      headers: { 'apikey': key, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ number: jid, text: mensagem })
-    });
+async function enviarWhatsApp(jid,mensagem){
+  var url=_config.apiUrl,key=_config.apiKey,inst=_config.instancia;
+  if(!url||!key||!inst||!jid)return false;
+  try{
+    var res=await fetch(url.replace(/\/$/,'')+'/message/sendText/'+inst,{method:'POST',headers:{'apikey':key,'Content-Type':'application/json'},body:JSON.stringify({number:jid,text:mensagem})});
     return res.ok;
-  } catch(e) { console.error('WA:', e); return false; }
+  }catch(e){console.error('WA:',e);return false;}
 }
 
 // ── HELPERS ───────────────────────────────────────────────────────
-function showPage(id, btn) {
-  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
-  document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
-  document.getElementById('page-' + id).classList.add('active');
-  if (btn) btn.classList.add('active');
-  if (id === 'config') atualizarPreviewTemplate();
+function showPage(id,btn){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('page-'+id).classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(id==='config')atualizarPreviewTemplate();
 }
 
-function atualizarPreviewTemplate() {
-  var tpl = document.getElementById('cfgTemplateCriacao').value;
-  document.getElementById('templatePreviewConfig').textContent =
-    aplicarTemplate(tpl, 'Reunião de resultados', '15/07/2025', '14:00');
+function showCardTab(id,btn){
+  document.querySelectorAll('.card-tab-panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.card-tab').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('cardTab-'+id).classList.add('active');
+  if(btn)btn.classList.add('active');
 }
 
-function atualizarPreviewMsg() {
-  var titulo = document.getElementById('novoTitulo').value || 'Título do evento';
-  var data   = formatarDataBR(document.getElementById('novaData').value) || 'dd/mm/aaaa';
-  var hora   = document.getElementById('novaHora').value || '00:00';
-  document.getElementById('msgPreview').textContent =
-    aplicarTemplate(_config.templateCriacao || '', titulo, data, hora);
+function atualizarPreviewTemplate(){
+  var tpl=document.getElementById('cfgTemplateCriacao').value;
+  document.getElementById('templatePreviewConfig').textContent=aplicarTemplate(tpl,'Reunião de resultados','15/07/2025','14:00');
 }
-
-function aplicarTemplate(tpl, titulo, data, hora) {
-  return (tpl || '').replace(/{titulo}/g, titulo).replace(/{data}/g, data).replace(/{hora}/g, hora);
+function atualizarPreviewMsg(){
+  var titulo=document.getElementById('novoTitulo').value||'Título do evento';
+  var data=formatarDataBR(document.getElementById('novaData').value)||'dd/mm/aaaa';
+  var hora=document.getElementById('novaHora').value||'00:00';
+  document.getElementById('msgPreview').textContent=aplicarTemplate(_config.templateCriacao||'',titulo,data,hora);
 }
+function aplicarTemplate(tpl,titulo,data,hora){return(tpl||'').replace(/{titulo}/g,titulo).replace(/{data}/g,data).replace(/{hora}/g,hora);}
+function formatarDataBR(iso){if(!iso)return'';var p=iso.split('-');return p[2]+'/'+p[1]+'/'+p[0];}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
-function formatarDataBR(iso) {
-  if (!iso) return '';
-  var p = iso.split('-');
-  return p[2] + '/' + p[1] + '/' + p[0];
-}
-
-function esc(s) {
-  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-var _toastTimer = null;
-function toast(msg, tipo) {
-  var icons  = { ok:'ti-check', error:'ti-x', warn:'ti-alert-triangle', info:'ti-info-circle' };
-  var colors = { ok:'var(--green)', error:'var(--red)', warn:'var(--orange)', info:'var(--accent-h)' };
-  var icon   = document.getElementById('toastIcon');
-  icon.className   = 'ti ' + (icons[tipo]  || 'ti-check');
-  icon.style.color = colors[tipo] || 'var(--green)';
-  document.getElementById('toastMsg').textContent = msg;
-  var el = document.getElementById('toast');
+var _toastTimer=null;
+function toast(msg,tipo){
+  var icons={ok:'ti-check',error:'ti-x',warn:'ti-alert-triangle',info:'ti-info-circle'};
+  var colors={ok:'var(--green)',error:'var(--red)',warn:'var(--orange)',info:'var(--accent-h)'};
+  var icon=document.getElementById('toastIcon');
+  icon.className='ti '+(icons[tipo]||'ti-check');
+  icon.style.color=colors[tipo]||'var(--green)';
+  document.getElementById('toastMsg').textContent=msg;
+  var el=document.getElementById('toast');
   el.classList.add('show');
   clearTimeout(_toastTimer);
-  _toastTimer = setTimeout(function(){ el.classList.remove('show'); }, 3500);
+  _toastTimer=setTimeout(function(){el.classList.remove('show');},3500);
 }
 
-// data padrão = hoje
-document.getElementById('novaData').value = new Date().toISOString().split('T')[0];
-document.getElementById('novoTitulo').addEventListener('input', atualizarPreviewMsg);
-document.getElementById('novaData').addEventListener('input', atualizarPreviewMsg);
-document.getElementById('novaHora').addEventListener('input', atualizarPreviewMsg);
+// Init
+document.getElementById('novaData').value=new Date().toISOString().split('T')[0];
+document.getElementById('gcalFiltroData').value=new Date().toISOString().split('T')[0];
+document.getElementById('novoTitulo').addEventListener('input',atualizarPreviewMsg);
+document.getElementById('novaData').addEventListener('input',atualizarPreviewMsg);
+document.getElementById('novaHora').addEventListener('input',atualizarPreviewMsg);
 </script>
 </body>
 </html>
