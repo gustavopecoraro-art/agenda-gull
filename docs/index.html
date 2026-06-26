@@ -879,16 +879,7 @@ async function sincronizarGcalCompleto(){
       }
     }
 
-    // 3. Verificar eventos do Firebase sem gcalId que precisam ir pro Calendar
-    for(var j=0;j<_ev.length;j++){
-      var ev=_ev[j];
-      if(!ev.gcalId&&!ev.done&&ev.origem!=='sistema'){
-        var gcalId=await criarNoGcal(ev);
-        if(gcalId){
-          await db.ref('eventos/'+ev._key).update({gcalId:gcalId,gcalSynced:true});
-        }
-      }
-    }
+    // 3. Novos eventos são sincronizados na criação — sem loop aqui para não travar
   }catch(e){console.error('Sync GCal:',e);}
 }
 
@@ -1125,10 +1116,6 @@ async function confirmarExclusao(ev, key, gcalId, onSingle, onAll){
     + 'Cancelar = Excluir TODA a serie (' + total + ' eventos)'
   );
   if(escolha===true){
-    // so este
-    await onSingle();
-  if(escolha===true){
-    // só este
     await onSingle();
   } else {
     // toda a série
@@ -2639,7 +2626,7 @@ async function limparDuplicatas(tituloFiltro){
   }
 
   var count = duplicados.length;
-  if(!confirm('Encontradas ' + count + ' duplicatas de "'+tituloFiltro+'". Excluir todas?')) return 0;
+  if(!confirm('Encontradas ' + count + ' duplicatas de ['+tituloFiltro+']. Excluir todas?')) return 0;
 
   var promises = duplicados.map(async function(ev){
     if(ev.gcalId && _gcalToken) await excluirDoGcal(ev.gcalId);
