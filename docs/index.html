@@ -1094,14 +1094,67 @@ async function salvarEvento(){
   fecharModal('modalEvento');
 }
 
+// ── EXCLUIR COM SUPORTE A RECORRÊNCIA ────────────────────────────
+async function confirmarExclusao(ev, key, gcalId, onSingle, onAll){
+  if(!ev||!ev.recorrenciaId){
+    // Sem recorrência: confirmar simples
+    if(!confirm('Excluir este evento?'))return;
+    await onSingle();
+    return;
+  }
+  // Com recorrência: perguntar escopo
+  var total = ev.recorrenciaTotal||'?';
+  var idx   = (ev.recorrenciaIndex!==undefined ? ev.recorrenciaIndex+1 : '?');
+  var escolha = window.confirm(
+    'Este evento faz parte de uma serie (' + idx + ' de ' + total + ').\n\n'
+    + 'OK = Excluir SOMENTE este evento\n'
+    + 'Cancelar = Excluir TODA a serie (' + total + ' eventos)'
+  );
+  if(escolha===true){
+    // so este
+    await onSingle();
+  if(escolha===true){
+    // só este
+    await onSingle();
+  } else {
+    // toda a série
+    if(!confirm('Excluir todos os ' + total + ' eventos da série? Esta ação não pode ser desfeita.'))return;
+    await onAll();
+  }
+}
+
+async function excluirSerie(recorrenciaId){
+  if(!db)return;
+  var evsDaSerie = _ev.filter(function(e){return e.recorrenciaId===recorrenciaId;});
+  var promises = evsDaSerie.map(async function(e){
+    if(e.gcalId&&_gcalToken) await excluirDoGcal(e.gcalId);
+    await db.ref('eventos/'+e._key).remove();
+    await db.ref('crm/'+e._key).remove();
+  });
+  await Promise.all(promises);
+  toast('Série excluída ('+evsDaSerie.length+' eventos).','ok');
+}
+
 async function excluirEventoModal(){
   var key=document.getElementById('evEditKey').value;
   var gcalId=document.getElementById('evGcalId').value;
-  if(!key||!confirm('Excluir este evento?'))return;
-  if(db)await db.ref('eventos/'+key).remove();
-  if(gcalId&&_gcalToken)await excluirDoGcal(gcalId);
-  fecharModal('modalEvento');
-  toast('Evento excluído.','ok');
+  if(!key)return;
+  var ev=_ev.find(function(e){return e._key===key;});
+  await confirmarExclusao(ev, key, gcalId,
+    async function(){
+      // só este
+      if(db)await db.ref('eventos/'+key).remove();
+      if(gcalId&&_gcalToken)await excluirDoGcal(gcalId);
+      if(db)await db.ref('crm/'+key).remove();
+      fecharModal('modalEvento');
+      toast('Evento excluído.','ok');
+    },
+    async function(){
+      // toda a série
+      if(ev)await excluirSerie(ev.recorrenciaId);
+      fecharModal('modalEvento');
+    }
+  );
 }
 
 // ══════════════════════════════════════════════════════════════════
@@ -1576,12 +1629,22 @@ async function concluirEventoDetalhe(){
 }
 function editarEventoDetalhe(){fecharModal('modalDetalhe');abrirModalEvento(_detalheKey);}
 async function excluirEventoDetalhe(){
-  if(!_detalheKey||!confirm('Excluir este evento?'))return;
+  if(!_detalheKey)return;
   var ev=_ev.find(function(e){return e._key===_detalheKey;});
-  if(ev&&ev.gcalId&&_gcalToken)await excluirDoGcal(ev.gcalId);
-  if(db){await db.ref('eventos/'+_detalheKey).remove();await db.ref('crm/'+_detalheKey).remove();}
-  fecharModal('modalDetalhe');
-  toast('Evento excluído.','ok');
+  await confirmarExclusao(ev, _detalheKey, ev&&ev.gcalId,
+    async function(){
+      // só este
+      if(ev&&ev.gcalId&&_gcalToken)await excluirDoGcal(ev.gcalId);
+      if(db){await db.ref('eventos/'+_detalheKey).remove();await db.ref('crm/'+_detalheKey).remove();}
+      fecharModal('modalDetalhe');
+      toast('Evento excluído.','ok');
+    },
+    async function(){
+      // toda a série
+      if(ev)await excluirSerie(ev.recorrenciaId);
+      fecharModal('modalDetalhe');
+    }
+  );
 }
 
 // ══════════════════════════════════════════════════════════════════
