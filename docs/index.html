@@ -1415,12 +1415,14 @@ async function salvarUpdateCRM(){
       var novaDataBR = fmtBR(novaData);
       var novoTs    = new Date(novaData+'T'+(novaHora||'00:00')).getTime();
 
-      // 1. Marcar evento original com flag de reagendado (mantém no dia original)
+      // 1. Cancelar evento original (marcar como concluído/cancelado)
       await db.ref('eventos/'+_detalheKey).update({
-        reagendadoEm: now,
-        reagendadoPara: novaData,
-        reagendadoParaHora: novaHora,
-        reagendadoMotivo: motivo||''
+        done:              true,
+        canceladoEm:       now,
+        reagendadoEm:      now,
+        reagendadoPara:    novaData,
+        reagendadoParaHora:novaHora,
+        reagendadoMotivo:  motivo||''
       });
 
       // 2. Criar novo evento substituto na nova data
