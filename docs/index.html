@@ -585,7 +585,7 @@ select option{background:var(--surface2);}
         </button>
         <button class="btn" onclick="selecionarAcaoCRM('atrasado')" id="crmBtn-atrasado"
           style="border-color:var(--orange);color:var(--orange)">
-          <i class="ti ti-clock-exclamation"></i> Atrasado
+          <i class="ti ti-clock-exclamation"></i> Atrasado/Adiantado
         </button>
         <button class="btn btn-red" onclick="selecionarAcaoCRM('cancelado')" id="crmBtn-cancelado">
           <i class="ti ti-x"></i> Cancelado
@@ -639,7 +639,7 @@ select option{background:var(--surface2);}
 
         <!-- Reagendamento (obrigatório em atraso/cancelamento) -->
         <div class="reagenda-box" id="reagendaBox">
-          <div class="reagenda-label"><i class="ti ti-calendar-plus"></i> Reagendamento obrigatório</div>
+          <div class="reagenda-label"><i class="ti ti-calendar-plus"></i> Nova data (obrigatório)</div>
           <div class="row">
             <div class="field" style="margin-bottom:0">
               <label>Nova data</label>
@@ -1161,7 +1161,7 @@ function renderCrmTimeline(key){
   if(!db){document.getElementById('crmTimeline').innerHTML='';return;}
   db.ref('crm/'+key).orderByChild('criadoEm').once('value',function(snap){
     var updates=[];
-    snap.forEach(function(c){updates.push(c.val());});
+    snap.forEach(function(c){var v=c.val();v._key=c.key;updates.push(v);});
     updates.sort(function(a,b){return (b.criadoEm||0)-(a.criadoEm||0);});
     var container=document.getElementById('crmTimeline');
     if(!updates.length){container.innerHTML='<p style="font-size:12px;color:var(--text3);text-align:center;padding:1rem">Nenhum registro ainda — use os botões acima</p>';return;}
@@ -1190,12 +1190,21 @@ function renderCrmTimeline(key){
           +(u.reagendaMotivo?' — '+esc(u.reagendaMotivo):'')
         +'</div>';
       }
-      return '<div class="crm-entry">'
+      var entryKey=u._key||'';
+      return '<div class="crm-entry" id="crme-'+entryKey+'">'
         +'<div class="crm-line"><div class="crm-entry-dot" style="background:'+statusColor(u.status)+'"></div>'+(i<updates.length-1?'<div class="crm-connector"></div>':'')+'</div>'
-        +'<div class="crm-content">'
-          +'<span class="crm-status-badge '+sc+'">'+si+' '+statusLabel(u.status)+'</span>'
-          +(u.categoria?'<span class="badge '+catCls(u.categoria)+'" style="margin-left:4px;font-size:10px">'+esc(u.categoria)+'</span>':'')
-          +'<div class="crm-time">'+dataHora+'</div>'
+        +'<div class="crm-content" style="flex:1">'
+          +'<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:6px">'
+            +'<div>'
+              +'<span class="crm-status-badge '+sc+'">'+si+' '+statusLabel(u.status)+'</span>'
+              +(u.categoria?'<span class="badge '+catCls(u.categoria)+'" style="margin-left:4px;font-size:10px">'+esc(u.categoria)+'</span>':'')
+              +'<div class="crm-time">'+dataHora+'</div>'
+            +'</div>'
+            +(entryKey?'<div style="display:flex;gap:4px;flex-shrink:0">'
+              +'<button class="btn btn-sm btn-icon" title="Editar" style="padding:3px 6px;font-size:11px" onclick="editarEntryCRM(\''+key+'\',\''+entryKey+'\')"><i class="ti ti-pencil"></i></button>'
+              +'<button class="btn btn-sm btn-icon btn-red" title="Excluir" style="padding:3px 6px;font-size:11px" onclick="excluirEntryCRM(\''+key+'\',\''+entryKey+'\')"><i class="ti ti-trash"></i></button>'
+            +'</div>':'')
+          +'</div>'
           +(u.nota?'<div class="crm-nota" style="margin-top:4px">'+esc(u.nota)+'</div>':'')
           +reagendaInfo
         +'</div></div>';
@@ -1204,6 +1213,78 @@ function renderCrmTimeline(key){
 }
 
 // ── CRM CHECK-OUT ────────────────────────────────────────────────
+// ── CRM EDIT / DELETE ENTRY ──────────────────────────────────────
+var _crmEditKey=null, _crmEditEvKey=null;
+
+function excluirEntryCRM(evKey, entryKey){
+  if(!confirm('Excluir este registro?'))return;
+  if(db) db.ref('crm/'+evKey+'/'+entryKey).remove().then(function(){
+    toast('Registro excluído.','ok');
+    renderCrmTimeline(evKey);
+  });
+}
+
+function editarEntryCRM(evKey, entryKey){
+  _crmEditKey=entryKey; _crmEditEvKey=evKey;
+  if(!db)return;
+  db.ref('crm/'+evKey+'/'+entryKey).once('value',function(snap){
+    var u=snap.val();
+    if(!u)return;
+    // Abrir modal de edição inline
+    var el=document.getElementById('crme-'+entryKey);
+    if(!el)return;
+    var existing=el.querySelector('.crm-edit-form');
+    if(existing){existing.remove();return;}
+    var form=document.createElement('div');
+    form.className='crm-edit-form';
+    form.style.cssText='background:var(--surface2);border:1px solid var(--accent);border-radius:var(--r);padding:10px;margin-top:8px';
+    form.innerHTML=''
+      +'<div class="row" style="margin-bottom:8px">'
+        +'<div class="field" style="margin-bottom:0"><label>Data início</label><input type="date" id="editDataIni" value="'+(u.dataInicio||'')+'"></div>'
+        +'<div class="field" style="margin-bottom:0"><label>Hora início</label><input type="time" id="editHoraIni" value="'+(u.horaInicio||'')+'"></div>'
+      +'</div>'
+      +'<div class="row" style="margin-bottom:8px">'
+        +'<div class="field" style="margin-bottom:0"><label>Data término</label><input type="date" id="editDataFim" value="'+(u.dataFim||'')+'"></div>'
+        +'<div class="field" style="margin-bottom:0"><label>Hora término</label><input type="time" id="editHoraFim" value="'+(u.horaFim||'')+'"></div>'
+      +'</div>'
+      +'<div class="field" style="margin-bottom:8px"><label>Nota / Resumo</label>'
+        +'<textarea id="editNota" rows="3" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-size:13px;padding:8px;font-family:Inter,sans-serif;outline:none">'+esc(u.nota||'')+'</textarea>'
+      +'</div>'
+      +'<div style="display:flex;gap:6px">'
+        +'<button class="btn btn-primary btn-sm" onclick="salvarEdicaoEntryCRM()"><i class="ti ti-check"></i> Salvar</button>'
+        +'<button class="btn btn-sm" onclick="this.closest(\'.crm-edit-form\').remove()">Cancelar</button>'
+      +'</div>';
+    el.querySelector('.crm-content').appendChild(form);
+  });
+}
+
+async function salvarEdicaoEntryCRM(){
+  if(!_crmEditKey||!_crmEditEvKey||!db)return;
+  var updates={
+    dataInicio: document.getElementById('editDataIni').value,
+    horaInicio: document.getElementById('editHoraIni').value,
+    dataFim:    document.getElementById('editDataFim').value,
+    horaFim:    document.getElementById('editHoraFim').value,
+    nota:       document.getElementById('editNota').value.trim()
+  };
+  await db.ref('crm/'+_crmEditEvKey+'/'+_crmEditKey).update(updates);
+
+  // Se for checkout, atualizar também o evento
+  var snap=await db.ref('crm/'+_crmEditEvKey+'/'+_crmEditKey).once('value');
+  var u=snap.val();
+  if(u&&u.status==='checkout'&&updates.dataInicio&&updates.horaInicio){
+    var evUpdate={hora:updates.horaInicio, horaFim:updates.horaFim||''};
+    if(updates.dataInicio) evUpdate.data=updates.dataInicio;
+    if(updates.dataInicio) evUpdate.dataBR=fmtBR(updates.dataInicio);
+    if(updates.dataFim)    evUpdate.dataFim=updates.dataFim;
+    await db.ref('eventos/'+_crmEditEvKey).update(evUpdate);
+  }
+
+  toast('Registro atualizado!','ok');
+  renderCrmTimeline(_crmEditEvKey);
+  _crmEditKey=null; _crmEditEvKey=null;
+}
+
 function selecionarAcaoCRM(acao){
   ['checkout','atrasado','cancelado'].forEach(function(a){
     var btn=document.getElementById('crmBtn-'+a);
@@ -1224,7 +1305,7 @@ function selecionarAcaoCRM(acao){
   document.getElementById('crmDataFim').value    = hojeStr;
   document.getElementById('crmHoraFim').value    = agoraHora;
 
-  var labels = {checkout:'Check-out',atrasado:'Atrasado',cancelado:'Cancelado'};
+  var labels = {checkout:'Check-out',atrasado:'Atrasado/Adiantado',cancelado:'Cancelado'};
   var colors = {checkout:'var(--accent-h)',atrasado:'var(--orange)',cancelado:'var(--red)'};
   var label = document.getElementById('crmAcaoLabel');
   label.textContent = labels[acao]||acao;
@@ -1491,6 +1572,12 @@ function eventosDoDia(dtStr){
   });
 }
 
+function toMinutes(horaStr){
+  if(!horaStr)return 0;
+  var p=horaStr.split(':');
+  return parseInt(p[0])*60+(parseInt(p[1])||0);
+}
+
 function expandirDia(dtStr){
   var allEvs=eventosDoDia(dtStr);
   var container=document.getElementById('dayExpanded');
@@ -1499,26 +1586,28 @@ function expandirDia(dtStr){
   var dt=new Date(dtStr+'T12:00:00');
   var label=dt.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
 
-  // Separar eventos com hora e dia inteiro
   var comHora=allEvs.filter(function(ev){return ev.hora&&ev.hora!=='00:00'&&ev.hora!=='';});
   var semHora=allEvs.filter(function(ev){return !ev.hora||ev.hora===''||ev.hora==='00:00';});
 
-  // Descobrir range de horas a mostrar (min hora - 1h, max hora + 2h), mínimo 8h-19h
-  var horas=[8,19];
+  // Range em minutos, grade de 15 em 15, mínimo 08:00-19:00
+  var minsArr=[8*60,19*60];
   comHora.forEach(function(ev){
-    var h=parseInt((ev.hora||'08:00').split(':')[0]);
-    horas.push(Math.max(0,h-1));
-    var hf=ev.horaFim?parseInt(ev.horaFim.split(':')[0]):h+1;
-    horas.push(Math.min(23,hf+1));
+    var ini=toMinutes(ev.hora||'08:00');
+    var fim=ev.horaFim?toMinutes(ev.horaFim):ini+60;
+    minsArr.push(Math.max(0,ini-15));
+    minsArr.push(Math.min(23*60+45,fim+15));
   });
-  var hMin=Math.min.apply(null,horas);
-  var hMax=Math.max.apply(null,horas);
+  var mMin=Math.min.apply(null,minsArr);
+  var mMax=Math.max.apply(null,minsArr);
+  // Arredondar para múltiplos de 15
+  mMin=Math.floor(mMin/15)*15;
+  mMax=Math.ceil(mMax/15)*15;
 
   var html='<div class="day-expanded">'
     +'<div class="day-expanded-title">'
       +'<span><i class="ti ti-clock"></i> '+label+'</span>'
       +'<div style="display:flex;gap:6px">'
-        +'<button class="btn btn-sm btn-primary" onclick="abrirModalEvento();document.getElementById(\'evDataInicio\').value=\''+dtStr+'\'"><i class="ti ti-plus"></i> Novo</button>'
+        +'<button class="btn btn-sm btn-primary" onclick="abrirModalEvento();document.getElementById(\'evDataInicio\').value=\''+dtStr+'\'" ><i class="ti ti-plus"></i> Novo</button>'
         +'<button class="btn btn-icon btn-sm" onclick="document.getElementById(\'dayExpanded\').style.display=\'none\'"><i class="ti ti-x"></i></button>'
       +'</div>'
     +'</div>';
@@ -1538,42 +1627,104 @@ function expandirDia(dtStr){
     +'</div>';
   }
 
-  // Timeline de horas
-  html+='<div class="hour-timeline">';
-  for(var h=hMin;h<=hMax;h++){
-    var hStr=String(h).padStart(2,'0')+':00';
-    var evsDaHora=comHora.filter(function(ev){
-      var eh=parseInt((ev.hora||'0').split(':')[0]);
-      var ef=ev.horaFim?parseInt(ev.horaFim.split(':')[0]):eh;
-      return h>=eh&&h<=ef&&eh===h; // mostrar na hora de início
-    });
-    var hasDot=evsDaHora.length>0;
-
-    html+='<div class="hour-row">'
-      +'<div class="hour-label">'+hStr+'</div>'
-      +'<div class="hour-gutter"><div class="hour-dot'+(hasDot?' has-ev':'')+'"></div></div>'
-      +'<div class="hour-events">'
-      +evsDaHora.map(function(ev){
-        var cats=Array.isArray(ev.categorias)?ev.categorias:(ev.categoria?[ev.categoria]:[]);
-        var cor=cats.length?catColor(cats[0]):'var(--accent-h)';
-        var durStr='';
-        if(ev.hora&&ev.horaFim)durStr=ev.hora+' → '+ev.horaFim;
-        else if(ev.hora)durStr=ev.hora;
-        return '<div class="hour-ev-card" onclick="abrirDetalhe(\''+ev._key+'\')" style="border-left-color:'+cor+'">'
-          +'<div class="hour-ev-title">'+esc(ev.titulo)+'</div>'
-          +'<div class="hour-ev-meta">'
-            +(durStr?'<span><i class="ti ti-clock" style="font-size:10px"></i> '+durStr+'</span>':'')
-            +(ev.local?'<span><i class="ti ti-map-pin" style="font-size:10px"></i> '+esc(ev.local)+'</span>':'')
-            +(ev.grupoNome?'<span><i class="ti ti-brand-whatsapp" style="font-size:10px"></i> '+esc(ev.grupoNome)+'</span>':'')
-          +'</div>'
-          +'<div style="display:flex;gap:3px;margin-top:4px;flex-wrap:wrap">'+cats.map(function(c){return'<span class="badge '+catCls(c)+'" style="font-size:10px">'+esc(c)+'</span>';}).join('')+'</div>'
-        +'</div>';
-      }).join('')
-      +'</div></div>';
+  // Calcular colunas para overlap: agrupar eventos sobrepostos
+  // Cada evento recebe column index e total columns
+  var sorted=comHora.slice().sort(function(a,b){return toMinutes(a.hora)-toMinutes(b.hora);});
+  sorted.forEach(function(ev){
+    ev._ini=toMinutes(ev.hora||'00:00');
+    ev._fim=ev.horaFim?toMinutes(ev.horaFim):ev._ini+60;
+    ev._col=0; ev._cols=1;
+  });
+  // Assign columns greedily
+  for(var i=0;i<sorted.length;i++){
+    var usedCols=[];
+    for(var j=0;j<i;j++){
+      if(sorted[j]._fim>sorted[i]._ini&&sorted[j]._ini<sorted[i]._fim){
+        usedCols.push(sorted[j]._col);
+      }
+    }
+    var col=0;
+    while(usedCols.indexOf(col)>-1)col++;
+    sorted[i]._col=col;
   }
-  html+='</div></div>';
+  // Max cols per group
+  for(var i=0;i<sorted.length;i++){
+    var maxCol=sorted[i]._col;
+    for(var j=0;j<sorted.length;j++){
+      if(i!==j&&sorted[j]._fim>sorted[i]._ini&&sorted[j]._ini<sorted[i]._fim){
+        if(sorted[j]._col>maxCol)maxCol=sorted[j]._col;
+      }
+    }
+    sorted[i]._cols=maxCol+1;
+  }
 
+  // Build 15-min grid
+  var SLOT=15; // minutos por slot
+  var SLOT_H=28; // px por slot
+  html+='<div style="position:relative;display:flex">'
+    // Coluna de labels
+    +'<div style="width:48px;flex-shrink:0">';
+  for(var m=mMin;m<=mMax;m+=SLOT){
+    var showLabel=(m%60===0);
+    var hh=String(Math.floor(m/60)).padStart(2,'0');
+    var mm2=String(m%60).padStart(2,'0');
+    html+='<div style="height:'+SLOT_H+'px;display:flex;align-items:flex-start;padding-top:2px;box-sizing:border-box">'
+      +'<span style="font-size:10px;color:'+(showLabel?'var(--text2)':'var(--text3)')+';font-family:JetBrains Mono,monospace;line-height:1;user-select:none">'
+      +(showLabel?hh+':00':mm2==='00'?'':mm2)+'</span>'
+    +'</div>';
+  }
+  html+='</div>'
+    // Área de eventos
+    +'<div style="flex:1;position:relative;border-left:1px solid var(--border2)">';
+
+  // Grade de linhas
+  for(var m=mMin;m<=mMax;m+=SLOT){
+    var isFull=(m%60===0);
+    html+='<div style="height:'+SLOT_H+'px;border-top:1px solid '+(isFull?'var(--border2)':'var(--border2)33')+';box-sizing:border-box"></div>';
+  }
+
+  // Eventos posicionados absolutamente
+  sorted.forEach(function(ev){
+    var cats=Array.isArray(ev.categorias)?ev.categorias:(ev.categoria?[ev.categoria]:[]);
+    var cor=cats.length?catColor(cats[0]):'var(--accent-h)';
+    var topPx=Math.round((ev._ini-mMin)/SLOT)*SLOT_H;
+    var heightPx=Math.max(SLOT_H,Math.round((ev._fim-ev._ini)/SLOT)*SLOT_H)-2;
+    var pct=(100/ev._cols);
+    var leftPct=ev._col*pct;
+    var durStr=ev.hora+(ev.horaFim?' → '+ev.horaFim:'');
+    html+='<div onclick="abrirDetalhe(\''+ev._key+'\')" style="'
+      +'position:absolute;'
+      +'top:'+topPx+'px;'
+      +'height:'+heightPx+'px;'
+      +'left:calc('+leftPct+'% + 3px);'
+      +'width:calc('+pct+'% - 6px);'
+      +'background:'+cor+'22;'
+      +'border:1px solid '+cor+'66;'
+      +'border-left:3px solid '+cor+';'
+      +'border-radius:var(--r);'
+      +'padding:4px 6px;'
+      +'cursor:pointer;'
+      +'overflow:hidden;'
+      +'box-sizing:border-box;'
+      +'transition:border-color .15s;'
+      +'>'
+      +'<div style="font-size:11px;font-weight:600;color:var(--text);line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(ev.titulo)+'</div>'
+      +(heightPx>30?'<div style="font-size:10px;color:var(--text2);margin-top:1px">'+durStr+'</div>':'')
+      +(heightPx>50&&cats.length?'<div style="display:flex;gap:2px;margin-top:3px;flex-wrap:wrap">'+cats.slice(0,2).map(function(ct){return'<span style="font-size:9px;padding:1px 4px;border-radius:3px;background:'+catColor(ct)+'33;color:'+catColor(ct)+'">'+esc(ct)+'</span>';}).join('')+'</div>':'')
+    +'</div>';
+  });
+
+  // Altura total da área
+  var totalH=Math.round((mMax-mMin)/SLOT)*SLOT_H;
+  html+='</div></div>'; // end eventos + flex
+  html+='</div>'; // end day-expanded
+
+  // Setar altura total da área de eventos
   container.innerHTML=html;
+  // Fix: set explicit height on the events area
+  var evArea=container.querySelector('[style*="flex:1;position:relative"]');
+  if(evArea)evArea.style.height=totalH+'px';
+
   container.style.display='';
   container.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
@@ -1776,7 +1927,7 @@ function catColor(c){var m={'Securitizadora':'var(--cat-sec)','Consultoria':'var
 function statusCls(s){var m={checkout:'s-checkout',atrasado:'s-atrasado',cancelado:'s-cancelado'};return m[s]||'badge-blue';}
 function statusColor(s){var m={checkout:'var(--accent-h)',atrasado:'var(--orange)',cancelado:'var(--red)'};return m[s]||'var(--text2)';}
 function statusIcon(s){var m={checkout:'✅',atrasado:'⚠️',cancelado:'❌'};return m[s]||'•';}
-function statusLabel(s){var m={checkout:'Check-out',atrasado:'Atrasado',cancelado:'Cancelado'};return m[s]||s;}
+function statusLabel(s){var m={checkout:'Check-out',atrasado:'Atrasado/Adiantado',cancelado:'Cancelado'};return m[s]||s;}
 
 // ══════════════════════════════════════════════════════════════════
 // INIT
