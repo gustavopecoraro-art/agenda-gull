@@ -1587,148 +1587,159 @@ function expandirDia(dtStr){
 
   var dt=new Date(dtStr+'T12:00:00');
   var label=dt.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
-
-  var comHora=allEvs.filter(function(ev){return ev.hora&&ev.hora!=='00:00'&&ev.hora!=='';});
   var semHora=allEvs.filter(function(ev){return !ev.hora||ev.hora===''||ev.hora==='00:00';});
+  var comHora=allEvs.filter(function(ev){return ev.hora&&ev.hora!=='00:00';});
+  comHora.sort(function(a,b){return toMinutes(a.hora)-toMinutes(b.hora);});
 
-  // Range em minutos, grade de 15 em 15, mínimo 08:00-19:00
-  var minsArr=[8*60,19*60];
+  // ── RANGE: mínimo 07:00-20:00, expandir para caber eventos ───
+  var mMin=7*60, mMax=20*60;
   comHora.forEach(function(ev){
-    var ini=toMinutes(ev.hora||'08:00');
+    var ini=toMinutes(ev.hora);
     var fim=ev.horaFim?toMinutes(ev.horaFim):ini+60;
-    minsArr.push(Math.max(0,ini-15));
-    minsArr.push(Math.min(23*60+45,fim+15));
+    if(ini-30 < mMin) mMin=Math.max(0,ini-30);
+    if(fim+30 > mMax) mMax=Math.min(24*60,fim+30);
   });
-  var mMin=Math.min.apply(null,minsArr);
-  var mMax=Math.max.apply(null,minsArr);
-  // Arredondar para múltiplos de 15
   mMin=Math.floor(mMin/15)*15;
   mMax=Math.ceil(mMax/15)*15;
 
+  var SLOT=15;      // minutos por linha
+  var ROW_H=16;     // px por slot de 15min → 1h = 64px
+  var LABEL_W=52;   // px coluna de horas
+
+  // ── OVERLAP COLUMNS ───────────────────────────────────────────
+  comHora.forEach(function(ev){
+    ev._ini=toMinutes(ev.hora);
+    ev._fim=ev.horaFim?toMinutes(ev.horaFim):ev._ini+60;
+    if(ev._fim<=ev._ini)ev._fim=ev._ini+60;
+    ev._col=0; ev._cols=1;
+  });
+  for(var i=0;i<comHora.length;i++){
+    var used=[];
+    for(var j=0;j<i;j++){
+      if(comHora[j]._fim>comHora[i]._ini&&comHora[j]._ini<comHora[i]._fim)
+        used.push(comHora[j]._col);
+    }
+    var col=0; while(used.indexOf(col)>-1)col++;
+    comHora[i]._col=col;
+  }
+  for(var i=0;i<comHora.length;i++){
+    var max=comHora[i]._col;
+    for(var j=0;j<comHora.length;j++){
+      if(i!==j&&comHora[j]._fim>comHora[i]._ini&&comHora[j]._ini<comHora[i]._fim)
+        if(comHora[j]._col>max)max=comHora[j]._col;
+    }
+    comHora[i]._cols=max+1;
+  }
+
+  var totalH=Math.round((mMax-mMin)/SLOT)*ROW_H;
+
+  // ── HTML ──────────────────────────────────────────────────────
   var html='<div class="day-expanded">'
     +'<div class="day-expanded-title">'
-      +'<span><i class="ti ti-clock"></i> '+label+'</span>'
+      +'<span><i class="ti ti-calendar-week"></i> '+label+'</span>'
       +'<div style="display:flex;gap:6px">'
-        +'<button class="btn btn-sm btn-primary" onclick="abrirModalEvento();document.getElementById(\'evDataInicio\').value=\''+dtStr+'\'" ><i class="ti ti-plus"></i> Novo</button>'
+        +'<button class="btn btn-sm btn-primary" onclick="abrirModalEvento();setTimeout(function(){document.getElementById(\'evDataInicio\').value=\''+dtStr+'\';},10)"><i class="ti ti-plus"></i> Novo</button>'
         +'<button class="btn btn-icon btn-sm" onclick="document.getElementById(\'dayExpanded\').style.display=\'none\'"><i class="ti ti-x"></i></button>'
       +'</div>'
     +'</div>';
 
   // Eventos dia inteiro
   if(semHora.length){
-    html+='<div style="margin-bottom:10px">'
-      +'<div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Dia inteiro</div>'
-      +semHora.map(function(ev){
-        var cats=Array.isArray(ev.categorias)?ev.categorias:(ev.categoria?[ev.categoria]:[]);
-        var cor=cats.length?catColor(cats[0]):'var(--text3)';
-        return '<div class="hour-allday" onclick="abrirDetalhe(\''+ev._key+'\')" style="border-left-color:'+cor+'">'
-          +'<div style="font-size:13px;font-weight:500;color:var(--text)">'+esc(ev.titulo)+'</div>'
-          +'<div style="display:flex;gap:4px;margin-top:3px;flex-wrap:wrap">'+cats.map(function(c){return'<span class="badge '+catCls(c)+'" style="font-size:10px">'+esc(c)+'</span>';}).join('')+'</div>'
-        +'</div>';
-      }).join('')
-    +'</div>';
+    html+='<div style="display:flex;gap:6px;flex-wrap:wrap;padding:6px 0 10px '+LABEL_W+'px;border-bottom:1px solid var(--border2);margin-bottom:4px">';
+    semHora.forEach(function(ev){
+      var cats=Array.isArray(ev.categorias)?ev.categorias:(ev.categoria?[ev.categoria]:[]);
+      var cor=cats.length?catColor(cats[0]):'var(--text3)';
+      html+='<div onclick="abrirDetalhe(\''+ev._key+'\')" style="cursor:pointer;background:'+cor+'22;border:1px solid '+cor+'55;border-left:3px solid '+cor+';border-radius:var(--r);padding:4px 8px;font-size:12px;color:var(--text)">'+esc(ev.titulo)+'</div>';
+    });
+    html+='</div>';
   }
 
-  // Calcular colunas para overlap: agrupar eventos sobrepostos
-  // Cada evento recebe column index e total columns
-  var sorted=comHora.slice().sort(function(a,b){return toMinutes(a.hora)-toMinutes(b.hora);});
-  sorted.forEach(function(ev){
-    ev._ini=toMinutes(ev.hora||'00:00');
-    ev._fim=ev.horaFim?toMinutes(ev.horaFim):ev._ini+60;
-    ev._col=0; ev._cols=1;
-  });
-  // Assign columns greedily
-  for(var i=0;i<sorted.length;i++){
-    var usedCols=[];
-    for(var j=0;j<i;j++){
-      if(sorted[j]._fim>sorted[i]._ini&&sorted[j]._ini<sorted[i]._fim){
-        usedCols.push(sorted[j]._col);
-      }
+  // Grid container
+  html+='<div style="position:relative;display:flex;overflow-y:auto;max-height:420px">';
+
+  // Coluna de horas
+  html+='<div style="width:'+LABEL_W+'px;flex-shrink:0;position:relative;height:'+totalH+'px">';
+  for(var m=mMin;m<mMax;m+=SLOT){
+    var top=Math.round((m-mMin)/SLOT)*ROW_H;
+    if(m%60===0){
+      var hh=String(Math.floor(m/60)).padStart(2,'0')+':00';
+      html+='<div style="position:absolute;top:'+(top-7)+'px;right:8px;font-size:10px;color:var(--text3);font-family:JetBrains Mono,monospace;user-select:none;line-height:1">'+hh+'</div>';
     }
-    var col=0;
-    while(usedCols.indexOf(col)>-1)col++;
-    sorted[i]._col=col;
   }
-  // Max cols per group
-  for(var i=0;i<sorted.length;i++){
-    var maxCol=sorted[i]._col;
-    for(var j=0;j<sorted.length;j++){
-      if(i!==j&&sorted[j]._fim>sorted[i]._ini&&sorted[j]._ini<sorted[i]._fim){
-        if(sorted[j]._col>maxCol)maxCol=sorted[j]._col;
-      }
+  html+='</div>';
+
+  // Área de eventos
+  html+='<div style="flex:1;position:relative;height:'+totalH+'px;border-left:1px solid var(--border)">';
+
+  // Linhas de grade
+  for(var m=mMin;m<mMax;m+=SLOT){
+    var top=Math.round((m-mMin)/SLOT)*ROW_H;
+    var isHour=(m%60===0);
+    html+='<div style="position:absolute;top:'+top+'px;left:0;right:0;height:1px;background:'+(isHour?'var(--border)':'var(--border2)')+'44;pointer-events:none"></div>';
+  }
+
+  // Linha do horário atual se for hoje
+  var todayStr=new Date().toISOString().split('T')[0];
+  if(dtStr===todayStr){
+    var now2=new Date();
+    var nowM=now2.getHours()*60+now2.getMinutes();
+    if(nowM>=mMin&&nowM<=mMax){
+      var nowTop=Math.round((nowM-mMin)/SLOT)*ROW_H;
+      html+='<div style="position:absolute;top:'+nowTop+'px;left:0;right:0;height:2px;background:var(--red);z-index:10;pointer-events:none">'
+        +'<div style="position:absolute;left:-4px;top:-3px;width:8px;height:8px;border-radius:50%;background:var(--red)"></div>'
+      +'</div>';
     }
-    sorted[i]._cols=maxCol+1;
   }
 
-  // Build 15-min grid
-  var SLOT=15; // minutos por slot
-  var SLOT_H=28; // px por slot
-  html+='<div style="position:relative;display:flex">'
-    // Coluna de labels
-    +'<div style="width:48px;flex-shrink:0">';
-  for(var m=mMin;m<=mMax;m+=SLOT){
-    var showLabel=(m%60===0);
-    var hh=String(Math.floor(m/60)).padStart(2,'0');
-    var mm2=String(m%60).padStart(2,'0');
-    html+='<div style="height:'+SLOT_H+'px;display:flex;align-items:flex-start;padding-top:2px;box-sizing:border-box">'
-      +'<span style="font-size:10px;color:'+(showLabel?'var(--text2)':'var(--text3)')+';font-family:JetBrains Mono,monospace;line-height:1;user-select:none">'
-      +(showLabel?hh+':00':mm2==='00'?'':mm2)+'</span>'
-    +'</div>';
-  }
-  html+='</div>'
-    // Área de eventos
-    +'<div style="flex:1;position:relative;border-left:1px solid var(--border2)">';
-
-  // Grade de linhas
-  for(var m=mMin;m<=mMax;m+=SLOT){
-    var isFull=(m%60===0);
-    html+='<div style="height:'+SLOT_H+'px;border-top:1px solid '+(isFull?'var(--border2)':'var(--border2)33')+';box-sizing:border-box"></div>';
-  }
-
-  // Eventos posicionados absolutamente
-  sorted.forEach(function(ev){
+  // Eventos posicionados
+  comHora.forEach(function(ev){
+    var topPx=Math.round((ev._ini-mMin)/SLOT)*ROW_H;
+    var heightPx=Math.max(ROW_H,Math.round((ev._fim-ev._ini)/SLOT)*ROW_H)-2;
     var cats=Array.isArray(ev.categorias)?ev.categorias:(ev.categoria?[ev.categoria]:[]);
     var cor=cats.length?catColor(cats[0]):'var(--accent-h)';
-    var topPx=Math.round((ev._ini-mMin)/SLOT)*SLOT_H;
-    var heightPx=Math.max(SLOT_H,Math.round((ev._fim-ev._ini)/SLOT)*SLOT_H)-2;
-    var pct=(100/ev._cols);
+    var pct=100/ev._cols;
     var leftPct=ev._col*pct;
-    var durStr=ev.hora+(ev.horaFim?' → '+ev.horaFim:'');
+    var durStr=ev.hora+(ev.horaFim?' – '+ev.horaFim:'');
+
     html+='<div onclick="abrirDetalhe(\''+ev._key+'\')" style="'
       +'position:absolute;'
       +'top:'+topPx+'px;'
       +'height:'+heightPx+'px;'
-      +'left:calc('+leftPct+'% + 3px);'
-      +'width:calc('+pct+'% - 6px);'
-      +'background:'+cor+'22;'
-      +'border:1px solid '+cor+'66;'
+      +'left:calc('+leftPct+'% + 2px);'
+      +'width:calc('+pct+'% - 4px);'
+      +'background:'+cor+'20;'
       +'border-left:3px solid '+cor+';'
-      +'border-radius:var(--r);'
-      +'padding:4px 6px;'
+      +'border-radius:0 4px 4px 0;'
+      +'border-top:1px solid '+cor+'44;'
+      +'border-right:1px solid '+cor+'44;'
+      +'border-bottom:1px solid '+cor+'44;'
+      +'padding:3px 6px;'
       +'cursor:pointer;'
       +'overflow:hidden;'
       +'box-sizing:border-box;'
-      +'transition:border-color .15s;'
-      +'>'
-      +'<div style="font-size:11px;font-weight:600;color:var(--text);line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(ev.titulo)+'</div>'
-      +(heightPx>30?'<div style="font-size:10px;color:var(--text2);margin-top:1px">'+durStr+'</div>':'')
-      +(heightPx>50&&cats.length?'<div style="display:flex;gap:2px;margin-top:3px;flex-wrap:wrap">'+cats.slice(0,2).map(function(ct){return'<span style="font-size:9px;padding:1px 4px;border-radius:3px;background:'+catColor(ct)+'33;color:'+catColor(ct)+'">'+esc(ct)+'</span>';}).join('')+'</div>':'')
+      +'transition:background .15s;'
+      +'z-index:2;'
+      +'" onmouseenter="this.style.background=\''+cor+'38\'" onmouseleave="this.style.background=\''+cor+'20\'">'
+      +'<div style="font-size:11px;font-weight:600;color:var(--text);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(ev.titulo)+'</div>'
+      +(heightPx>28?'<div style="font-size:10px;color:var(--text2);margin-top:1px;white-space:nowrap">'+durStr+'</div>':'')
+      +(heightPx>46&&cats.length?'<div style="display:flex;gap:2px;margin-top:3px;flex-wrap:wrap">'+cats.slice(0,2).map(function(ct){return'<span style="font-size:9px;padding:1px 4px;border-radius:3px;background:'+catColor(ct)+'33;color:'+catColor(ct)+';font-weight:500">'+esc(ct)+'</span>';}).join('')+'</div>':'')
     +'</div>';
   });
 
-  // Altura total da área
-  var totalH=Math.round((mMax-mMin)/SLOT)*SLOT_H;
-  html+='</div></div>'; // end eventos + flex
-  html+='</div>'; // end day-expanded
+  html+='</div>'; // events area
+  html+='</div>'; // grid container
+  html+='</div>'; // day-expanded
 
-  // Setar altura total da área de eventos
   container.innerHTML=html;
-  // Fix: set explicit height on the events area
-  var evArea=container.querySelector('[style*="flex:1;position:relative"]');
-  if(evArea)evArea.style.height=totalH+'px';
-
   container.style.display='';
   container.scrollIntoView({behavior:'smooth',block:'nearest'});
+
+  // Scroll to first event or 8h
+  var grid=container.querySelector('[style*="overflow-y:auto"]');
+  if(grid){
+    var scrollTo=comHora.length?Math.max(0,Math.round((comHora[0]._ini-mMin-30)/SLOT)*ROW_H):0;
+    grid.scrollTop=scrollTo;
+  }
 }
 
 function navMes(d){_calMes+=d;if(_calMes>11){_calMes=0;_calAno++;}if(_calMes<0){_calMes=11;_calAno--;}renderCalendario();}
