@@ -601,6 +601,18 @@ select option{background:var(--surface2);}
           Ação: <span id="crmAcaoLabel" style="color:var(--accent-h)"></span>
         </div>
 
+        <!-- Data/Hora do registro (editável) -->
+        <div class="row" style="margin-bottom:8px">
+          <div class="field" style="margin-bottom:0">
+            <label>Data do registro</label>
+            <input type="date" id="crmDataRegistro">
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label>Hora do registro</label>
+            <input type="time" id="crmHoraRegistro">
+          </div>
+        </div>
+
         <!-- Categoria -->
         <div class="field" style="margin-bottom:8px">
           <label>Categoria</label>
@@ -1184,6 +1196,11 @@ function selecionarAcaoCRM(acao){
   document.getElementById('crmAcaoAtual').value = acao;
   document.getElementById('crmAcaoSelecionada').style.display = '';
 
+  // Pré-preencher com data/hora atual (editável pelo usuário)
+  var agora = new Date();
+  document.getElementById('crmDataRegistro').value = agora.toISOString().split('T')[0];
+  document.getElementById('crmHoraRegistro').value = agora.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+
   var labels = {checkin:'Check-in',checkout:'Check-out',atrasado:'Atrasado',cancelado:'Check-in cancelado'};
   var colors = {checkin:'var(--green)',checkout:'var(--accent-h)',atrasado:'var(--orange)',cancelado:'var(--red)'};
   var label = document.getElementById('crmAcaoLabel');
@@ -1236,7 +1253,13 @@ async function salvarUpdateCRM(){
   if(!acao){toast('Selecione uma ação (Check-in, Check-out...).','error');return;}
   if(acao==='checkout'&&!nota){toast('O Check-out exige um resumo obrigatório.','error');return;}
 
-  var now = Date.now();
+  // Usar data/hora editada pelo usuário
+  var dataReg  = document.getElementById('crmDataRegistro').value;
+  var horaReg  = document.getElementById('crmHoraRegistro').value;
+  var nowDate  = (dataReg && horaReg) ? new Date(dataReg + 'T' + horaReg + ':00').getTime() : Date.now();
+  // fallback: se a data/hora editada for inválida, usar agora
+  if(isNaN(nowDate)) nowDate = Date.now();
+  var now = nowDate;
   var ev  = _ev.find(function(e){return e._key===_detalheKey;});
 
   // Reagendamento obrigatório em atraso/cancelamento
@@ -1253,8 +1276,8 @@ async function salvarUpdateCRM(){
     nota:     nota,
     categoria:categoria,
     criadoEm: now,
-    hora:     new Date(now).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
-    data:     new Date(now).toISOString().split('T')[0]
+    hora:     horaReg || new Date(now).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
+    data:     dataReg || new Date(now).toISOString().split('T')[0]
   };
 
   if(novaData) entry.reagendaData = novaData;
