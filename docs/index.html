@@ -132,7 +132,22 @@ select option{background:var(--surface2);}
 
 /* DAY EXPANDED */
 .day-expanded{background:var(--surface);border:1px solid var(--accent);border-radius:var(--rl);padding:1rem;margin-bottom:1rem;}
-.day-expanded-title{font-size:13px;font-weight:600;color:var(--accent-h);margin-bottom:.75rem;display:flex;align-items:center;justify-content:space-between;}
+.day-expanded-title{font-size:13px;font-weight:600;color:var(--accent-h);margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;}
+/* TIMELINE DE HORAS */
+.hour-timeline{display:flex;flex-direction:column;gap:0;}
+.hour-row{display:flex;align-items:flex-start;gap:0;min-height:44px;position:relative;}
+.hour-row:last-child .hour-line{display:none;}
+.hour-label{width:48px;flex-shrink:0;font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;padding-top:2px;text-align:right;padding-right:10px;}
+.hour-gutter{width:1px;background:var(--border2);flex-shrink:0;position:relative;}
+.hour-dot{width:7px;height:7px;border-radius:50%;background:var(--border);border:2px solid var(--surface2);position:absolute;left:-3px;top:4px;}
+.hour-dot.has-ev{background:var(--accent-h);border-color:var(--surface);}
+.hour-events{flex:1;padding:2px 0 8px 12px;display:flex;flex-direction:column;gap:4px;}
+.hour-ev-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:8px 10px;cursor:pointer;transition:border-color .15s;border-left:3px solid var(--accent-h);}
+.hour-ev-card:hover{border-color:var(--accent);}
+.hour-ev-title{font-size:13px;font-weight:500;color:var(--text);}
+.hour-ev-meta{font-size:11px;color:var(--text2);margin-top:2px;display:flex;gap:8px;flex-wrap:wrap;}
+.hour-allday{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:6px 10px;margin-bottom:8px;border-left:3px solid var(--text3);cursor:pointer;}
+.hour-allday:hover{border-color:var(--accent);}
 
 /* ── MODAL ── */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:flex-end;justify-content:center;}
@@ -358,14 +373,21 @@ select option{background:var(--surface2);}
     </div>
     <div class="field"><label>Local</label><input type="text" id="evLocal" placeholder="Endereço, link ou nome do lugar"></div>
     <div class="row">
-      <div class="field"><label>Categoria *</label>
-        <select id="evCategoria">
-          <option value="">— selecione —</option>
-          <option value="Securitizadora">🟢 Securitizadora</option>
-          <option value="Consultoria">🟠 Consultoria</option>
-          <option value="Rede P5">🟣 Rede P5</option>
-          <option value="Tempo Pessoal">🔵 Tempo Pessoal</option>
-        </select>
+      <div class="field"><label>Categorias *</label>
+        <div id="evCategorias" style="display:flex;flex-direction:column;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:8px 10px">
+          <label style="display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:13px;color:var(--text);cursor:pointer;margin:0">
+            <input type="checkbox" value="Securitizadora" style="width:auto;accent-color:var(--cat-sec)"> 🟢 Securitizadora
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:13px;color:var(--text);cursor:pointer;margin:0">
+            <input type="checkbox" value="Consultoria" style="width:auto;accent-color:var(--cat-con)"> 🟠 Consultoria
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:13px;color:var(--text);cursor:pointer;margin:0">
+            <input type="checkbox" value="Rede P5" style="width:auto;accent-color:var(--cat-red)"> 🟣 Rede P5
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:13px;color:var(--text);cursor:pointer;margin:0">
+            <input type="checkbox" value="Tempo Pessoal" style="width:auto;accent-color:var(--cat-pes)"> 🔵 Tempo Pessoal
+          </label>
+        </div>
       </div>
       <div class="field"><label>Grupo WhatsApp</label>
         <select id="evGrupo"><option value="">— não notificar —</option></select>
@@ -741,7 +763,8 @@ function abrirModalEvento(key){
   document.getElementById('evDataFim').value='';
   document.getElementById('evHoraFim').value='';
   document.getElementById('evLocal').value='';
-  document.getElementById('evCategoria').value='';
+  // limpar checkboxes categorias
+  document.querySelectorAll('#evCategorias input[type=checkbox]').forEach(function(cb){cb.checked=false;});
   document.getElementById('evGrupo').value='';
   document.getElementById('evDescricao').value='';
   document.getElementById('evSyncGcal').checked=!!_gcalToken;
@@ -759,7 +782,9 @@ function abrirModalEvento(key){
       document.getElementById('evDataFim').value=ev.dataFim||'';
       document.getElementById('evHoraFim').value=ev.horaFim||'';
       document.getElementById('evLocal').value=ev.local||'';
-      document.getElementById('evCategoria').value=ev.categoria||'';
+      // restaurar categorias (suporte a array e string legada)
+      var cats=Array.isArray(ev.categorias)?ev.categorias:(ev.categoria?[ev.categoria]:[]);
+      document.querySelectorAll('#evCategorias input[type=checkbox]').forEach(function(cb){cb.checked=cats.indexOf(cb.value)>-1;});
       document.getElementById('evGrupo').value=ev.grupoJid||'';
       document.getElementById('evDescricao').value=ev.obs||ev.descricao||'';
       document.getElementById('modalEventoTitulo').innerHTML='<i class="ti ti-pencil"></i> Editar Evento';
@@ -776,7 +801,8 @@ async function salvarEvento(){
   var dataFim=document.getElementById('evDataFim').value;
   var horaFim=document.getElementById('evHoraFim').value;
   var local=document.getElementById('evLocal').value.trim();
-  var categoria=document.getElementById('evCategoria').value;
+  var categorias=Array.from(document.querySelectorAll('#evCategorias input[type=checkbox]:checked')).map(function(cb){return cb.value;});
+  var categoria=categorias[0]||''; // compatibilidade
   var grupoJid=document.getElementById('evGrupo').value;
   var descricao=document.getElementById('evDescricao').value.trim();
   var syncGcal=document.getElementById('evSyncGcal').checked;
@@ -785,7 +811,7 @@ async function salvarEvento(){
 
   if(!titulo){toast('Informe o título.','error');return;}
   if(!dataInicio){toast('Informe a data de início.','error');return;}
-  if(!categoria){toast('Selecione uma categoria.','error');return;}
+  if(!categorias.length){toast('Selecione ao menos uma categoria.','error');return;}
 
   var grupoNome=grupoJid?(_grupos.find(function(g){return g.jid===grupoJid;})||{}).nome||grupoJid:'';
   var dataBR=fmtBR(dataInicio);
@@ -794,7 +820,7 @@ async function salvarEvento(){
   var payload={
     titulo,data:dataInicio,dataBR,hora:horaInicio||'',
     dataFim:dataFim||dataInicio,horaFim:horaFim||'',
-    local,categoria,obs:descricao,descricao,
+    local,categoria,categorias,obs:descricao,descricao,
     grupoJid,grupoNome,
     ts:new Date(dataInicio+'T'+(horaInicio||'00:00')).getTime(),
     atualizadoEm:now
@@ -848,10 +874,11 @@ function abrirDetalhe(key){
   _detalheKey=key;
 
   var catClass=catCls(ev.categoria);
+  var cats=Array.isArray(ev.categorias)?ev.categorias:(ev.categoria?[ev.categoria]:[]);
   var html='<div style="margin-bottom:1rem">'
     +'<div style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px">'+esc(ev.titulo)+'</div>'
     +'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">'
-    +(ev.categoria?'<span class="badge '+catClass+'">'+esc(ev.categoria)+'</span>':'')
+    +cats.map(function(c){return'<span class="badge '+catCls(c)+'">'+esc(c)+'</span>';}).join('')
     +(ev.origem==='google_calendar'?'<span class="badge badge-gcal"><i class="ti ti-brand-google"></i> Calendar</span>':'')
     +(ev.done?'<span class="badge badge-green"><i class="ti ti-check"></i> Concluído</span>':'')
     +'</div>'
@@ -880,7 +907,8 @@ function abrirDetalhe(key){
   document.getElementById('detalheInfo').innerHTML=html;
 
   // Pré-preencher categoria CRM
-  if(ev.categoria)document.getElementById('crmCategoria').value=ev.categoria;
+  var cats0=Array.isArray(ev.categorias)?ev.categorias:(ev.categoria?[ev.categoria]:[]);
+  if(cats0.length)document.getElementById('crmCategoria').value=cats0[0];
 
   // Carregar timeline CRM do Firebase
   renderCrmTimeline(key);
@@ -1004,7 +1032,8 @@ function renderDiaHtml(dt,outroMes,hojeStr){
   var cls='cal-day'+(hoje?' today':'')+(outroMes?' other-month':'');
 
   var pills=evsDia.slice(0,3).map(function(ev){
-    var bg=catColor(ev.categoria);
+    var cats=Array.isArray(ev.categorias)?ev.categorias:(ev.categoria?[ev.categoria]:[]);
+    var bg=cats.length?catColor(cats[0]):'var(--accent-h)';
     return '<div class="cal-event-pill" style="background:'+bg+'22;color:'+bg+';border:1px solid '+bg+'44">'+esc(ev.titulo)+'</div>';
   }).join('');
   if(evsDia.length>3)pills+='<div style="font-size:9px;color:var(--text3)">+'+( evsDia.length-3)+' mais</div>';
@@ -1017,22 +1046,96 @@ function renderDiaHtml(dt,outroMes,hojeStr){
 
 function eventosDoDia(dtStr){
   return _ev.filter(function(ev){
-    if(_filtroCategoria!=='all'&&ev.categoria!==_filtroCategoria)return false;
+    if(_filtroCategoria!=='all'){
+      var cats=Array.isArray(ev.categorias)?ev.categorias:(ev.categoria?[ev.categoria]:[]);
+      if(cats.indexOf(_filtroCategoria)<0)return false;
+    }
     return ev.data===dtStr;
   });
 }
 
 function expandirDia(dtStr){
-  var evs=eventosDoDia(dtStr);
+  var allEvs=eventosDoDia(dtStr);
   var container=document.getElementById('dayExpanded');
-  if(!evs.length){container.style.display='none';return;}
+  if(!allEvs.length){container.style.display='none';return;}
+
   var dt=new Date(dtStr+'T12:00:00');
   var label=dt.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
+
+  // Separar eventos com hora e dia inteiro
+  var comHora=allEvs.filter(function(ev){return ev.hora&&ev.hora!=='00:00'&&ev.hora!=='';});
+  var semHora=allEvs.filter(function(ev){return !ev.hora||ev.hora===''||ev.hora==='00:00';});
+
+  // Descobrir range de horas a mostrar (min hora - 1h, max hora + 2h), mínimo 8h-19h
+  var horas=[8,19];
+  comHora.forEach(function(ev){
+    var h=parseInt((ev.hora||'08:00').split(':')[0]);
+    horas.push(Math.max(0,h-1));
+    var hf=ev.horaFim?parseInt(ev.horaFim.split(':')[0]):h+1;
+    horas.push(Math.min(23,hf+1));
+  });
+  var hMin=Math.min.apply(null,horas);
+  var hMax=Math.max.apply(null,horas);
+
   var html='<div class="day-expanded">'
-    +'<div class="day-expanded-title"><span><i class="ti ti-calendar"></i> '+label+'</span>'
-    +'<button class="btn btn-icon btn-sm" onclick="document.getElementById(\'dayExpanded\').style.display=\'none\'"><i class="ti ti-x"></i></button></div>';
-  html+=evs.map(function(ev){return renderEventoCard(ev);}).join('');
-  html+='</div>';
+    +'<div class="day-expanded-title">'
+      +'<span><i class="ti ti-clock"></i> '+label+'</span>'
+      +'<div style="display:flex;gap:6px">'
+        +'<button class="btn btn-sm btn-primary" onclick="abrirModalEvento();document.getElementById(\'evDataInicio\').value=\''+dtStr+'\'"><i class="ti ti-plus"></i> Novo</button>'
+        +'<button class="btn btn-icon btn-sm" onclick="document.getElementById(\'dayExpanded\').style.display=\'none\'"><i class="ti ti-x"></i></button>'
+      +'</div>'
+    +'</div>';
+
+  // Eventos dia inteiro
+  if(semHora.length){
+    html+='<div style="margin-bottom:10px">'
+      +'<div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Dia inteiro</div>'
+      +semHora.map(function(ev){
+        var cats=Array.isArray(ev.categorias)?ev.categorias:(ev.categoria?[ev.categoria]:[]);
+        var cor=cats.length?catColor(cats[0]):'var(--text3)';
+        return '<div class="hour-allday" onclick="abrirDetalhe(\''+ev._key+'\')" style="border-left-color:'+cor+'">'
+          +'<div style="font-size:13px;font-weight:500;color:var(--text)">'+esc(ev.titulo)+'</div>'
+          +'<div style="display:flex;gap:4px;margin-top:3px;flex-wrap:wrap">'+cats.map(function(c){return'<span class="badge '+catCls(c)+'" style="font-size:10px">'+esc(c)+'</span>';}).join('')+'</div>'
+        +'</div>';
+      }).join('')
+    +'</div>';
+  }
+
+  // Timeline de horas
+  html+='<div class="hour-timeline">';
+  for(var h=hMin;h<=hMax;h++){
+    var hStr=String(h).padStart(2,'0')+':00';
+    var evsDaHora=comHora.filter(function(ev){
+      var eh=parseInt((ev.hora||'0').split(':')[0]);
+      var ef=ev.horaFim?parseInt(ev.horaFim.split(':')[0]):eh;
+      return h>=eh&&h<=ef&&eh===h; // mostrar na hora de início
+    });
+    var hasDot=evsDaHora.length>0;
+
+    html+='<div class="hour-row">'
+      +'<div class="hour-label">'+hStr+'</div>'
+      +'<div class="hour-gutter"><div class="hour-dot'+(hasDot?' has-ev':'')+'"></div></div>'
+      +'<div class="hour-events">'
+      +evsDaHora.map(function(ev){
+        var cats=Array.isArray(ev.categorias)?ev.categorias:(ev.categoria?[ev.categoria]:[]);
+        var cor=cats.length?catColor(cats[0]):'var(--accent-h)';
+        var durStr='';
+        if(ev.hora&&ev.horaFim)durStr=ev.hora+' → '+ev.horaFim;
+        else if(ev.hora)durStr=ev.hora;
+        return '<div class="hour-ev-card" onclick="abrirDetalhe(\''+ev._key+'\')" style="border-left-color:'+cor+'">'
+          +'<div class="hour-ev-title">'+esc(ev.titulo)+'</div>'
+          +'<div class="hour-ev-meta">'
+            +(durStr?'<span><i class="ti ti-clock" style="font-size:10px"></i> '+durStr+'</span>':'')
+            +(ev.local?'<span><i class="ti ti-map-pin" style="font-size:10px"></i> '+esc(ev.local)+'</span>':'')
+            +(ev.grupoNome?'<span><i class="ti ti-brand-whatsapp" style="font-size:10px"></i> '+esc(ev.grupoNome)+'</span>':'')
+          +'</div>'
+          +'<div style="display:flex;gap:3px;margin-top:4px;flex-wrap:wrap">'+cats.map(function(c){return'<span class="badge '+catCls(c)+'" style="font-size:10px">'+esc(c)+'</span>';}).join('')+'</div>'
+        +'</div>';
+      }).join('')
+      +'</div></div>';
+  }
+  html+='</div></div>';
+
   container.innerHTML=html;
   container.style.display='';
   container.scrollIntoView({behavior:'smooth',block:'nearest'});
@@ -1057,7 +1160,10 @@ function renderLista(){
   var container=document.getElementById('listaEventos');
   var hoje=new Date().toISOString().split('T')[0];
   var lista=_ev.filter(function(ev){
-    if(_filtroCategoria!=='all'&&ev.categoria!==_filtroCategoria)return false;
+    if(_filtroCategoria!=='all'){
+      var cats=Array.isArray(ev.categorias)?ev.categorias:(ev.categoria?[ev.categoria]:[]);
+      if(cats.indexOf(_filtroCategoria)<0)return false;
+    }
     if(_listFiltro==='hoje')return ev.data===hoje;
     if(_listFiltro==='pendentes')return !ev.done;
     return true;
@@ -1070,12 +1176,12 @@ function renderLista(){
 function renderEventoCard(ev){
   var hoje=new Date().toISOString().split('T')[0];
   var cor=ev.done?'var(--text3)':(ev.data===hoje?'var(--accent-h)':'var(--green)');
-  var catCl=catCls(ev.categoria);
+  var cats=Array.isArray(ev.categorias)?ev.categorias:(ev.categoria?[ev.categoria]:[]);
   return '<div class="list-event'+(ev.done?' done':'')+(ev.origem==='google_calendar'?' from-gcal':'')+'" onclick="abrirDetalhe(\''+ev._key+'\')">'
     +'<div class="ev-dot" style="background:'+cor+'"></div>'
     +'<div class="ev-body">'
       +'<div class="ev-title">'+esc(ev.titulo)
-        +(ev.categoria?'<span class="badge '+catCl+'" style="margin-left:6px;font-size:10px">'+esc(ev.categoria)+'</span>':'')
+        +cats.map(function(c){return'<span class="badge '+catCls(c)+'" style="margin-left:5px;font-size:10px">'+esc(c)+'</span>';}).join('')
         +(ev.origem==='google_calendar'?'<span class="badge badge-gcal" style="margin-left:4px;font-size:10px"><i class="ti ti-brand-google"></i></span>':'')
       +'</div>'
       +'<div class="ev-meta">'
