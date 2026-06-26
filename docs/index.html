@@ -172,11 +172,14 @@ select option{background:var(--surface2);}
 .crm-time{font-size:10px;color:var(--text3);margin-top:3px;font-family:'JetBrains Mono',monospace;}
 
 /* STATUS CORES */
-.s-avancou{background:rgba(63,185,80,.15);color:var(--green);border:1px solid rgba(63,185,80,.3);}
-.s-proximo{background:rgba(66,133,244,.15);color:var(--gcal);border:1px solid rgba(66,133,244,.3);}
-.s-concluido{background:rgba(63,185,80,.2);color:var(--green);border:1px solid var(--green-b);}
-.s-pausado{background:rgba(240,136,62,.15);color:var(--orange);border:1px solid rgba(240,136,62,.3);}
+.s-checkin{background:rgba(63,185,80,.15);color:var(--green);border:1px solid rgba(63,185,80,.3);}
+.s-checkout{background:rgba(37,99,235,.15);color:var(--accent-h);border:1px solid rgba(37,99,235,.3);}
+.s-atrasado{background:rgba(240,136,62,.15);color:var(--orange);border:1px solid rgba(240,136,62,.3);}
 .s-cancelado{background:rgba(248,81,73,.12);color:var(--red);border:1px solid rgba(248,81,73,.3);}
+/* REAGENDAMENTO MODAL */
+.reagenda-box{background:var(--bg);border:1px solid var(--orange);border-radius:var(--r);padding:12px;margin-top:10px;display:none;}
+.reagenda-box.show{display:block;}
+.reagenda-label{font-size:11px;font-weight:600;color:var(--orange);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;display:flex;align-items:center;gap:5px;}
 
 /* DIVIDER */
 .divider{height:1px;background:var(--border2);margin:1rem 0;}
@@ -572,20 +575,34 @@ select option{background:var(--surface2);}
       <i class="ti ti-chart-bar" style="color:var(--accent-h)"></i> Atualizações CRM
     </div>
 
-    <!-- Novo update CRM -->
+    <!-- Check-in / Check-out CRM -->
     <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:12px;margin-bottom:1rem">
-      <div class="row" style="margin-bottom:8px">
-        <div class="field" style="margin-bottom:0">
-          <label>Status</label>
-          <select id="crmStatus">
-            <option value="avancou">✅ Avançou</option>
-            <option value="proximo">📋 Próximos passos</option>
-            <option value="concluido">🏁 Concluído</option>
-            <option value="pausado">⏸ Pausado</option>
-            <option value="cancelado">❌ Cancelado</option>
-          </select>
+
+      <!-- Botões de ação rápida -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+        <button class="btn btn-green" onclick="selecionarAcaoCRM('checkin')" id="crmBtn-checkin">
+          <i class="ti ti-login"></i> Check-in
+        </button>
+        <button class="btn btn-primary" onclick="selecionarAcaoCRM('checkout')" id="crmBtn-checkout">
+          <i class="ti ti-logout"></i> Check-out
+        </button>
+        <button class="btn" onclick="selecionarAcaoCRM('atrasado')" id="crmBtn-atrasado"
+          style="border-color:var(--orange);color:var(--orange)">
+          <i class="ti ti-clock-exclamation"></i> Atrasado
+        </button>
+        <button class="btn btn-red" onclick="selecionarAcaoCRM('cancelado')" id="crmBtn-cancelado">
+          <i class="ti ti-x"></i> Check-in cancelado
+        </button>
+      </div>
+
+      <!-- Ação selecionada -->
+      <div id="crmAcaoSelecionada" style="display:none">
+        <div style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">
+          Ação: <span id="crmAcaoLabel" style="color:var(--accent-h)"></span>
         </div>
-        <div class="field" style="margin-bottom:0">
+
+        <!-- Categoria -->
+        <div class="field" style="margin-bottom:8px">
           <label>Categoria</label>
           <select id="crmCategoria">
             <option value="Securitizadora">🟢 Securitizadora</option>
@@ -594,12 +611,37 @@ select option{background:var(--surface2);}
             <option value="Tempo Pessoal">🔵 Tempo Pessoal</option>
           </select>
         </div>
+
+        <!-- Resumo (obrigatório no checkout) -->
+        <div class="field" id="crmNotaField" style="margin-bottom:8px">
+          <label id="crmNotaLabel">Nota</label>
+          <textarea id="crmNota" rows="3" placeholder=""></textarea>
+        </div>
+
+        <!-- Reagendamento (obrigatório em atraso/cancelamento) -->
+        <div class="reagenda-box" id="reagendaBox">
+          <div class="reagenda-label"><i class="ti ti-calendar-plus"></i> Reagendamento obrigatório</div>
+          <div class="row">
+            <div class="field" style="margin-bottom:0">
+              <label>Nova data</label>
+              <input type="date" id="reagendaData">
+            </div>
+            <div class="field" style="margin-bottom:0">
+              <label>Nova hora</label>
+              <input type="time" id="reagendaHora">
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:0;margin-top:8px">
+            <label>Motivo</label>
+            <input type="text" id="reagendaMotivo" placeholder="Ex: cliente remarcou, conflito de agenda...">
+          </div>
+        </div>
+
+        <input type="hidden" id="crmAcaoAtual" value="">
+        <button class="btn btn-primary btn-sm btn-full" style="margin-top:10px" onclick="salvarUpdateCRM()">
+          <i class="ti ti-send"></i> Confirmar
+        </button>
       </div>
-      <div class="field" style="margin-bottom:8px">
-        <label>Nota</label>
-        <textarea id="crmNota" rows="3" placeholder="Descreva o andamento, próximos passos ou conclusão..."></textarea>
-      </div>
-      <button class="btn btn-primary btn-sm btn-full" onclick="salvarUpdateCRM()"><i class="ti ti-send"></i> Registrar update</button>
     </div>
 
     <!-- Timeline CRM -->
@@ -1104,46 +1146,167 @@ function renderCrmTimeline(key){
     snap.forEach(function(c){updates.push(c.val());});
     updates.sort(function(a,b){return (b.criadoEm||0)-(a.criadoEm||0);});
     var container=document.getElementById('crmTimeline');
-    if(!updates.length){container.innerHTML='<p style="font-size:12px;color:var(--text3);text-align:center;padding:1rem">Nenhum update registrado</p>';return;}
+    if(!updates.length){container.innerHTML='<p style="font-size:12px;color:var(--text3);text-align:center;padding:1rem">Nenhum registro ainda — use os botões acima</p>';return;}
     container.innerHTML=updates.map(function(u,i){
       var sc=statusCls(u.status);
       var si=statusIcon(u.status);
+      var dt=u.criadoEm?new Date(u.criadoEm):null;
+      var dataHora=dt?dt.toLocaleDateString('pt-BR')+' às '+dt.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):'—';
+      var reagendaInfo='';
+      if(u.reagendaData){
+        reagendaInfo='<div style="background:rgba(240,136,62,.1);border:1px solid rgba(240,136,62,.3);border-radius:4px;padding:5px 8px;margin-top:5px;font-size:11px;color:var(--orange)">'
+          +'<i class="ti ti-calendar-plus" style="font-size:10px"></i> Reagendado para '
+          +fmtBR(u.reagendaData)+(u.reagendaHora?' às '+u.reagendaHora:'')
+          +(u.reagendaMotivo?' — '+esc(u.reagendaMotivo):'')
+        +'</div>';
+      }
       return '<div class="crm-entry">'
         +'<div class="crm-line"><div class="crm-entry-dot" style="background:'+statusColor(u.status)+'"></div>'+(i<updates.length-1?'<div class="crm-connector"></div>':'')+'</div>'
         +'<div class="crm-content">'
           +'<span class="crm-status-badge '+sc+'">'+si+' '+statusLabel(u.status)+'</span>'
           +(u.categoria?'<span class="badge '+catCls(u.categoria)+'" style="margin-left:4px;font-size:10px">'+esc(u.categoria)+'</span>':'')
-          +(u.nota?'<div class="crm-nota">'+esc(u.nota)+'</div>':'')
-          +'<div class="crm-time">'+(u.criadoEm?new Date(u.criadoEm).toLocaleString('pt-BR'):'—')+'</div>'
+          +'<div class="crm-time">'+dataHora+'</div>'
+          +(u.nota?'<div class="crm-nota" style="margin-top:4px">'+esc(u.nota)+'</div>':'')
+          +reagendaInfo
         +'</div></div>';
     }).join('');
   });
 }
 
+// ── CRM CHECK-IN/OUT ─────────────────────────────────────────────
+function selecionarAcaoCRM(acao){
+  // Highlight botão selecionado
+  ['checkin','checkout','atrasado','cancelado'].forEach(function(a){
+    var btn=document.getElementById('crmBtn-'+a);
+    if(btn) btn.style.opacity = a===acao?'1':'0.5';
+  });
+
+  document.getElementById('crmAcaoAtual').value = acao;
+  document.getElementById('crmAcaoSelecionada').style.display = '';
+
+  var labels = {checkin:'Check-in',checkout:'Check-out',atrasado:'Atrasado',cancelado:'Check-in cancelado'};
+  var colors = {checkin:'var(--green)',checkout:'var(--accent-h)',atrasado:'var(--orange)',cancelado:'var(--red)'};
+  var label = document.getElementById('crmAcaoLabel');
+  label.textContent = labels[acao]||acao;
+  label.style.color = colors[acao]||'var(--text)';
+
+  // Nota: obrigatória no checkout, opcional nos outros
+  var notaField = document.getElementById('crmNotaField');
+  var notaLabel = document.getElementById('crmNotaLabel');
+  var notaArea  = document.getElementById('crmNota');
+  if(acao==='checkout'){
+    notaLabel.textContent = 'Resumo obrigatório *';
+    notaLabel.style.color = 'var(--accent-h)';
+    notaArea.placeholder  = 'Descreva o que aconteceu, principais avanços e próximos passos...';
+    notaField.style.display = '';
+  } else if(acao==='checkin'){
+    notaLabel.textContent = 'Observação (opcional)';
+    notaLabel.style.color = '';
+    notaArea.placeholder  = 'Ex: participantes presentes, local confirmado...';
+    notaField.style.display = '';
+  } else {
+    // atrasado / cancelado — nota opcional, mas reagendamento obrigatório
+    notaLabel.textContent = 'Motivo (opcional)';
+    notaLabel.style.color = '';
+    notaArea.placeholder  = 'Descreva o motivo...';
+    notaField.style.display = '';
+  }
+
+  // Reagendamento: mostrar para atrasado e cancelado
+  var reagBox = document.getElementById('reagendaBox');
+  if(acao==='atrasado'||acao==='cancelado'){
+    reagBox.classList.add('show');
+    // Preencher com a data/hora atual do evento
+    var ev = _ev.find(function(e){return e._key===_detalheKey;});
+    if(ev){
+      document.getElementById('reagendaData').value = ev.data||'';
+      document.getElementById('reagendaHora').value = ev.hora||'';
+    }
+  } else {
+    reagBox.classList.remove('show');
+  }
+}
+
 async function salvarUpdateCRM(){
   if(!_detalheKey){toast('Nenhum evento selecionado','error');return;}
-  var status=document.getElementById('crmStatus').value;
-  var nota=document.getElementById('crmNota').value.trim();
-  var categoria=document.getElementById('crmCategoria').value;
-  if(!nota){toast('Escreva uma nota antes de registrar.','error');return;}
-  var now=Date.now();
+  var acao     = document.getElementById('crmAcaoAtual').value;
+  var nota     = document.getElementById('crmNota').value.trim();
+  var categoria= document.getElementById('crmCategoria').value;
+
+  if(!acao){toast('Selecione uma ação (Check-in, Check-out...).','error');return;}
+  if(acao==='checkout'&&!nota){toast('O Check-out exige um resumo obrigatório.','error');return;}
+
+  var now = Date.now();
+  var ev  = _ev.find(function(e){return e._key===_detalheKey;});
+
+  // Reagendamento obrigatório em atraso/cancelamento
+  var novaData='', novaHora='', motivo='';
+  if(acao==='atrasado'||acao==='cancelado'){
+    novaData = document.getElementById('reagendaData').value;
+    novaHora = document.getElementById('reagendaHora').value;
+    motivo   = document.getElementById('reagendaMotivo').value.trim();
+    if(!novaData||!novaHora){toast('Informe a nova data e hora para reagendar.','error');return;}
+  }
+
+  var entry = {
+    status:   acao,
+    nota:     nota,
+    categoria:categoria,
+    criadoEm: now,
+    hora:     new Date(now).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
+    data:     new Date(now).toISOString().split('T')[0]
+  };
+
+  if(novaData) entry.reagendaData = novaData;
+  if(novaHora) entry.reagendaHora = novaHora;
+  if(motivo)   entry.reagendaMotivo = motivo;
+
   if(db){
-    await db.ref('crm/'+_detalheKey).push({status,nota,categoria,criadoEm:now});
-    if(status==='concluido'){
-      var ev=_ev.find(function(e){return e._key===_detalheKey;});
-      if(ev){
-        await db.ref('eventos/'+_detalheKey).update({done:true,concluidoEm:now});
-        if(ev.grupoJid){
-          var msg=tpl(_cfg.tplConclusao,ev.titulo,ev.dataBR||fmtBR(ev.data),ev.hora||'');
-          var enviado=await enviarWA(ev.grupoJid,msg);
-          await db.ref('historico').push({tipo:'conclusao',eventoId:_detalheKey,titulo:ev.titulo,grupoNome:ev.grupoNome,msg,status:enviado?'ok':'erro',criadoEm:now});
-        }
+    await db.ref('crm/'+_detalheKey).push(entry);
+
+    // Atualizar evento se checkout → concluído
+    if(acao==='checkout'&&ev){
+      await db.ref('eventos/'+_detalheKey).update({done:true,concluidoEm:now,checkoutEm:now});
+      if(ev.grupoJid){
+        var msg=tpl(_cfg.tplConclusao,ev.titulo,ev.dataBR||fmtBR(ev.data),ev.hora||'');
+        var enviado=await enviarWA(ev.grupoJid,msg);
+        await db.ref('historico').push({tipo:'checkout',eventoId:_detalheKey,titulo:ev.titulo,grupoNome:ev.grupoNome,msg:msg,status:enviado?'ok':'erro',criadoEm:now});
       }
     }
+
+    // Reagendar evento se atrasado/cancelado
+    if((acao==='atrasado'||acao==='cancelado')&&ev&&novaData){
+      var novaDataBR = fmtBR(novaData);
+      var novoTs    = new Date(novaData+'T'+(novaHora||'00:00')).getTime();
+      await db.ref('eventos/'+_detalheKey).update({
+        data:novaData, dataBR:novaDataBR, hora:novaHora,
+        ts:novoTs, reagendadoEm:now,
+        reagendadoDe:{data:ev.data,hora:ev.hora}
+      });
+
+      // Criar também no GCal se tiver vinculado
+      if(_gcalToken&&ev.gcalId){
+        var evAtual=Object.assign({},ev,{data:novaData,hora:novaHora,horaFim:ev.horaFim});
+        await atualizarNoGcal(evAtual);
+      }
+      toast('Evento reagendado para '+novaDataBR+' às '+novaHora,'ok');
+    }
   }
+
+  // Reset UI
   document.getElementById('crmNota').value='';
+  document.getElementById('crmAcaoAtual').value='';
+  document.getElementById('crmAcaoSelecionada').style.display='none';
+  document.getElementById('reagendaBox').classList.remove('show');
+  ['checkin','checkout','atrasado','cancelado'].forEach(function(a){
+    var btn=document.getElementById('crmBtn-'+a);
+    if(btn) btn.style.opacity='1';
+  });
+
   renderCrmTimeline(_detalheKey);
-  toast('Update registrado!','ok');
+
+  var actionLabels={checkin:'Check-in registrado!',checkout:'Check-out registrado!',atrasado:'Atraso registrado e evento reagendado.',cancelado:'Cancelamento registrado e evento reagendado.'};
+  toast(actionLabels[acao]||'Registrado!','ok');
 }
 
 async function concluirEventoDetalhe(){
@@ -1516,10 +1679,10 @@ function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
 
 function catCls(c){var m={'Securitizadora':'cat-sec','Consultoria':'cat-con','Rede P5':'cat-red','Tempo Pessoal':'cat-pes'};return m[c]||'badge-blue';}
 function catColor(c){var m={'Securitizadora':'var(--cat-sec)','Consultoria':'var(--cat-con)','Rede P5':'var(--cat-red)','Tempo Pessoal':'var(--cat-pes)'};return m[c]||'var(--accent-h)';}
-function statusCls(s){var m={avancou:'s-avancou',proximo:'s-proximo',concluido:'s-concluido',pausado:'s-pausado',cancelado:'s-cancelado'};return m[s]||'badge-blue';}
-function statusColor(s){var m={avancou:'var(--green)',proximo:'var(--gcal)',concluido:'var(--green)',pausado:'var(--orange)',cancelado:'var(--red)'};return m[s]||'var(--text2)';}
-function statusIcon(s){var m={avancou:'✅',proximo:'📋',concluido:'🏁',pausado:'⏸',cancelado:'❌'};return m[s]||'•';}
-function statusLabel(s){var m={avancou:'Avançou',proximo:'Próximos passos',concluido:'Concluído',pausado:'Pausado',cancelado:'Cancelado'};return m[s]||s;}
+function statusCls(s){var m={checkin:'s-checkin',checkout:'s-checkout',atrasado:'s-atrasado',cancelado:'s-cancelado'};return m[s]||'badge-blue';}
+function statusColor(s){var m={checkin:'var(--green)',checkout:'var(--accent-h)',atrasado:'var(--orange)',cancelado:'var(--red)'};return m[s]||'var(--text2)';}
+function statusIcon(s){var m={checkin:'✅',checkout:'🔵',atrasado:'⚠️',cancelado:'❌'};return m[s]||'•';}
+function statusLabel(s){var m={checkin:'Check-in',checkout:'Check-out',atrasado:'Atrasado',cancelado:'Check-in cancelado'};return m[s]||s;}
 
 // ══════════════════════════════════════════════════════════════════
 // INIT
@@ -1776,8 +1939,8 @@ async function carregarCrmDia(evsDia){
     return;
   }
 
-  var sicons = {avancou:'✅',proximo:'📋',concluido:'🏁',pausado:'⏸',cancelado:'❌'};
-  var slabels = {avancou:'Avançou',proximo:'Próximos passos',concluido:'Concluído',pausado:'Pausado',cancelado:'Cancelado'};
+  var sicons = {checkin:'✅',checkout:'🔵',atrasado:'⚠️',cancelado:'❌'};
+  var slabels = {checkin:'Check-in',checkout:'Check-out',atrasado:'Atrasado',cancelado:'Check-in cancelado'};
 
   document.getElementById('relCrmDia').innerHTML = updates.map(function(u){
     return '<div class="rel-crm-row">'
@@ -1866,7 +2029,7 @@ async function gerarRelatorioIA(){
   var horasLista = cats.map(function(c){ return '- '+c+': '+catHoras[c].toFixed(1)+'h'; }).join('\n');
 
   var crmLista = crmUpdates.length ? crmUpdates.map(function(u){
-    var sl={avancou:'Avancou',proximo:'Proximos passos',concluido:'Concluido',pausado:'Pausado',cancelado:'Cancelado'};
+    var sl={checkin:'Check-in',checkout:'Check-out',atrasado:'Atrasado',cancelado:'Check-in cancelado'};
     return '- ['+(sl[u.status]||u.status)+'] '+u.eventoTitulo+': '+u.nota;
   }).join('\n') : 'Nenhum update registrado';
 
