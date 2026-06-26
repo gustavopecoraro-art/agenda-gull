@@ -620,22 +620,19 @@ select option{background:var(--surface2);}
           </div>
         </div>
 
-        <!-- Categoria -->
-        <div class="field" style="margin-bottom:8px">
-          <label>Categoria</label>
-          <select id="crmCategoria">
-            <option value="Securitizadora">🟢 Securitizadora</option>
-            <option value="Consultoria">🟠 Consultoria</option>
-            <option value="Rede P5">🟣 Rede P5</option>
-            <option value="Tempo Pessoal">🔵 Tempo Pessoal</option>
-          </select>
+        <!-- Categorias (multi) + resumo por categoria -->
+        <div class="field" style="margin-bottom:0">
+          <label id="crmNotaLabel">Categorias e resumos</label>
         </div>
-
-        <!-- Resumo (obrigatório no checkout) -->
-        <div class="field" id="crmNotaField" style="margin-bottom:8px">
-          <label id="crmNotaLabel">Nota</label>
+        <div id="crmCategoriaBlocks" style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px">
+          <!-- blocos gerados por JS -->
+        </div>
+        <!-- Campo de nota simples para não-checkout -->
+        <div class="field" id="crmNotaSimples" style="margin-bottom:8px;display:none">
           <textarea id="crmNota" rows="3" placeholder=""></textarea>
         </div>
+        <!-- hidden para compatibilidade -->
+        <!-- categoria e nota preenchidos por JS no salvar -->
 
         <!-- Reagendamento (obrigatório em atraso/cancelamento) -->
         <div class="reagenda-box" id="reagendaBox">
@@ -1205,7 +1202,14 @@ function renderCrmTimeline(key){
               +'<button class="btn btn-sm btn-icon btn-red" title="Excluir" style="padding:3px 6px;font-size:11px" onclick="excluirEntryCRM(\''+key+'\',\''+entryKey+'\')"><i class="ti ti-trash"></i></button>'
             +'</div>':'')
           +'</div>'
-          +(u.nota?'<div class="crm-nota" style="margin-top:4px">'+esc(u.nota)+'</div>':'')
+          +(u.catBlocos&&u.catBlocos.length
+            ? u.catBlocos.map(function(b){
+                return '<div style="margin-top:6px;background:var(--surface);border:1px solid var(--border2);border-radius:4px;padding:6px 8px">'
+                  +'<div style="font-size:10px;font-weight:600;color:var(--text2);margin-bottom:3px;text-transform:uppercase;letter-spacing:.4px">'+esc(b.categoria)+'</div>'
+                  +'<div class="crm-nota">'+esc(b.nota)+'</div>'
+                +'</div>';
+              }).join('')
+            : (u.nota?'<div class="crm-nota" style="margin-top:4px">'+esc(u.nota)+'</div>':''))
           +reagendaInfo
         +'</div></div>';
     }).join('');
@@ -1285,6 +1289,59 @@ async function salvarEdicaoEntryCRM(){
   _crmEditKey=null; _crmEditEvKey=null;
 }
 
+// ── CRM MULTI-CATEGORIA BLOCOS ───────────────────────────────────
+var CATS_CRM = [
+  {id:'Securitizadora', label:'🟢 Securitizadora', color:'var(--cat-sec)'},
+  {id:'Consultoria',    label:'🟠 Consultoria',    color:'var(--cat-con)'},
+  {id:'Rede P5',        label:'🟣 Rede P5',        color:'var(--cat-red)'},
+  {id:'Tempo Pessoal',  label:'🔵 Tempo Pessoal',  color:'var(--cat-pes)'}
+];
+
+function construirBlocosCategorias(){
+  var ev = _ev.find(function(e){return e._key===_detalheKey;});
+  var evCats = ev?(Array.isArray(ev.categorias)?ev.categorias:(ev.categoria?[ev.categoria]:[])):[];
+  var container = document.getElementById('crmCategoriaBlocks');
+  container.innerHTML = CATS_CRM.map(function(cat){
+    var safeId = cat.id.replace(/ /g,'_');
+    var checked = evCats.indexOf(cat.id) > -1;
+    return '<div id="catblock-'+safeId+'" style="'
+      +'border:1px solid var(--border);border-radius:var(--r);overflow:hidden;'
+      +(checked?'':'opacity:0.5;')
+    +'">'
+      +'<label style="display:flex;align-items:center;gap:8px;padding:8px 10px;cursor:pointer;background:var(--surface2);user-select:none">'
+        +'<input type="checkbox" id="catck-'+safeId+'" '+(checked?'checked':'')+' onchange="toggleCatBlock(\''+safeId+'\')" style="width:auto;accent-color:'+cat.color+'">'
+        +'<span style="font-size:13px;color:var(--text);font-weight:500">'+cat.label+'</span>'
+      +'</label>'
+      +'<div id="catbody-'+safeId+'" style="'+(checked?'':'display:none')+';padding:8px">'
+        +'<textarea id="catnota-'+safeId+'" rows="3"'
+          +' placeholder="Resumo '+cat.id+': o que aconteceu, avanços, próximos passos..."'
+          +' style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-size:13px;padding:8px;font-family:Inter,sans-serif;outline:none;resize:vertical"></textarea>'
+      +'</div>'
+    +'</div>';
+  }).join('');
+}
+
+function toggleCatBlock(safeId){
+  var cb   = document.getElementById('catck-'+safeId);
+  var block= document.getElementById('catblock-'+safeId);
+  var body = document.getElementById('catbody-'+safeId);
+  block.style.opacity = cb.checked ? '1' : '0.5';
+  body.style.display  = cb.checked ? '' : 'none';
+}
+
+function lerCategoriasBlocos(){
+  var result=[];
+  CATS_CRM.forEach(function(cat){
+    var safeId=cat.id.replace(/ /g,'_');
+    var cb=document.getElementById('catck-'+safeId);
+    if(cb&&cb.checked){
+      var ta=document.getElementById('catnota-'+safeId);
+      result.push({categoria:cat.id, nota:ta?ta.value.trim():''});
+    }
+  });
+  return result;
+}
+
 function selecionarAcaoCRM(acao){
   ['checkout','atrasado','cancelado'].forEach(function(a){
     var btn=document.getElementById('crmBtn-'+a);
@@ -1312,15 +1369,20 @@ function selecionarAcaoCRM(acao){
   label.style.color = colors[acao]||'var(--text)';
 
   var notaLabel = document.getElementById('crmNotaLabel');
-  var notaArea  = document.getElementById('crmNota');
+  var simplesEl = document.getElementById('crmNotaSimples');
+  var simplesTa = document.getElementById('crmNota');
+
   if(acao==='checkout'){
-    notaLabel.textContent = 'Resumo obrigatório *';
+    notaLabel.textContent = 'Selecione as categorias e escreva um resumo para cada *';
     notaLabel.style.color = 'var(--accent-h)';
-    notaArea.placeholder  = 'Descreva o que aconteceu, principais avanços e próximos passos...';
+    simplesEl.style.display = 'none';
+    construirBlocosCategorias();
   } else {
     notaLabel.textContent = 'Motivo (opcional)';
     notaLabel.style.color = '';
-    notaArea.placeholder  = 'Descreva o motivo...';
+    simplesEl.style.display = '';
+    simplesTa.placeholder = 'Descreva o motivo...';
+    document.getElementById('crmCategoriaBlocks').innerHTML='';
   }
 
   var reagBox = document.getElementById('reagendaBox');
@@ -1337,12 +1399,23 @@ function selecionarAcaoCRM(acao){
 
 async function salvarUpdateCRM(){
   if(!_detalheKey){toast('Nenhum evento selecionado','error');return;}
-  var acao     = document.getElementById('crmAcaoAtual').value;
-  var nota     = document.getElementById('crmNota').value.trim();
-  var categoria= document.getElementById('crmCategoria').value;
+  var acao = document.getElementById('crmAcaoAtual').value;
+  if(!acao){toast('Selecione uma ação.','error');return;}
 
-  if(!acao){toast('Selecione uma ação (Check-in, Check-out...).','error');return;}
-  if(acao==='checkout'&&!nota){toast('O Check-out exige um resumo obrigatório.','error');return;}
+  // Checkout: ler blocos de categoria
+  var catBlocos = [];
+  var nota = '', categoria = '';
+  if(acao==='checkout'){
+    catBlocos = lerCategoriasBlocos();
+    if(!catBlocos.length){toast('Selecione ao menos uma categoria.','error');return;}
+    var semResumo = catBlocos.filter(function(b){return !b.nota;});
+    if(semResumo.length){toast('Escreva um resumo para cada categoria selecionada.','error');return;}
+    nota      = catBlocos.map(function(b){return '['+b.categoria+'] '+b.nota;}).join('\n\n');
+    categoria = catBlocos.map(function(b){return b.categoria;}).join(', ');
+  } else {
+    nota      = document.getElementById('crmNota').value.trim();
+    categoria = document.getElementById('crmCategoria').value||'';
+  }
 
   var dataInicio = document.getElementById('crmDataInicio').value;
   var horaInicio = document.getElementById('crmHoraInicio').value;
@@ -1374,6 +1447,7 @@ async function salvarUpdateCRM(){
     status:    acao,
     nota:      nota,
     categoria: categoria,
+    catBlocos: acao==='checkout' ? catBlocos : undefined,
     criadoEm:  now,
     dataInicio: dataInicio || new Date().toISOString().split('T')[0],
     horaInicio: horaInicio || '',
@@ -1473,6 +1547,8 @@ async function salvarUpdateCRM(){
   document.getElementById('crmHoraInicio').value='';
   document.getElementById('crmDataFim').value='';
   document.getElementById('crmHoraFim').value='';
+  document.getElementById('crmCategoriaBlocks').innerHTML='';
+  document.getElementById('crmNotaSimples').style.display='none';
   ['checkout','atrasado','cancelado'].forEach(function(a){
     var btn=document.getElementById('crmBtn-'+a);
     if(btn) btn.style.opacity='1';
