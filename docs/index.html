@@ -153,8 +153,9 @@ select option{background:var(--surface2);}
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:flex-end;justify-content:center;}
 .overlay.open{display:flex;}
 @media(min-width:600px){.overlay{align-items:center;}}
-.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl) var(--rl) 0 0;padding:1.5rem;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl) var(--rl) 0 0;padding:1.25rem;width:100%;max-width:580px;max-height:92vh;overflow-y:auto;}
 @media(min-width:600px){.modal{border-radius:var(--rl);}}
+@media(max-width:480px){.modal{padding:1rem;}.crm-content{min-width:0;}.crm-status-badge{font-size:10px;padding:2px 6px;}.crm-nota{font-size:11px;}}
 .modal-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:1.25rem;display:flex;align-items:center;justify-content:space-between;}
 .modal-close{background:none;border:none;color:var(--text2);cursor:pointer;font-size:18px;padding:2px;}
 .modal-close:hover{color:var(--text);}
@@ -1202,7 +1203,7 @@ function abrirDetalhe(key){
     +(ev.origem==='google_calendar'?'<span class="badge badge-gcal"><i class="ti ti-brand-google"></i> Calendar</span>':'')
     +(ev.done?'<span class="badge badge-green"><i class="ti ti-check"></i> Concluído</span>':'')
     +'</div>'
-    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">'
+    +'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px">'
     +'<div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:10px">'
       +'<div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Início</div>'
       +'<div style="font-size:13px;color:var(--text)">'+esc(ev.dataBR||ev.data||'—')+(ev.hora?' às '+ev.hora:'')+'</div>'
@@ -1231,9 +1232,73 @@ function abrirDetalhe(key){
   var catEl=document.getElementById('crmCategoria');
   if(catEl&&cats0.length) catEl.value=cats0[0];
 
-  // Carregar timeline CRM do Firebase
-  renderCrmTimeline(key);
+  // Carregar timeline CRM — se tiver checkout, mostrar em destaque no topo
   abrirModal('modalDetalhe');
+  renderDetalheComCRM(key);
+}
+
+function renderDetalheComCRM(key){
+  renderCrmTimeline(key);
+  if(!db) return;
+  db.ref('crm/'+key).orderByChild('criadoEm').once('value', function(snap){
+    var checkouts=[];
+    snap.forEach(function(c){
+      var v=c.val();
+      if(v.status==='checkout') checkouts.push(v);
+    });
+    if(!checkouts.length) return; // mantém formatação atual
+    checkouts.sort(function(a,b){return (b.criadoEm||0)-(a.criadoEm||0);});
+
+    // Inserir painel de checkouts antes do detalheInfo
+    var existingPanel=document.getElementById('checkoutPanel');
+    if(existingPanel) existingPanel.remove();
+
+    var panel=document.createElement('div');
+    panel.id='checkoutPanel';
+    panel.style.cssText='margin-bottom:12px';
+
+    var html='<div style="font-size:12px;font-weight:600;color:var(--accent-h);margin-bottom:8px;display:flex;align-items:center;gap:6px">'
+      +'<i class="ti ti-logout" style="font-size:14px"></i> Último check-out'
+    +'</div>';
+
+    var u=checkouts[0]; // mais recente
+    var dt=u.criadoEm?new Date(u.criadoEm).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'—';
+    var periodo='';
+    if(u.horaInicio&&u.horaFim){
+      var dIni=u.dataInicio?fmtBR(u.dataInicio):'';
+      var dFim=u.dataFim?fmtBR(u.dataFim):dIni;
+      periodo=dIni==dFim ? dIni+' · '+u.horaInicio+' → '+u.horaFim : dIni+' '+u.horaInicio+' → '+dFim+' '+u.horaFim;
+    }
+
+    html+='<div style="background:var(--accent-s);border:1px solid rgba(37,99,235,.25);border-radius:var(--r);padding:10px">';
+    if(periodo) html+='<div style="font-size:11px;color:var(--text2);margin-bottom:8px;font-family:JetBrains Mono,monospace"><i class="ti ti-clock" style="font-size:10px"></i> '+periodo+'</div>';
+
+    if(u.catBlocos&&u.catBlocos.length){
+      var blocsComNota=u.catBlocos.filter(function(b){return b.nota&&b.nota.trim();});
+      if(blocsComNota.length){
+        html+=blocsComNota.map(function(b){
+          return '<div style="margin-bottom:8px">'
+            +'<div style="display:flex;align-items:center;gap:5px;margin-bottom:4px">'
+              +'<div style="width:8px;height:8px;border-radius:50%;background:'+catColor(b.categoria)+';flex-shrink:0"></div>'
+              +'<span style="font-size:11px;font-weight:600;color:var(--text)">'+esc(b.categoria)+'</span>'
+            +'</div>'
+            +'<div style="font-size:12px;color:var(--text2);line-height:1.6;padding-left:13px">'+esc(b.nota)+'</div>'
+          +'</div>';
+        }).join('');
+      }
+    } else if(u.nota){
+      html+='<div style="font-size:12px;color:var(--text2);line-height:1.6">'+esc(u.nota)+'</div>';
+    }
+    html+='<div style="font-size:10px;color:var(--text3);margin-top:6px;text-align:right">'+dt+'</div>';
+    html+='</div>';
+    if(checkouts.length>1){
+      html+='<div style="font-size:11px;color:var(--text3);text-align:center;margin-top:4px">+'+( checkouts.length-1)+' check-out(s) anteriores na timeline abaixo</div>';
+    }
+
+    panel.innerHTML=html;
+    var detalheInfo=document.getElementById('detalheInfo');
+    detalheInfo.parentNode.insertBefore(panel, detalheInfo);
+  });
 }
 
 function renderCrmTimeline(key){
@@ -1718,18 +1783,38 @@ function renderDiaHtml(dt,outroMes,hojeStr){
   var evsDia=eventosDoDia(dtStr);
   var cls='cal-day'+(hoje?' today':'')+(outroMes?' other-month':'');
 
-  var pills=evsDia.slice(0,3).map(function(ev){
+  var CAT_ORDER=['Securitizadora','Consultoria','Rede P5','Tempo Pessoal'];
+  var catCount={};
+  evsDia.forEach(function(ev){
     var cats=Array.isArray(ev.categorias)?ev.categorias:(ev.categoria?[ev.categoria]:[]);
-    var bg=cats.length?catColor(cats[0]):'var(--accent-h)';
-    return '<div class="cal-event-pill" style="background:'+bg+'22;color:'+bg+';border:1px solid '+bg+'44">'+esc(ev.titulo)+'</div>';
-  }).join('');
-  if(evsDia.length>3)pills+='<div style="font-size:9px;color:var(--text3)">+'+( evsDia.length-3)+' mais</div>';
+    if(!cats.length)cats=['_'];
+    cats.forEach(function(c){catCount[c]=(catCount[c]||0)+1;});
+  });
+
+  var dots='';
+  CAT_ORDER.forEach(function(cat){
+    if(!catCount[cat])return;
+    var cor=catColor(cat);
+    dots+='<div style="display:flex;align-items:center;gap:2px;margin-bottom:1px">'
+      +'<div style="width:7px;height:7px;border-radius:50%;background:'+cor+';flex-shrink:0"></div>'
+      +'<span style="font-size:9px;font-weight:600;color:'+cor+'">'+catCount[cat]+'</span>'
+    +'</div>';
+  });
+  if(catCount['_']){
+    dots+='<div style="display:flex;align-items:center;gap:2px;margin-bottom:1px">'
+      +'<div style="width:7px;height:7px;border-radius:50%;background:var(--text3);flex-shrink:0"></div>'
+      +'<span style="font-size:9px;font-weight:600;color:var(--text3)">'+catCount['_']+'</span>'
+    +'</div>';
+  }
 
   return '<div class="'+cls+'" onclick="expandirDia(\''+dtStr+'\')">'
-    +'<div class="cal-day-num">'+dt.getDate()+'</div>'
-    +(evsDia.length?'<div class="cal-dots">'+pills+'</div>':'')
+    +'<div style="display:flex;align-items:flex-start;justify-content:space-between">'
+      +'<div class="cal-day-num">'+dt.getDate()+'</div>'
+      +(evsDia.length?'<div style="display:flex;flex-direction:column;align-items:flex-end;padding-top:1px">'+dots+'</div>':'')
+    +'</div>'
     +'</div>';
 }
+
 
 function eventosDoDia(dtStr){
   return _ev.filter(function(ev){
@@ -2086,7 +2171,10 @@ function showPage(id,btn){
   }
 }
 function abrirModal(id){document.getElementById(id).classList.add('open');}
-function fecharModal(id){document.getElementById(id).classList.remove('open');}
+function fecharModal(id){
+  document.getElementById(id).classList.remove('open');
+  if(id==='modalDetalhe'){var p=document.getElementById('checkoutPanel');if(p)p.remove();}
+}
 document.querySelectorAll('.overlay').forEach(function(o){
   o.addEventListener('click',function(e){if(e.target===o)fecharModal(o.id);});
 });
