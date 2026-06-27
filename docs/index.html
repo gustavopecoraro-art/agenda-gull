@@ -326,28 +326,52 @@ select option{background:var(--surface2);}
 <div id="page-relatorio" class="page">
 
   <!-- Seletor de data -->
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:10px">
-    <div style="display:flex;align-items:center;gap:8px">
-      <button class="btn btn-icon" onclick="navRelDia(-1)"><i class="ti ti-chevron-left"></i></button>
-      <input type="date" id="relData" style="width:auto;font-size:13px" onchange="carregarRelatorio()">
-      <button class="btn btn-icon" onclick="navRelDia(1)"><i class="ti ti-chevron-right"></i></button>
-      <button class="btn btn-sm" onclick="relHoje()">Hoje</button>
-    </div>
-    <div style="display:flex;gap:8px">
-      <button class="btn btn-sm btn-gcal" onclick="gerarRelatorioIA()" id="btnGerarIA">
-        <i class="ti ti-sparkles"></i> Gerar com IA
+  <div style="margin-bottom:1rem">
+    <!-- Atalhos rápidos -->
+    <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap">
+      <button class="btn btn-sm" id="relBtnOntem" onclick="relAtalho(-1)">Ontem</button>
+      <button class="btn btn-sm btn-primary" id="relBtnHoje" onclick="relAtalho(0)">Hoje</button>
+      <button class="btn btn-sm" id="relBtnAmanha" onclick="relAtalho(1)">Amanhã</button>
+      <div style="width:1px;background:var(--border);margin:0 2px"></div>
+      <button class="btn btn-sm" id="relBtnRange" onclick="toggleRelRange()" style="gap:5px">
+        <i class="ti ti-calendar-stats"></i> Período
       </button>
-      <button class="btn btn-sm" onclick="exportarPDF()"><i class="ti ti-file-type-pdf"></i> Exportar PDF</button>
+    </div>
+    <!-- Data única -->
+    <div id="relModoData" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:6px">
+        <button class="btn btn-icon" onclick="navRelDia(-1)"><i class="ti ti-chevron-left"></i></button>
+        <input type="date" id="relData" style="font-size:13px" onchange="relModoAtual='dia';carregarRelatorio()">
+        <button class="btn btn-icon" onclick="navRelDia(1)"><i class="ti ti-chevron-right"></i></button>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-sm btn-gcal" onclick="gerarRelatorioIA()" id="btnGerarIA">
+          <i class="ti ti-sparkles"></i> Gerar com IA
+        </button>
+        <button class="btn btn-sm" onclick="exportarPDF()"><i class="ti ti-file-type-pdf"></i> PDF</button>
+      </div>
+    </div>
+    <!-- Range de datas -->
+    <div id="relModoRange" style="display:none;align-items:center;gap:8px;flex-wrap:wrap;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+        <input type="date" id="relDataInicio" style="font-size:13px">
+        <span style="color:var(--text2);font-size:12px">até</span>
+        <input type="date" id="relDataFim" style="font-size:13px">
+        <button class="btn btn-sm btn-primary" onclick="carregarRelatorioRange()"><i class="ti ti-search"></i> Buscar</button>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-sm" onclick="exportarPDF()"><i class="ti ti-file-type-pdf"></i> PDF</button>
+      </div>
     </div>
   </div>
 
   <!-- MÉTRICAS DO DIA -->
   <div class="stats-grid" id="relMetricas" style="grid-template-columns:repeat(auto-fit,minmax(130px,1fr))"></div>
 
-  <!-- BARRAS POR CATEGORIA -->
+  <!-- PIZZA POR CATEGORIA -->
   <div class="card" id="relCategorias">
-    <div class="card-title"><i class="ti ti-chart-bar"></i> Horas por categoria</div>
-    <div id="relCategoriasBody"></div>
+    <div class="card-title"><i class="ti ti-chart-donut"></i> Horas por categoria</div>
+    <div id="relCategoriasBody" style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap"></div>
   </div>
 
   <!-- EVENTOS DO DIA -->
@@ -2283,25 +2307,16 @@ async function carregarRelatorio(){
   await Promise.all(crmPromises);
 
   var maxH = Math.max.apply(null, cats.map(function(c){ return catHoras[c]; })) || 1;
-  _catHorasCache = catHoras; // cache para exportarPDF
+  _catHorasCache = catHoras;
   var totalHorasJust = cats.reduce(function(acc,c){ return acc + catHoras[c]; }, 0);
   document.getElementById('relMetricas').innerHTML =
     metricaCard('Eventos', evsDia.length, 'total no dia') +
-    metricaCard('Conclu\u00eddos', concluidos, 'finalizados') +
+    metricaCard('Concluídos', concluidos, 'finalizados') +
     metricaCard('Pendentes', pendentes, 'em aberto') +
     metricaCard('Horas just.', totalHorasJust.toFixed(1)+'h', 'com justificativa');
-  document.getElementById('relCategoriasBody').innerHTML = cats.map(function(c){
-    var h = catHoras[c];
-    var pct = Math.round((h / maxH) * 100);
-    var evCnt = evsDia.filter(function(e){ var cs=Array.isArray(e.categorias)?e.categorias:(e.categoria?[e.categoria]:[]); return cs.indexOf(c)>-1; }).length;
-    return '<div class="rel-bar-row">'
-      + '<div class="rel-bar-label">'
-        + '<span>' + catEmojis[c] + ' ' + c + ' <span style="color:var(--text3)">(' + evCnt + ' evento' + (evCnt!==1?'s':'') + ')</span></span>'
-        + '<span style="font-family:\'JetBrains Mono\',monospace;font-size:11px;color:var(--text2)">' + h.toFixed(1) + 'h</span>'
-      + '</div>'
-      + '<div class="rel-bar-track"><div class="rel-bar-fill" style="width:' + pct + '%;background:' + catColors[c] + '"></div></div>'
-    + '</div>';
-  }).join('');
+
+  // Donut SVG
+  document.getElementById('relCategoriasBody').innerHTML = renderDonutCategoria(catHoras, cats, catColors, catEmojis, totalHorasJust);
 
   // ── EVENTOS DO DIA ────────────────────────────────────────────
   if(!evsDia.length){
@@ -2313,20 +2328,20 @@ async function carregarRelatorio(){
       var cor = cs.length ? catColors[cs[0]] : 'var(--accent-h)';
       var emoji = cs.length ? catEmojis[cs[0]] : '📅';
       var dur = calcularHorasEvento(ev);
-      return '<div class="rel-ev-row">'
+      return '<div class="rel-ev-row" style="cursor:pointer" onclick="toggleRelCrm(\''+ev._key+'\')">'
         + '<div class="rel-ev-icon" style="background:' + cor + '22;border:1px solid ' + cor + '44">' + emoji + '</div>'
         + '<div style="flex:1">'
           + '<div style="font-size:13px;font-weight:500;color:' + (ev.done?'var(--text3)':'var(--text)') + (ev.done?';text-decoration:line-through':'') + '">' + esc(ev.titulo) + '</div>'
           + '<div style="font-size:11px;color:var(--text2);margin-top:2px;display:flex;gap:8px;flex-wrap:wrap">'
             + (ev.hora ? '<span><i class="ti ti-clock" style="font-size:10px"></i> ' + ev.hora + (ev.horaFim?' → '+ev.horaFim:'') + '</span>' : '')
-            + (dur > 0 ? '<span>' + dur.toFixed(1) + 'h</span>' : '')
             + (ev.local ? '<span><i class="ti ti-map-pin" style="font-size:10px"></i> ' + esc(ev.local) + '</span>' : '')
           + '</div>'
           + '<div style="display:flex;gap:3px;margin-top:4px">' + cs.map(function(c){ return '<span class="badge ' + catCls(c) + '" style="font-size:10px">' + esc(c) + '</span>'; }).join('') + '</div>'
         + '</div>'
         + '<span style="font-size:11px;color:' + (ev.done?'var(--green)':'var(--orange)') + ';flex-shrink:0">'
           + (ev.done ? '<i class="ti ti-check"></i> OK' : '<i class="ti ti-clock"></i> Pendente') + '</span>'
-        + '</div>';
+        + '</div>'
+        + '<div id="relcrm-'+ev._key+'" style="display:none;padding:8px 0 0 44px;border-top:1px solid var(--border2);margin-top:8px"><i class="ti ti-loader" style="font-size:12px;color:var(--text3)"></i> Carregando...</div>';
     }).join('');
   }
 
@@ -2335,6 +2350,136 @@ async function carregarRelatorio(){
 
   // ── NARRATIVA SALVA ───────────────────────────────────────────
   await carregarNarrativaSalva();
+}
+
+// ── RELATÓRIO: ATALHOS E RANGE ───────────────────────────────────
+var relModoAtual = 'dia'; // 'dia' | 'range'
+var _relDataRange = {inicio:'', fim:''};
+
+function relAtalho(delta){
+  relModoAtual = 'dia';
+  document.getElementById('relModoData').style.display = 'flex';
+  document.getElementById('relModoRange').style.display = 'none';
+  var d = new Date(); d.setDate(d.getDate() + delta);
+  _relData = d.toISOString().split('T')[0];
+  document.getElementById('relData').value = _relData;
+  // highlight botão ativo
+  ['relBtnOntem','relBtnHoje','relBtnAmanha'].forEach(function(id,i){
+    var btn = document.getElementById(id);
+    if(btn) btn.className = 'btn btn-sm' + (i-1===delta?' btn-primary':'');
+  });
+  carregarRelatorio();
+}
+
+function toggleRelRange(){
+  var modoData  = document.getElementById('relModoData');
+  var modoRange = document.getElementById('relModoRange');
+  var showing = modoRange.style.display !== 'none';
+  modoData.style.display  = showing ? 'flex' : 'none';
+  modoRange.style.display = showing ? 'none' : 'flex';
+  document.getElementById('relBtnRange').className = 'btn btn-sm' + (showing ? '' : ' btn-primary');
+  if(!showing){
+    var hoje = new Date().toISOString().split('T')[0];
+    if(!document.getElementById('relDataInicio').value) document.getElementById('relDataInicio').value = hoje;
+    if(!document.getElementById('relDataFim').value)    document.getElementById('relDataFim').value    = hoje;
+  }
+}
+
+async function carregarRelatorioRange(){
+  var ini = document.getElementById('relDataInicio').value;
+  var fim = document.getElementById('relDataFim').value;
+  if(!ini||!fim){toast('Selecione data início e fim.','error');return;}
+  if(ini>fim){toast('Data início não pode ser após data fim.','error');return;}
+  relModoAtual = 'range';
+  _relDataRange = {inicio:ini, fim:fim};
+  // Para range, carregar relatório do período
+  _relData = ini; // usa inicio como base para narrativa
+  await carregarRelatorio(ini, fim);
+}
+
+// ── DONUT SVG ─────────────────────────────────────────────────────
+function renderDonutCategoria(catHoras, cats, catColors, catEmojis, total){
+  var R=70, cx=90, cy=90, stroke=28;
+  var circum=2*Math.PI*R;
+  var colorsHex={'Securitizadora':'#3FB950','Consultoria':'#F0883E','Rede P5':'#BC8CFF','Tempo Pessoal':'#4285F4'};
+
+  if(total <= 0){
+    return '<div style="text-align:center;padding:1rem;color:var(--text3);font-size:12px">Nenhuma hora justificada ainda</div>';
+  }
+
+  var offset=0;
+  var segs='';
+  var legend='';
+  cats.forEach(function(cat){
+    var h=catHoras[cat]||0;
+    if(h<=0)return;
+    var pct=h/total;
+    var dash=pct*circum;
+    var gap=circum-dash;
+    var color=colorsHex[cat]||'#888';
+    segs+='<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'"'
+      +' fill="none"'
+      +' stroke="'+color+'"'
+      +' stroke-width="'+stroke+'"'
+      +' stroke-dasharray="'+dash.toFixed(2)+' '+gap.toFixed(2)+'"'
+      +' stroke-dashoffset="'+(-offset*circum/1).toFixed(2)+'"'
+      +' style="transition:stroke-dashoffset .4s;transform:rotate(-90deg);transform-origin:'+cx+'px '+cy+'px"'
+      +'/>';
+    legend+='<div style="display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:6px">'
+      +'<div style="width:10px;height:10px;border-radius:50%;background:'+color+';flex-shrink:0"></div>'
+      +'<span style="color:var(--text)">'+catEmojis[cat]+' '+cat+'</span>'
+      +'<span style="margin-left:auto;font-family:JetBrains Mono,monospace;color:var(--text2);font-size:11px">'+h.toFixed(1)+'h</span>'
+      +'<span style="color:var(--text3);font-size:10px">'+(pct*100).toFixed(0)+'%</span>'
+    +'</div>';
+    offset+=pct;
+  });
+
+  var svgHtml='<svg width="180" height="180" viewBox="0 0 180 180" style="flex-shrink:0">'
+    +'<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="none" stroke="var(--border2)" stroke-width="'+stroke+'"/>'
+    +segs
+    +'<text x="'+cx+'" y="'+(cy-6)+'" text-anchor="middle" style="font-size:18px;font-weight:700;fill:var(--text);font-family:JetBrains Mono,sans-serif">'+total.toFixed(1)+'h</text>'
+    +'<text x="'+cx+'" y="'+(cy+12)+'" text-anchor="middle" style="font-size:10px;fill:var(--text3)">justificadas</text>'
+    +'</svg>';
+
+  return svgHtml + '<div style="flex:1;min-width:140px">'+legend+'</div>';
+}
+
+// ── RELATÓRIO: CRM EXPANDÍVEL NOS EVENTOS ─────────────────────────
+function toggleRelCrm(evKey){
+  var el=document.getElementById('relcrm-'+evKey);
+  if(!el)return;
+  if(el.style.display!=='none'){ el.style.display='none'; return; }
+  el.style.display='';
+  if(!db){el.innerHTML='<span style="font-size:12px;color:var(--text3)">Sem dados</span>';return;}
+  db.ref('crm/'+evKey).orderByChild('criadoEm').once('value',function(snap){
+    var updates=[];
+    snap.forEach(function(c){var v=c.val();v._key=c.key;updates.push(v);});
+    updates.sort(function(a,b){return (b.criadoEm||0)-(a.criadoEm||0);});
+    if(!updates.length){el.innerHTML='<span style="font-size:12px;color:var(--text3)">Nenhum registro CRM</span>';return;}
+    el.innerHTML=updates.map(function(u){
+      var sc=statusCls(u.status);
+      var si=statusIcon(u.status);
+      var dt=u.criadoEm?new Date(u.criadoEm).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'—';
+      var notaHtml='';
+      if(u.catBlocos&&u.catBlocos.length){
+        notaHtml=u.catBlocos.filter(function(b){return b.nota;}).map(function(b){
+          return '<div style="margin-top:4px;padding:4px 8px;background:var(--surface);border-radius:4px;border-left:2px solid var(--border)">'
+            +'<span style="font-size:10px;font-weight:600;color:var(--text2)">'+esc(b.categoria)+'</span>'
+            +'<div style="font-size:11px;color:var(--text2)">'+esc(b.nota)+'</div>'
+          +'</div>';
+        }).join('');
+      } else if(u.nota){
+        notaHtml='<div style="font-size:11px;color:var(--text2);margin-top:3px">'+esc(u.nota)+'</div>';
+      }
+      return '<div style="padding:6px 0;border-bottom:1px solid var(--border2)">'
+        +'<div style="display:flex;align-items:center;gap:6px">'
+          +'<span class="crm-status-badge '+sc+'" style="font-size:10px">'+si+' '+statusLabel(u.status)+'</span>'
+          +'<span style="font-size:10px;color:var(--text3);font-family:monospace">'+dt+'</span>'
+        +'</div>'
+        +notaHtml
+      +'</div>';
+    }).join('');
+  });
 }
 
 function metricaCard(label, valor, sub){
