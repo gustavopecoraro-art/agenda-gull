@@ -2203,6 +2203,7 @@ document.addEventListener('change',function(e){
 var _relData = new Date().toISOString().split('T')[0];
 var _relNarrativaAtual = '';
 var _relEditando = false;
+var _catHorasCache = {};
 
 function relHoje(){
   _relData = new Date().toISOString().split('T')[0];
@@ -2225,31 +2226,70 @@ async function carregarRelatorio(){
   // ── MÉTRICAS ──────────────────────────────────────────────────
   var concluidos = evsDia.filter(function(e){ return e.done; }).length;
   var pendentes  = evsDia.filter(function(e){ return !e.done; }).length;
-  var totalHoras = calcularHorasDia(evsDia);
+  // Total de horas justificadas = soma das catHoras (calculado após crmPromises)
+  // Será atualizado após a Promise.all abaixo
 
   var dt = new Date(_relData + 'T12:00:00');
   var labelDia = dt.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 
-  document.getElementById('relMetricas').innerHTML =
-    metricaCard('Eventos', evsDia.length, 'total no dia') +
-    metricaCard('Concluídos', concluidos, 'finalizados') +
-    metricaCard('Pendentes', pendentes, 'em aberto') +
-    metricaCard('Horas est.', totalHoras.toFixed(1)+'h', 'no dia');
+  // metricas serão renderizadas após calcular horas justificadas
 
   // ── BARRAS POR CATEGORIA ──────────────────────────────────────
   var cats = ['Securitizadora','Consultoria','Rede P5','Tempo Pessoal'];
   var catColors = {'Securitizadora':'var(--cat-sec)','Consultoria':'var(--cat-con)','Rede P5':'var(--cat-red)','Tempo Pessoal':'var(--cat-pes)'};
   var catEmojis = {'Securitizadora':'🟢','Consultoria':'🟠','Rede P5':'🟣','Tempo Pessoal':'🔵'};
 
+  // Buscar check-outs do dia para calcular horas justificadas por categoria
   var catHoras = {};
   cats.forEach(function(c){ catHoras[c] = 0; });
-  evsDia.forEach(function(ev){
-    var cs = Array.isArray(ev.categorias) ? ev.categorias : (ev.categoria ? [ev.categoria] : []);
-    var h = calcularHorasEvento(ev);
-    cs.forEach(function(c){ if(catHoras[c]!==undefined) catHoras[c] += h / (cs.length||1); });
+
+  // Para cada evento do dia, buscar seus registros CRM
+  var crmPromises = evsDia.map(function(ev){
+    if(!db) return Promise.resolve();
+    return db.ref('crm/'+ev._key).once('value').then(function(snap){
+      snap.forEach(function(child){
+        var u = child.val();
+        // Só conta check-outs com catBlocos
+        if(u.status !== 'checkout') return;
+        // Calcular duração do check-out
+        var h = 0;
+        if(u.horaInicio && u.horaFim){
+          var ini = u.horaInicio.split(':').map(Number);
+          var fim = u.horaFim.split(':').map(Number);
+          h = (fim[0]+fim[1]/60) - (ini[0]+ini[1]/60);
+          if(h <= 0) h = calcularHorasEvento(ev);
+        } else {
+          h = calcularHorasEvento(ev);
+        }
+        // catBlocos: [{categoria, nota}] — só conta categorias com nota
+        if(u.catBlocos && u.catBlocos.length){
+          var blocsComNota = u.catBlocos.filter(function(b){ return b.nota && b.nota.trim(); });
+          if(blocsComNota.length){
+            var hPorCat = h / blocsComNota.length;
+            blocsComNota.forEach(function(b){
+              if(catHoras[b.categoria] !== undefined) catHoras[b.categoria] += hPorCat;
+            });
+            return;
+          }
+        }
+        // Fallback: checkout sem catBlocos — distribuir pelas categorias do evento
+        var cs = Array.isArray(ev.categorias)?ev.categorias:(ev.categoria?[ev.categoria]:[]);
+        if(cs.length){
+          cs.forEach(function(cat){ if(catHoras[cat]!==undefined) catHoras[cat] += h/cs.length; });
+        }
+      });
+    });
   });
+  await Promise.all(crmPromises);
 
   var maxH = Math.max.apply(null, cats.map(function(c){ return catHoras[c]; })) || 1;
+  _catHorasCache = catHoras; // cache para exportarPDF
+  var totalHorasJust = cats.reduce(function(acc,c){ return acc + catHoras[c]; }, 0);
+  document.getElementById('relMetricas').innerHTML =
+    metricaCard('Eventos', evsDia.length, 'total no dia') +
+    metricaCard('Conclu\u00eddos', concluidos, 'finalizados') +
+    metricaCard('Pendentes', pendentes, 'em aberto') +
+    metricaCard('Horas just.', totalHorasJust.toFixed(1)+'h', 'com justificativa');
   document.getElementById('relCategoriasBody').innerHTML = cats.map(function(c){
     var h = catHoras[c];
     var pct = Math.round((h / maxH) * 100);
@@ -2401,14 +2441,30 @@ async function gerarRelatorioIA(){
     await Promise.all(promises);
   }
 
-  // Calcular horas por categoria
+  // Calcular horas por categoria — só categorias com checkout justificado
   var cats = ['Securitizadora','Consultoria','Rede P5','Tempo Pessoal'];
   var catHoras = {};
   cats.forEach(function(c){ catHoras[c] = 0; });
-  evsDia.forEach(function(ev){
-    var cs = Array.isArray(ev.categorias) ? ev.categorias : (ev.categoria ? [ev.categoria] : []);
-    var h = calcularHorasEvento(ev);
-    cs.forEach(function(c){ if(catHoras[c]!==undefined) catHoras[c] += h/(cs.length||1); });
+  // crmUpdates já foi coletado acima
+  crmUpdates.forEach(function(u){
+    if(u.status !== 'checkout') return;
+    var ev = evsDia.find(function(e){ return e.titulo === u.eventoTitulo; });
+    var h = 0;
+    if(u.horaInicio && u.horaFim){
+      var ini=u.horaInicio.split(':').map(Number);
+      var fim=u.horaFim.split(':').map(Number);
+      h=(fim[0]+fim[1]/60)-(ini[0]+ini[1]/60);
+      if(h<=0) h=ev?calcularHorasEvento(ev):1;
+    } else { h=ev?calcularHorasEvento(ev):1; }
+    if(u.catBlocos && u.catBlocos.length){
+      var blocsComNota=u.catBlocos.filter(function(b){return b.nota&&b.nota.trim();});
+      if(blocsComNota.length){
+        var hpc=h/blocsComNota.length;
+        blocsComNota.forEach(function(b){if(catHoras[b.categoria]!==undefined)catHoras[b.categoria]+=hpc;});
+        return;
+      }
+    }
+    if(ev){var cs=Array.isArray(ev.categorias)?ev.categorias:(ev.categoria?[ev.categoria]:[]);cs.forEach(function(cat){if(catHoras[cat]!==undefined)catHoras[cat]+=h/cs.length;});}
   });
 
   var dt = new Date(_relData+'T12:00:00');
@@ -2536,11 +2592,17 @@ function exportarPDF(){
   var catEmojis = {'Securitizadora':'🟢','Consultoria':'🟠','Rede P5':'🟣','Tempo Pessoal':'🔵'};
   var catHoras = {};
   cats.forEach(function(c){ catHoras[c]=0; });
-  evsDia.forEach(function(ev){
-    var cs=Array.isArray(ev.categorias)?ev.categorias:(ev.categoria?[ev.categoria]:[]);
-    var h=calcularHorasEvento(ev);
-    cs.forEach(function(c){ if(catHoras[c]!==undefined) catHoras[c]+=h/(cs.length||1); });
-  });
+  // Usar catHoras já calculado pelo carregarRelatorio (só categorias justificadas)
+  // Se não disponível, fallback simples
+  if(typeof _catHorasCache !== 'undefined'){
+    cats.forEach(function(c){ catHoras[c]=_catHorasCache[c]||0; });
+  } else {
+    evsDia.forEach(function(ev){
+      var cs=Array.isArray(ev.categorias)?ev.categorias:(ev.categoria?[ev.categoria]:[]);
+      var h=calcularHorasEvento(ev);
+      cs.forEach(function(c){ if(catHoras[c]!==undefined) catHoras[c]+=h/(cs.length||1); });
+    });
+  }
 
   var sorted = evsDia.slice().sort(function(a,b){ return (a.ts||0)-(b.ts||0); });
 
