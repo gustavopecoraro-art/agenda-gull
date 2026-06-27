@@ -1199,9 +1199,10 @@ function abrirDetalhe(key){
     +'</div></div>';
   document.getElementById('detalheInfo').innerHTML=html;
 
-  // Pré-preencher categoria CRM
+  // Pré-preencher categoria CRM (usado no Atrasado/Cancelado)
   var cats0=Array.isArray(ev.categorias)?ev.categorias:(ev.categoria?[ev.categoria]:[]);
-  if(cats0.length)document.getElementById('crmCategoria').value=cats0[0];
+  var catEl=document.getElementById('crmCategoria');
+  if(catEl&&cats0.length) catEl.value=cats0[0];
 
   // Carregar timeline CRM do Firebase
   renderCrmTimeline(key);
