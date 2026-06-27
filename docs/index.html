@@ -2425,7 +2425,7 @@ async function carregarRelatorio(){
       return '<div class="rel-ev-row" style="cursor:pointer" onclick="toggleRelCrm(\''+ev._key+'\')">'
         + '<div class="rel-ev-icon" style="background:' + cor + '22;border:1px solid ' + cor + '44">' + emoji + '</div>'
         + '<div style="flex:1">'
-          + '<div style="font-size:13px;font-weight:500;color:' + (ev.done?'var(--text3)':'var(--text)') + (ev.done?';text-decoration:line-through':'') + '">' + esc(ev.titulo) + '</div>'
+          + '<div style="font-size:13px;font-weight:500;color:var(--text)">' + (ev.checkoutEm?'<span style="display:inline-flex;align-items:center;gap:3px;font-size:10px;color:var(--green);margin-right:4px"><svg width="10" height="10" viewBox="0 0 10 10"><polyline points="2,5 4,7.5 8,2.5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>':'') + esc(ev.titulo) + '</div>'
           + '<div style="font-size:11px;color:var(--text2);margin-top:2px;display:flex;gap:8px;flex-wrap:wrap">'
             + (ev.hora ? '<span><i class="ti ti-clock" style="font-size:10px"></i> ' + ev.hora + (ev.horaFim?' → '+ev.horaFim:'') + '</span>' : '')
             + (ev.local ? '<span><i class="ti ti-map-pin" style="font-size:10px"></i> ' + esc(ev.local) + '</span>' : '')
