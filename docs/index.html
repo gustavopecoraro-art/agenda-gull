@@ -991,9 +991,12 @@ function abrirModalEvento(key){
   document.getElementById('evEditKey').value='';
   document.getElementById('evGcalId').value='';
   document.getElementById('evTitulo').value='';
-  document.getElementById('evDataInicio').value=new Date().toISOString().split('T')[0];
+  // Hoje em horário de Brasília (UTC-3)
+  var _brt = new Date(new Date().toLocaleString('en-US', {timeZone:'America/Sao_Paulo'}));
+  var _hojeBR = _brt.getFullYear()+'-'+String(_brt.getMonth()+1).padStart(2,'0')+'-'+String(_brt.getDate()).padStart(2,'0');
+  document.getElementById('evDataInicio').value = _hojeBR;
   document.getElementById('evHoraInicio').value='';
-  document.getElementById('evDataFim').value='';
+  document.getElementById('evDataFim').value = _hojeBR;
   document.getElementById('evHoraFim').value='';
   document.getElementById('evLocal').value='';
   // limpar checkboxes categorias
@@ -2250,20 +2253,20 @@ async function carregarRelatorio(){
   // ── MÉTRICAS ──────────────────────────────────────────────────
   var concluidos = evsDia.filter(function(e){ return e.done; }).length;
   var pendentes  = evsDia.filter(function(e){ return !e.done; }).length;
-  // Total de horas justificadas = soma das catHoras (calculado após crmPromises)
+  // Total de horas reportadas = soma das catHoras (calculado após crmPromises)
   // Será atualizado após a Promise.all abaixo
 
   var dt = new Date(_relData + 'T12:00:00');
   var labelDia = dt.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 
-  // metricas serão renderizadas após calcular horas justificadas
+  // metricas serão renderizadas após calcular horas reportadas
 
   // ── BARRAS POR CATEGORIA ──────────────────────────────────────
   var cats = ['Securitizadora','Consultoria','Rede P5','Tempo Pessoal'];
   var catColors = {'Securitizadora':'var(--cat-sec)','Consultoria':'var(--cat-con)','Rede P5':'var(--cat-red)','Tempo Pessoal':'var(--cat-pes)'};
   var catEmojis = {'Securitizadora':'🟢','Consultoria':'🟠','Rede P5':'🟣','Tempo Pessoal':'🔵'};
 
-  // Buscar check-outs do dia para calcular horas justificadas por categoria
+  // Buscar check-outs do dia para calcular horas reportadas por categoria
   var catHoras = {};
   cats.forEach(function(c){ catHoras[c] = 0; });
 
@@ -2313,7 +2316,7 @@ async function carregarRelatorio(){
     metricaCard('Eventos', evsDia.length, 'total no dia') +
     metricaCard('Concluídos', concluidos, 'finalizados') +
     metricaCard('Pendentes', pendentes, 'em aberto') +
-    metricaCard('Horas just.', totalHorasJust.toFixed(1)+'h', 'com justificativa');
+    metricaCard('Horas rep.', totalHorasJust.toFixed(1)+'h', 'reportadas');
 
   // Donut SVG
   document.getElementById('relCategoriasBody').innerHTML = renderDonutCategoria(catHoras, cats, catColors, catEmojis, totalHorasJust);
@@ -2338,8 +2341,8 @@ async function carregarRelatorio(){
           + '</div>'
           + '<div style="display:flex;gap:3px;margin-top:4px">' + cs.map(function(c){ return '<span class="badge ' + catCls(c) + '" style="font-size:10px">' + esc(c) + '</span>'; }).join('') + '</div>'
         + '</div>'
-        + '<span style="font-size:11px;color:' + (ev.done?'var(--green)':'var(--orange)') + ';flex-shrink:0">'
-          + (ev.done ? '<i class="ti ti-check"></i> OK' : '<i class="ti ti-clock"></i> Pendente') + '</span>'
+        + '<span style="font-size:11px;color:' + (ev.checkoutEm?'var(--accent-h)':ev.done?'var(--green)':'var(--orange)') + ';flex-shrink:0">'
+          + (ev.checkoutEm ? '<i class="ti ti-check-box"></i> Check-out' : ev.done ? '<i class="ti ti-check"></i> OK' : '<i class="ti ti-clock"></i> Pendente') + '</span>'
         + '</div>'
         + '<div id="relcrm-'+ev._key+'" style="display:none;padding:8px 0 0 44px;border-top:1px solid var(--border2);margin-top:8px"><i class="ti ti-loader" style="font-size:12px;color:var(--text3)"></i> Carregando...</div>';
     }).join('');
@@ -2438,7 +2441,7 @@ function renderDonutCategoria(catHoras, cats, catColors, catEmojis, total){
     +'<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="none" stroke="var(--border2)" stroke-width="'+stroke+'"/>'
     +segs
     +'<text x="'+cx+'" y="'+(cy-6)+'" text-anchor="middle" style="font-size:18px;font-weight:700;fill:var(--text);font-family:JetBrains Mono,sans-serif">'+total.toFixed(1)+'h</text>'
-    +'<text x="'+cx+'" y="'+(cy+12)+'" text-anchor="middle" style="font-size:10px;fill:var(--text3)">justificadas</text>'
+    +'<text x="'+cx+'" y="'+(cy+12)+'" text-anchor="middle" style="font-size:10px;fill:var(--text3)">reportadas</text>'
     +'</svg>';
 
   return svgHtml + '<div style="flex:1;min-width:140px">'+legend+'</div>';
