@@ -2050,7 +2050,8 @@ function renderEventoCard(ev){
         +(ev.origem==='google_calendar'?'<span class="badge badge-gcal" style="margin-left:4px;font-size:10px"><i class="ti ti-brand-google"></i></span>':'')
       +'</div>'
       +'<div class="ev-meta">'
-        +'<span><i class="ti ti-calendar"></i>'+(ev.dataBR||ev.data||'—')+(ev.hora?' às '+ev.hora:'')+'</span>'
+        +'<span><i class="ti ti-calendar"></i>'+(ev.dataBR||ev.data||'—')+(ev.hora?' às '+ev.hora:'')+(ev.horaFim?' → '+ev.horaFim:'')+' </span>'
+        +(ev.hora&&ev.horaFim?(function(){var ini=toMinutes(ev.hora),fim=toMinutes(ev.horaFim),dur=fim-ini;return dur>0?'<span><i class="ti ti-clock"></i>'+fmtH(dur/60)+'</span>':'';}()):'') 
         +(ev.local?'<span><i class="ti ti-map-pin"></i>'+esc(ev.local)+'</span>':'')
         +(ev.grupoNome?'<span><i class="ti ti-brand-whatsapp"></i>'+esc(ev.grupoNome)+'</span>':'')
       +'</div>'
