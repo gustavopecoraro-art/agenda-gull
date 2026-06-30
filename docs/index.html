@@ -18,7 +18,7 @@
   --purple:#BC8CFF;--purple-s:rgba(188,140,255,0.12);
   --gcal:#4285F4;--gcal-s:rgba(66,133,244,0.12);--gcal-b:rgba(66,133,244,0.25);
   --yellow:#F0E68C;--yellow-s:rgba(240,230,140,0.12);
-  --cat-sec:#3FB950;--cat-con:#F0883E;--cat-red:#BC8CFF;--cat-pes:#4285F4;
+  --cat-sec:#3FB950;--cat-con:#F0883E;--cat-red:#BC8CFF;--cat-pes:#4285F4;--cat-tra:#F5A623;
   --r:8px;--rl:12px;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -293,6 +293,7 @@ select option{background:var(--surface2);}
       <button class="btn btn-sm" id="filtro-Consultoria" onclick="setFiltroCategoria('Consultoria',this)">🟠 Consultoria</button>
       <button class="btn btn-sm" id="filtro-Rede P5" onclick="setFiltroCategoria('Rede P5',this)">🟣 Rede P5</button>
       <button class="btn btn-sm" id="filtro-Tempo Pessoal" onclick="setFiltroCategoria('Tempo Pessoal',this)">🔵 Pessoal</button>
+      <button class="btn btn-sm" id="filtro-Trânsito" onclick="setFiltroCategoria('Trânsito',this)">🚗 Trânsito</button>
     </div>
 
     <div class="cal-grid" id="calGrid"></div>
@@ -519,6 +520,8 @@ select option{background:var(--surface2);}
           </label>
           <label style="display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:13px;color:var(--text);cursor:pointer;margin:0">
             <input type="checkbox" value="Tempo Pessoal" style="width:auto;accent-color:var(--cat-pes)"> 🔵 Tempo Pessoal
+            </label><label style="display:flex;align-items:center;gap:6px">
+              <input type="checkbox" value="Trânsito" style="width:auto;accent-color:var(--cat-tra)"> 🚗 Trânsito
           </label>
         </div>
       </div>
@@ -1446,7 +1449,8 @@ var CATS_CRM = [
   {id:'Securitizadora', label:'🟢 Securitizadora', color:'var(--cat-sec)'},
   {id:'Consultoria',    label:'🟠 Consultoria',    color:'var(--cat-con)'},
   {id:'Rede P5',        label:'🟣 Rede P5',        color:'var(--cat-red)'},
-  {id:'Tempo Pessoal',  label:'🔵 Tempo Pessoal',  color:'var(--cat-pes)'}
+  {id:'Tempo Pessoal',  label:'🔵 Tempo Pessoal',  color:'var(--cat-pes)'},
+  {id:'Trânsito',       label:'🚗 Trânsito',         color:'var(--cat-tra)'}
 ];
 
 function construirBlocosCategorias(){
@@ -1788,7 +1792,7 @@ function renderDiaHtml(dt,outroMes,hojeStr){
   var evsDia=eventosDoDia(dtStr);
   var cls='cal-day'+(hoje?' today':'')+(outroMes?' other-month':'');
 
-  var CAT_ORDER=['Securitizadora','Consultoria','Rede P5','Tempo Pessoal'];
+  var CAT_ORDER=['Securitizadora','Consultoria','Rede P5','Tempo Pessoal','Trânsito'];
   var catCount={};
   evsDia.forEach(function(ev){
     var cats=Array.isArray(ev.categorias)?ev.categorias:(ev.categoria?[ev.categoria]:[]);
@@ -2200,8 +2204,8 @@ function tpl(t,titulo,data,hora){return(t||'').replace(/{titulo}/g,titulo).repla
 function fmtBR(iso){if(!iso)return'';var p=iso.split('-');return p[2]+'/'+p[1]+'/'+p[0];}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
-function catCls(c){var m={'Securitizadora':'cat-sec','Consultoria':'cat-con','Rede P5':'cat-red','Tempo Pessoal':'cat-pes'};return m[c]||'badge-blue';}
-function catColor(c){var m={'Securitizadora':'var(--cat-sec)','Consultoria':'var(--cat-con)','Rede P5':'var(--cat-red)','Tempo Pessoal':'var(--cat-pes)'};return m[c]||'var(--accent-h)';}
+function catCls(c){var m={'Securitizadora':'cat-sec','Consultoria':'cat-con','Rede P5':'cat-red','Tempo Pessoal':'cat-pes','Trânsito':'cat-tra'};return m[c]||'badge-blue';}
+function catColor(c){var m={'Securitizadora':'var(--cat-sec)','Consultoria':'var(--cat-con)','Rede P5':'var(--cat-red)','Tempo Pessoal':'var(--cat-pes)','Trânsito':'var(--cat-tra)'};return m[c]||'var(--accent-h)';}
 function statusCls(s){var m={checkout:'s-checkout',atrasado:'s-atrasado',cancelado:'s-cancelado'};return m[s]||'badge-blue';}
 function statusColor(s){var m={checkout:'var(--accent-h)',atrasado:'var(--orange)',cancelado:'var(--red)'};return m[s]||'var(--text2)';}
 function statusIcon(s){var m={checkout:'✅',atrasado:'⚠️',cancelado:'❌'};return m[s]||'•';}
@@ -2359,9 +2363,9 @@ async function carregarRelatorio(){
   // metricas serão renderizadas após calcular horas reportadas
 
   // ── BARRAS POR CATEGORIA ──────────────────────────────────────
-  var cats = ['Securitizadora','Consultoria','Rede P5','Tempo Pessoal'];
-  var catColors = {'Securitizadora':'var(--cat-sec)','Consultoria':'var(--cat-con)','Rede P5':'var(--cat-red)','Tempo Pessoal':'var(--cat-pes)'};
-  var catEmojis = {'Securitizadora':'🟢','Consultoria':'🟠','Rede P5':'🟣','Tempo Pessoal':'🔵'};
+  var cats = ['Securitizadora','Consultoria','Rede P5','Tempo Pessoal','Trânsito'];
+  var catColors = {'Securitizadora':'var(--cat-sec)','Consultoria':'var(--cat-con)','Rede P5':'var(--cat-red)','Tempo Pessoal':'var(--cat-pes)','Trânsito':'var(--cat-tra)'};
+  var catEmojis = {'Securitizadora':'🟢','Consultoria':'🟠','Rede P5':'🟣','Tempo Pessoal':'🔵','Trânsito':'🚗'};
 
   // Buscar check-outs do dia para calcular horas reportadas por categoria
   var catHoras = {};
@@ -2511,7 +2515,7 @@ function fmtH(horas){
 function renderDonutCategoria(catHoras, cats, catColors, catEmojis, total){
   var R=70, cx=90, cy=90, stroke=28;
   var circum=2*Math.PI*R;
-  var colorsHex={'Securitizadora':'#3FB950','Consultoria':'#F0883E','Rede P5':'#BC8CFF','Tempo Pessoal':'#4285F4'};
+  var colorsHex={'Securitizadora':'#3FB950','Consultoria':'#F0883E','Rede P5':'#BC8CFF','Tempo Pessoal':'#4285F4','Trânsito':'#F5A623'};
 
   if(total <= 0){
     return '<div style="text-align:center;padding:1rem;color:var(--text3);font-size:12px">Nenhuma hora justificada ainda</div>';
@@ -2702,7 +2706,7 @@ async function gerarRelatorioIA(){
   }
 
   // Calcular horas por categoria — só categorias com checkout justificado
-  var cats = ['Securitizadora','Consultoria','Rede P5','Tempo Pessoal'];
+  var cats = ['Securitizadora','Consultoria','Rede P5','Tempo Pessoal','Trânsito'];
   var catHoras = {};
   cats.forEach(function(c){ catHoras[c] = 0; });
   // crmUpdates já foi coletado acima
@@ -2848,8 +2852,8 @@ function exportarPDF(){
   var pendentes  = evsDia.filter(function(e){ return !e.done; }).length;
   var totalH = fmtH(calcularHorasDia(evsDia));
 
-  var cats = ['Securitizadora','Consultoria','Rede P5','Tempo Pessoal'];
-  var catEmojis = {'Securitizadora':'🟢','Consultoria':'🟠','Rede P5':'🟣','Tempo Pessoal':'🔵'};
+  var cats = ['Securitizadora','Consultoria','Rede P5','Tempo Pessoal','Trânsito'];
+  var catEmojis = {'Securitizadora':'🟢','Consultoria':'🟠','Rede P5':'🟣','Tempo Pessoal':'🔵','Trânsito':'🚗'};
   var catHoras = {};
   cats.forEach(function(c){ catHoras[c]=0; });
   // Usar catHoras já calculado pelo carregarRelatorio (só categorias justificadas)
@@ -2897,7 +2901,7 @@ function exportarPDF(){
     + '<h2>Horas por categoria</h2>'
     + cats.map(function(c){
         var h=catHoras[c]; var pct=Math.round(h/Math.max.apply(null,cats.map(function(x){return catHoras[x];})||1)*100);
-        var colors={'Securitizadora':'#3FB950','Consultoria':'#F0883E','Rede P5':'#BC8CFF','Tempo Pessoal':'#4285F4'};
+        var colors={'Securitizadora':'#3FB950','Consultoria':'#F0883E','Rede P5':'#BC8CFF','Tempo Pessoal':'#4285F4','Trânsito':'#F5A623'};
         return '<div class="bar-row"><div class="bar-label"><span>'+catEmojis[c]+' '+c+'</span><span>'+fmtH(h)+'</span></div>'
           +'<div class="bar-track"><div class="bar-fill" style="width:'+pct+'%;background:'+colors[c]+'"></div></div></div>';
       }).join('')
