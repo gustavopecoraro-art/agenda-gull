@@ -2918,29 +2918,7 @@ function exportarPDF(){
         +'</div>';
       }).join('')
     + (_relNarrativaAtual ? '<h2>Relatório narrativo</h2><div class="narrativa">' + _relNarrativaAtual.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>' : '')
-    + '
-<!-- ── MODAL DUPLICAR EVENTO ──────────────────────────────────── -->
-<div class="overlay" id="modalDuplicar">
-  <div class="modal" style="max-width:380px">
-    <div class="modal-title">
-      <span><i class="ti ti-copy"></i> Duplicar Evento</span>
-      <button class="modal-close" onclick="fecharModal('modalDuplicar')"><i class="ti ti-x"></i></button>
-    </div>
-    <div style="padding:1rem 0 0">
-      <div id="duplicarInfo" style="background:var(--surface2);border-radius:var(--r);padding:10px 14px;margin-bottom:1rem;font-size:13px;color:var(--text2)"></div>
-      <div class="field">
-        <label>Nova data <span style="color:var(--red)">*</span></label>
-        <input type="date" id="duplicarData">
-      </div>
-      <div style="display:flex;gap:8px;margin-top:1.25rem">
-        <button class="btn" onclick="fecharModal('modalDuplicar')" style="flex:1">Cancelar</button>
-        <button class="btn btn-primary" onclick="confirmarDuplicar()" style="flex:1"><i class="ti ti-copy"></i> Duplicar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-</body></html>';
+    + '</body></html>';
 
   var win = window.open('','_blank');
   win.document.write(html);
@@ -3051,5 +3029,26 @@ async function confirmarDuplicar() {
 }
 
 </script>
+
+<!-- ── MODAL DUPLICAR EVENTO ──────────────────────────────────── -->
+<div class="overlay" id="modalDuplicar">
+  <div class="modal" style="max-width:380px">
+    <div class="modal-title">
+      <span><i class="ti ti-copy"></i> Duplicar Evento</span>
+      <button class="modal-close" onclick="fecharModal('modalDuplicar')"><i class="ti ti-x"></i></button>
+    </div>
+    <div style="padding:1rem 0 0">
+      <div id="duplicarInfo" style="background:var(--surface2);border-radius:var(--r);padding:10px 14px;margin-bottom:1rem;font-size:13px;color:var(--text2)"></div>
+      <div class="field">
+        <label>Nova data <span style="color:var(--red)">*</span></label>
+        <input type="date" id="duplicarData">
+      </div>
+      <div style="display:flex;gap:8px;margin-top:1.25rem">
+        <button class="btn" onclick="fecharModal('modalDuplicar')" style="flex:1">Cancelar</button>
+        <button class="btn btn-primary" onclick="confirmarDuplicar()" style="flex:1"><i class="ti ti-copy"></i> Duplicar</button>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
